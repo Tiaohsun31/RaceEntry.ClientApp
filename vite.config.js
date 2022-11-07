@@ -30,16 +30,16 @@ export default defineConfig({
         host: true,
         port: 5002,
         proxy: {
-            '^/weatherforecast': {
+            // '^/weatherforecast': {
+            //     target: 'https://localhost:7256',
+            //     changeOrigin: true,
+            //     secure: false,
+            // },
+            '/api': {
                 target: 'https://localhost:7256',
                 changeOrigin: true,
                 secure: false,
             },
-            // '/api': {
-            //     target: 'https://my.focusline.com.tw',
-            //     changeOrigin: true,
-            //     secure: false,
-            // },
         }
     }
 
