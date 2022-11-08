@@ -35,12 +35,7 @@
 
                                     <div class="row justify-content-md-center my-4">
                                         <div class="col-12">
-                                            <select ref="select" name="code" class="form-control" title="請選擇活動">
-                                                <option v-for="item in options.acts" 
-                                                        v-bind:class="Date.parse(item.date) <= Date.now() ? 'bgc-grey-l1' : ''" 
-                                                        v-bind:value="item.code"> {{item.date}} &frasl; {{item.name}} 
-                                                </option>
-                                            </select>
+                                            <SelectActs v-bind:acts="options.acts"></SelectActs>
                                         </div>
                                     </div>
                                     <hr>
@@ -106,12 +101,14 @@
 </template>
 
 <script>
+import SelectActs from '../SelectActs.vue';
 import axios from 'axios';
-import 'bootstrap-select/dist/css/bootstrap-select.min.css';
-import 'bootstrap-select';
 
 export default {
     name: 'Aside',
+    components:{
+        SelectActs
+    },
     data() {
         return {
             options: {
@@ -123,9 +120,6 @@ export default {
     },
     mounted(){
         this.getFilter();
-    },
-    updated(){
-        $(this.$refs.select).selectpicker('refresh');
     },
     methods: {
         getFilter(){
