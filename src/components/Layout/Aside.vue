@@ -35,7 +35,7 @@
 
                                     <div class="row justify-content-md-center my-4">
                                         <div class="col-12">
-                                            <SelectActs v-bind:acts="options.acts"></SelectActs>
+                                            <SelectActs v-bind:acts="acts"></SelectActs>
                                         </div>
                                     </div>
                                     <hr>
@@ -111,20 +111,16 @@ export default {
     },
     data() {
         return {
+            acts:[],
             options: {
-                acts:[],
                 years:[],
                 categories:[],
             }
         }
     },
     mounted(){
-        this.getFilter();
+        axios.get('/api/configs/filter').then(({data}) => this.options = data);
+        axios.get('/api/configs/acts').then(({data}) => this.acts = data);
     },
-    methods: {
-        getFilter(){
-            axios.get('/api/configs/filter').then(({data}) => this.options = data);
-        },
-    }
 }
 </script>

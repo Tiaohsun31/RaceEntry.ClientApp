@@ -71,7 +71,7 @@
         
             <div class="row justify-content-md-center">
                 <div class="col col-md-8">
-                    <SelectActs v-bind:acts="options.acts"></SelectActs>
+                    <SelectActs v-bind:acts="recommendActs"></SelectActs>
                 </div>
             </div>
         
@@ -132,46 +132,49 @@
         <div class="border-t-4 brc-orange mt-5 pb-5 bgc-primary-l3">
             <div class="my-5 container">
                 <div class="row">
-                    <div class="col-md-3 col-12 mb-4" v-for="item in newActs">
-                        <div class="card pos-rel shadow-sm" v-bind:class="item.displayLabel == '推薦賽事' ? 'border-3 brc-orange' : ''">
-                            <span v-show="item.displayLabel == '推薦賽事'"
-                                class="badge bgc-orange-d2 text-white position-tl m-n25 badge-pill text-110 border-3 brc-white-tp6 radius-4"
-                                style="z-index:1">推薦賽事</span>
-                            <div class="d-style overflow-hidden">
-                                <img v-bind:src="item.square" class=" img-fluid d-zoom-2" v-bind:alt="item.name"
-                                    style="height: 250px;z-index:0">
-                            </div>
-                            <div class="card-body">
-                                <div class="card-title text-primary h5 text-truncate">
-                                    {{ item.actName }}
+                    <template v-for="element in recommendActs">
+                        <div class="col-md-3 col-12 mb-4" v-for="item in element.acts" v-bind:key="item.actCode">
+                            <div class="card pos-rel shadow-sm" v-bind:class="item.displayLabel == '推薦賽事' ? 'border-3 brc-orange' : ''">
+                                <span v-show="item.displayLabel == '推薦賽事'"
+                                    class="badge bgc-orange-d2 text-white position-tl m-n25 badge-pill text-110 border-3 brc-white-tp6 radius-4"
+                                    style="z-index:1">推薦賽事</span>
+                                <div class="d-style overflow-hidden">
+                                    <img v-bind:src="item.square" class=" img-fluid d-zoom-2" v-bind:alt="item.name"
+                                        style="height: 250px;z-index:0">
                                 </div>
-                                <div class="card-text text-secondary mt-2"> 活動日期: {{ actDate(item.actDate) }} </div>
-                                <div class="card-text text-secondary mt-2">
-                                    報名截止: {{ shortDate(item.shortDate) }}
-                                </div>
-                                <div class="card-text text-secondary mt-2"> {{ item.address }} </div>
-                                <div class="card-text mt-2">
-                                    <span class="badge bgc-secondary-l3 text-secondary-d3 text-80 px-2 mr-1"
-                                        v-for="tag in item.kmTags?.split(',')">
-                                        {{tag}}
-                                    </span>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="col">
-                                        <a v-bind:href="'/Activities/' + item.actCode"
-                                            class="btn btn-block btn-info text-white rounded-pill px-4">
-                                            活動詳情
-                                        </a>
+                                <div class="card-body">
+                                    <div class="card-title text-primary h5 text-truncate">
+                                        {{ item.actName }}
                                     </div>
-        
-                                    <div v-if="item.canSignUp" class="col">
-                                        <a v-bind:href="'/Activities/' + item.actCode + '#signup'"
-                                            class="btn btn-block btn-orange rounded-pill px-4"> 我要報名 </a>
+                                    <div class="card-text text-secondary mt-2"> 活動日期: {{ actDate(item.actDate) }} </div>
+                                    <div class="card-text text-secondary mt-2">
+                                        報名截止: {{ shortDate(item.shortDate) }}
+                                    </div>
+                                    <div class="card-text text-secondary mt-2"> {{ item.address }} </div>
+                                    <div class="card-text mt-2">
+                                        <span class="badge bgc-secondary-l3 text-secondary-d3 text-80 px-2 mr-1"
+                                            v-for="tag in item.kmTags?.split(',')">
+                                            {{tag}}
+                                        </span>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="col">
+                                            <a v-bind:href="'/Activities/' + item.actCode"
+                                                class="btn btn-block btn-info text-white rounded-pill px-4">
+                                                活動詳情
+                                            </a>
+                                        </div>
+                    
+                                        <div v-if="item.canSignUp" class="col">
+                                            <a v-bind:href="'/Activities/' + item.actCode + '#signup'"
+                                                class="btn btn-block btn-orange rounded-pill px-4"> 我要報名 </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
+                    
                 </div>
                 <div class="text-center mt-5">
                     <a asp-controller="Acts" asp-action="Index" class="btn btn-lg btn-orange px-5">
@@ -198,16 +201,16 @@ export default {
     data() {
         return {
             marquee: [],
-            newActs: [],
+            recommendActs: [],
             banners:[],
             options:[],
         }
     },
-    created() {
+    mounted() {
         axios.get('/api/configs/marquee').then(({data}) => this.marquee = data);
         axios.get('/api/configs/filter').then(({data}) => this.options = data);
         axios.get('/api/configs/banners').then(({data}) => this.banners = data);
-        axios.get('/api/configs/newacts').then(({data}) => this.newActs = data);
+        axios.get('/api/configs/acts').then(({data}) => this.recommendActs = data);
     },
     methods: {
         actDate: function (value) {
