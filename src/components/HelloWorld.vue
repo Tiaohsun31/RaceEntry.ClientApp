@@ -1,16 +1,12 @@
 <template>
-    <Layout>
+    <ActContent>
       <img alt="Vue logo" src="https://vuejs.org/images/logo.png">
-    </Layout>
+    </ActContent>
 </template>
 
 <script>
 
-import Layout from './Layout/Layout.vue'
-
 export default {
-  components: {
-    Layout,
-  }
+  name:'HelloWorld'
 }
 </script>

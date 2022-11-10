@@ -20,7 +20,7 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-7 mt-lg-5 mt-4">
+                        <div class="col-12 col-lg-7 mt-2">
                             <div class="row text-center text-lg-left">
                                 <div class="col-12 col-sm-4 mb-3">
                                     <h6 class="text-white-tp3 text-95 text-600 mb-3">PRODUCTS</h6>
@@ -68,13 +68,14 @@
         </div>
         <div class="footer-tools">
             <a href="#" class="btn-scroll-up btn btn-dark">
-                <i class="fa fa-angle-double-up"></i>
+                <i class="fas fa-calendar-day"></i>
             </a>
         </div>
     </footer>
 </template>
 
 <script>
+
 export default {
     name: "Footer",
 };

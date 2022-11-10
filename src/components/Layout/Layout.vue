@@ -6,14 +6,12 @@
         </nav>
 
         <div class="main-container bgc-white">
-
             <div class="main-content">
                 <main role="main" class="page-content container-plus m-0 p-0">
                     <slot></slot>
                 </main>
                 <Footer></Footer>
             </div>
-            
         </div>
 
     </div>
@@ -26,6 +24,8 @@
     import Aside from './Aside.vue'
     // import Offsidebar from './Offsidebar'
     import Footer from './Footer.vue'
+    import { Tooltip } from 'bootstrap'
+    
     // import ContentWrapper from './ContentWrapper'
 
    // Vue.component('ContentWrapper', ContentWrapper)
@@ -38,6 +38,11 @@
             Aside,
            // Offsidebar,
             Footer
+        },
+        mounted(){
+            new Tooltip(document.body, {
+                selector: "[data-toggle='tooltip']",
+            })
         }
     }
 </script>

@@ -196,7 +196,7 @@
     import axios from 'axios';
     import moment from 'moment';
     import 'moment/dist/locale/zh-tw';
-    import { Tooltip } from 'bootstrap'
+    
 
     export default {
         components: {
@@ -213,11 +213,6 @@
         created() {
             axios.get('/api/configs/filter').then(({ data }) => this.options = data);
             axios.get('/api/configs/acts').then(({data}) => this.acts = data);
-        },
-        mounted(){
-            new Tooltip(document.body, {
-                selector: "[data-toggle='tooltip']",
-            })
         },
         computed: {
             sortdata() {

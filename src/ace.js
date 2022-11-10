@@ -4,6 +4,9 @@
   * You need a commercial license to use this product
   * https://bit.ly/35ciMLb
   */
+import jQuery from 'jquery'
+window.$ = window.jQuery = jQuery;
+
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('jquery'), require('bootstrap')) :
   typeof define === 'function' && define.amd ? define(['jquery', 'bootstrap'], factory) :
@@ -5538,8 +5541,8 @@
    * ------------------------------------------------------------------------
   */
 
-
   if (typeof window.jQuery !== 'undefined') {
+    
     var $$1 = window.jQuery;
     $$1(window).on(Event$1.LOAD_DATA_API, function () {
       var scrollTopTopBtn = document.querySelectorAll(Selector$1.SCROLL_TOP_BTN);

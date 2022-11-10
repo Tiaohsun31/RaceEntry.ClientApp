@@ -1,6 +1,7 @@
 <template>
     <div class="navbar-inner shadow-sm border-b-1 brc-grey-l2">
         <div class="container">
+            
             <button type="button"
                 class="navbar-toggler btn btn-burger burger-times static d-flex d-lg-none ml-2 collapsed"
                 data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false"

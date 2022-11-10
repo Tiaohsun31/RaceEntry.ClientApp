@@ -1,10 +1,9 @@
-﻿import jQuery from "jquery";
-
+﻿
 jQuery(function ($) {
     $('a[data-toggle="tab"]').on('click', function () {
         $('a[data-toggle="tab"]').removeClass('active')
     });
-    $('[data-toggle="tooltip"]').tooltip();
+    
 
     $('.lightbox').on('click',function(event){
         event = event || window.event
