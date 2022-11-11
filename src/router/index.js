@@ -8,7 +8,7 @@ import HelloWorld from '../components/HelloWorld.vue';
 
 const routes = [
     { path: '/', component: Home },
-    { path: '/acts', component: Acts},
+    { name: 'acts', path: '/acts', component: Acts },
     {
         path: '/',
         component: ActLayout,
@@ -22,5 +22,7 @@ const routes = [
   
 export const router = createRouter({
     history: createWebHistory(),
+    linkActiveClass: 'active',
+    linkExactActiveClass: "exact-active",
     routes,
 })

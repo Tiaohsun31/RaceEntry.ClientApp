@@ -10,9 +10,9 @@
             </button>
 
             <div class="navbar-intro ">
-                <a class="navbar-brand text-primary text-180" asp-controller="Home" asp-action="Index">
+                <router-link to="/" class="navbar-brand text-primary text-180">
                     <i class=" font-bold">FOCUSLINE</i>
-                </a>
+                </router-link>
             </div>
 
             <div class="navbar-menu navbar-collapse navbar-backdrop ml-auto mr-lg-4 collapse" id="navbarMenu">
@@ -20,11 +20,11 @@
                     <ul class="nav has-active-border">
 
                         <li class="nav-item mx-2">
-                            <a class=" btn d-block  btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2  "
-                                asp-controller="Acts" asp-action="Index">
+                            <router-link to="/acts"
+                                class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2">
                                 <div class=" text-125 mt-1">活動列表</div>
                                 <div>Acts</div>
-                            </a>
+                            </router-link>
                         </li>
                         <li class="nav-item mx-2">
                             <a class=" btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2 "

@@ -82,11 +82,10 @@
                     <label class="col-form-label text-dark-l4 font-bold h5"> 年份 </label>
                     <div class="btn-group-toggle " data-toggle="buttons">
                         <template v-for="item in options.years">
-                            <div role="button"
-                                class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 mb-1 overflow-hidden">
-                                <input type="checkbox" name="SelectedYears" v-bind:value="item">
+                            <label role="button" class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 mb-1 overflow-hidden">
+                                <input type="checkbox" name="SelectedYears" v-bind:value="item" v-model="filter.selectedYears">
                                 {{ item }}
-                            </div>
+                            </label>
                         </template>
                     </div>
                 </div>
@@ -97,11 +96,11 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"> 從 </span>
                             </div>
-                            <input type="date" aria-label="StartDate" class="form-control" name="StartTime">
+                            <input type="date" aria-label="StartDate" class="form-control" name="StartTime" v-model="filter.startTime">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"> 到 </span>
                             </div>
-                            <input type="date" aria-label="EndDate" class="form-control" name="EndTime">
+                            <input type="date" aria-label="EndDate" class="form-control" name="EndTime" v-model="filter.endTime">
                         </div>
                     </div>
         
@@ -110,19 +109,19 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"> 從 </span>
                             </div>
-                            <input type="date" aria-label="StartDate" class="form-control d-block d-sm-none" name="StartTime">
+                            <input type="date" aria-label="StartDate" class="form-control d-block d-sm-none" name="StartTime" v-model="filter.startTime">
                         </div>
                         <div class="input-group mt-2">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"> 到 </span>
                             </div>
-                            <input type="date" aria-label="EndDate" class="form-control d-block d-sm-none" name="EndTime">
+                            <input type="date" aria-label="EndDate" class="form-control d-block d-sm-none" name="EndTime" v-model="filter.endTime">
                         </div>
                     </div>
                 </div>
                 <div class="col-md-2 col-12">
                     <label class="col-form-label text-white h5"> 搜尋 </label>
-                    <button type="submit" class="btn btn-orange btn-block"> 搜尋 </button>
+                    <button type="button" class="btn btn-orange btn-block" v-on:click="toAct()"> 搜尋 </button>
                 </div>
             </div>
         
@@ -177,9 +176,7 @@
                     
                 </div>
                 <div class="text-center mt-5">
-                    <a asp-controller="Acts" asp-action="Index" class="btn btn-lg btn-orange px-5">
-                        更多賽事
-                    </a>
+                    <router-link to="/acts" class="btn btn-lg btn-orange px-5"> 更多賽事 </router-link>
                 </div>
             </div>
         </div>
@@ -189,10 +186,13 @@
 </template>
 
 <script>
+
 import SelectActs from '../components/SelectActs.vue';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/dist/locale/zh-tw';
+
+import { store } from '../store/store.js'
 
 export default {
     components:{
@@ -204,6 +204,12 @@ export default {
             recommendActs: [],
             banners:[],
             options:[],
+            filter:{
+                selectedCategories:[],
+                selectedYears:[],
+                startTime:'',
+                endTime:''
+            },
         }
     },
     mounted() {
@@ -211,6 +217,7 @@ export default {
         axios.get('/api/configs/filter').then(({data}) => this.options = data);
         axios.get('/api/configs/banners').then(({data}) => this.banners = data);
         axios.get('/api/configs/acts').then(({data}) => this.recommendActs = data);
+       
     },
     methods: {
         actDate: function (value) {
@@ -218,12 +225,17 @@ export default {
         },
         shortDate: function (value) {
             return moment(value).format('YYYY-MM-DD');
+        },
+        toAct() {
+            store.setFilter(JSON.parse(JSON.stringify(this.filter)));
+            this.$router.push({name: 'acts'}).catch(()=>{});
         }
     }
 }
 </script>
 
 <style scoped>
+
 .slide-fade-enter-active {
     transition: all 1s ease-out;
 }

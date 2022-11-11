@@ -14,8 +14,7 @@
                                 </a>
                                 <a href="https://www.facebook.com/FocusLine0/" target="_blank" data-toggle="tooltip"
                                     title="FocusLine0">
-                                    <i
-                                        class="bgc-black-tp6 p-25 w-6 radius-round fab fa-facebook-square text-white mx-2"></i>
+                                    <i class="bgc-black-tp6 p-25 w-6 radius-round fab fa-facebook-square text-white mx-2"></i>
                                 </a>
                             </div>
                         </div>
@@ -25,8 +24,9 @@
                                 <div class="col-12 col-sm-4 mb-3">
                                     <h6 class="text-white-tp3 text-95 text-600 mb-3">PRODUCTS</h6>
                                     <div>
-                                        <a asp-area="" asp-controller="acts" asp-action="Index"
-                                            class="text-white">活動列表</a>
+                                        <router-link to="/acts" class="text-white">
+                                            活動列表
+                                        </router-link>
                                         <br />
                                         <a asp-area="" asp-controller="Service" asp-action="Index"
                                             class="text-white">服務項目</a>
