@@ -228,7 +228,7 @@ export default {
         },
         toAct() {
             store.setFilter(JSON.parse(JSON.stringify(this.filter)));
-            this.$router.push({name: 'acts'}).catch(()=>{});
+            this.$router.push({name: 'Acts'}).catch(()=>{});
         }
     }
 }

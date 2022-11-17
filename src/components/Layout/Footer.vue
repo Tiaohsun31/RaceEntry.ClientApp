@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer h-auto mt-0 d-none d-sm-block">
+    <footer class="footer h-auto mt-0 d-none d-sm-block ">
         <div class="footer-inner pt-45">
             <div class="text-white" style="background-color: #1eb0ac">
                 <div class="container container-plus" data-aos="fade">
@@ -67,8 +67,8 @@
             </div>
         </div>
         <div class="footer-tools">
-            <a href="#" class="btn-scroll-up btn btn-dark">
-                <i class="fas fa-calendar-day"></i>
+            <a href="#" class="btn-scroll-up btn btn-dark mb-2 mr-2 scroll-btn-visible">
+                <i class="fa fa-angle-double-up mx-2px text-95"></i>
             </a>
         </div>
     </footer>

@@ -6,6 +6,7 @@
         </nav>
 
         <div class="main-container bgc-white">
+
             <div class="main-content">
                 <main role="main" class="page-content container-plus m-0 p-0">
                     <slot></slot>

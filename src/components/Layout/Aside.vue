@@ -134,7 +134,7 @@ export default {
         toAct() {
             $('#aside').modal('toggle');
             store.setFilter(JSON.parse(JSON.stringify(this.filter)));
-            this.$router.push({name: 'acts'}).catch(()=>{});
+            this.$router.push({name: 'Acts'}).catch(()=>{});
         }
     }
 }

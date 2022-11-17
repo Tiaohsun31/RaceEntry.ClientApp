@@ -1,7 +1,7 @@
 <template>
-    <ActContent>
+    <ActLoyout>
       <img alt="Vue logo" src="https://vuejs.org/images/logo.png">
-    </ActContent>
+    </ActLoyout>
 </template>
 
 <script>
