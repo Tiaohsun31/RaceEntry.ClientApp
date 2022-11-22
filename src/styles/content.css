@@ -1,0 +1,57 @@
+.bg-style {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+  }
+  
+  #content .default-card, #ad .default-card {
+    border: 0;
+    margin-bottom: 1rem;
+  }
+  #content .default-card > .card-header, #ad .default-card > .card-header {
+    color: #147471;
+    font-size: 20px;
+    background-color: #f2f4f6;
+    border: 0;
+    border-left: 4px solid #57c19b;
+    border-radius: 0;
+  }
+  #content ol.space5 > li,
+  #content ul.space5 > li, #ad ol.space5 > li,
+  #ad ul.space5 > li {
+    margin-bottom: 0.5rem;
+  }
+  #content .ad-image, #ad .ad-image {
+    max-height: 80px;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+  #content .table th,
+  #content .table td, #ad .table th,
+  #ad .table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  #content .table th, #ad .table th {
+    background-color: #6d808c;
+    color: white;
+  }
+  @media only screen and (max-width: 600px) {
+    #content .fixed-side, #ad .fixed-side {
+      width: 100%;
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+  #content .fixed-side th:first-child,
+  #content .fixed-side th:first-child, #ad .fixed-side th:first-child,
+  #ad .fixed-side th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      color: #fff;
+      background-color: #6d808c;
+    }
+  }

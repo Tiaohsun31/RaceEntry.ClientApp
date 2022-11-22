@@ -161,10 +161,10 @@
                                                     <div class="col-md-4 col-12">
                                                         <div v-if="element.canSignUp"
                                                             class="card-text text-right d-none d-sm-block pos-abs position-b position-r mr-2">
-                                                            <a v-bind:href="'/Activities/' + element.actCode + '#signup'"
+                                                            <router-link v-bind:to="'/Activities/' + element.actCode + '#signup'"
                                                                 class="btn btn-info btn-sm px-4">
                                                                 我要報名
-                                                            </a>
+                                                            </router-link>
                                                         </div>
                                                     </div>
                                                 </div>

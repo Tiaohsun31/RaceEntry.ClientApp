@@ -4,7 +4,8 @@
   * You need a commercial license to use this product
   * https://bit.ly/35ciMLb
   */
-import jQuery from 'jquery'
+import jQuery from 'jquery';
+import * as bootstrap from 'bootstrap';
 window.$ = window.jQuery = jQuery;
 
 (function (global, factory) {
@@ -17,7 +18,6 @@ window.$ = window.jQuery = jQuery;
 
   var $__default = /*#__PURE__*/_interopDefaultLegacy($$a);
   var bootstrap__default = /*#__PURE__*/_interopDefaultLegacy(bootstrap$1);
-
   function _typeof(obj) {
     "@babel/helpers - typeof";
 

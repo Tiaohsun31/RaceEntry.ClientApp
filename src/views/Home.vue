@@ -158,15 +158,17 @@
                                     </div>
                                     <div class="row mt-4">
                                         <div class="col">
-                                            <a v-bind:href="'/Activities/' + item.actCode"
+                                            <router-link v-bind:to="'/Activities/' + item.actCode"
                                                 class="btn btn-block btn-info text-white rounded-pill px-4">
                                                 活動詳情
-                                            </a>
+                                            </router-link>
                                         </div>
                     
                                         <div v-if="item.canSignUp" class="col">
-                                            <a v-bind:href="'/Activities/' + item.actCode + '#signup'"
-                                                class="btn btn-block btn-orange rounded-pill px-4"> 我要報名 </a>
+                                            <router-link v-bind:to="'/Activities/' + item.actCode + '#signup'"
+                                                class="btn btn-block btn-orange rounded-pill px-4">
+                                                我要報名
+                                            </router-link>
                                         </div>
                                     </div>
                                 </div>
