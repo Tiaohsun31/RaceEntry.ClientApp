@@ -43,6 +43,22 @@
         </div>
     </div>
     <Aside></Aside>
+    <!-- Pop-up Modal -->
+    <div class="modal modal-lg fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupModalLabel" v-text="adImg.title"> </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="ad" class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Pop-up Modal -->
 </template>
 
 <script>
@@ -63,6 +79,7 @@ export default {
         return {
             act: '',
             menubars: [],
+            adImg: '',
         }
     },
     computed: {
@@ -74,9 +91,10 @@ export default {
         }
     },
     mounted() {
-        axios.get(`/api/menubar/${this.code}`).then(({ data }) => this.menubars = data);
+        
     },
     created() {
+        axios.get(`/api/menubar/${this.code}`).then(({ data }) => this.menubars = data);
         axios.get(`/api/configs/act/${this.code}`).then(({ data }) => {
             this.act = data;
             if (Date.now() <= new Date(this.act.regSTime).getTime()) {
@@ -85,6 +103,20 @@ export default {
         }).catch(error => {
             if (error.response.status === 404){
                 this.$router.push({name:'NotFound'});
+            }
+        });
+
+        axios.get(`/api/configs/popup/${this.code}`).then(({data}) => {
+            this.adImg = data;
+            if (this.adImg.show) {
+                let lastShown = parseInt(sessionStorage.getItem(this.code));
+                let maxTime = 86400000;
+                if (!lastShown | lastShown + maxTime < Date.now()) {
+                    $('#popupModal').modal('show');
+                    $('#popupModal').find('.modal-body').html(this.adImg.content);
+                    //store the time to check next time the page is loaded
+                    sessionStorage.setItem(this.code, Date.now());
+                }
             }
         });
         console.log(this.code);
