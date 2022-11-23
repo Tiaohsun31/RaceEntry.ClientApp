@@ -109,9 +109,9 @@
                                 <div class="card mb-3" v-for="element in item.acts" :Key="element.actCode">
                                     <div class="row">
                                         <div class="col-md-3 col-4 pos-rel pr-0">
-                                            <a v-bind:href="'/Activities/' + element.actCode">
+                                            <RouterLink v-bind:to="`/${element.actCode}`" > 
                                                 <img v-bind:src="element.square" class="img-fluid rounded-start" v-bind:alt="element.actName">
-                                            </a>
+                                            </RouterLink>
                                         </div>
                                         <div class="col-md-9 col-8 pl-0">
                                             <span style="border-radius: 0% 0 50% 50%;"
@@ -120,10 +120,10 @@
                                                 {{element.displayLabel}}
                                             </span>
                                             <div class="card-body pb-0 py-2">
-                                                <a class="no-underline" v-bind:href="'/Activities/' + element.actCode">
+                                                <RouterLink v-bind:to="`/${element.actCode}`" class="no-underline">
                                                     <div class="card-title h5 d-none d-sm-block">{{element.actName}}</div>
                                                     <div class="card-title text-truncate d-block d-sm-none">{{element.actName}}</div>
-                                                </a>
+                                                </RouterLink>
                                                 <div class="row">
                                                     <div class="col-md-8 col-12">
                                                         <div class="card-text mt-2 mt-sm-2">
@@ -161,7 +161,7 @@
                                                     <div class="col-md-4 col-12">
                                                         <div v-if="element.canSignUp"
                                                             class="card-text text-right d-none d-sm-block pos-abs position-b position-r mr-2">
-                                                            <router-link v-bind:to="'/Activities/' + element.actCode + '#signup'"
+                                                            <router-link v-bind:to="`/${element.actCode}#signup`"
                                                                 class="btn btn-info btn-sm px-4">
                                                                 我要報名
                                                             </router-link>

@@ -67,6 +67,7 @@ import Navbar from '../../components/Layout/Navbar.vue'
 import Aside from '../../components/Layout/Aside.vue'
 
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
     name: 'ActLoyout',
@@ -91,9 +92,6 @@ export default {
         }
     },
     mounted() {
-        
-    },
-    created() {
         axios.get(`/api/menubar/${this.code}`).then(({ data }) => this.menubars = data);
         axios.get(`/api/configs/act/${this.code}`).then(({ data }) => {
             this.act = data;
@@ -119,6 +117,9 @@ export default {
                 }
             }
         });
+    },
+    created() {
+
         console.log(this.code);
     }
 }

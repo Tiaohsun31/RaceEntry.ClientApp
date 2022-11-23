@@ -15,10 +15,11 @@ const routes = [
     { path: '/', component: Home },
     { name: 'Acts', path: '/acts', component: Acts },
     {
-        path: '/Activities',
+        path: '/:code',
         component: ActLayout,
         children: [
-            { name:'HomePage', path: ':code', component:HomePage },
+            { name:'HomePage', path: '', component:HomePage },
+            { name:'ActContent', path: ':id(\\d+)', component:ActContent },
         ]
     },
 

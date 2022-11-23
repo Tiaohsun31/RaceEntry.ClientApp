@@ -1,6 +1,10 @@
 <template>
   <router-view />
 </template>
+<script>
+  import 'bootstrap'
+  import './ace'
+</script>
 
 <style>
 @import 'bootstrap/dist/css/bootstrap.min.css';

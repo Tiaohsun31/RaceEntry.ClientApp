@@ -112,7 +112,7 @@
 
         <!-- 首頁內容 -->
         <div v-if="pageContent.content">
-            <div class="p-5" v-html="pageContent.content"></div>
+            <div class="p-lg-5" v-html="pageContent.content"></div>
         </div>
         <!-- End 首頁內容 -->
 
