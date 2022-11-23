@@ -1,31 +1,88 @@
 <template>
-    <div> template </div>
+    <div v-if="pageContent" class="container my-4">
+        <div v-html="pageContent.content"></div>
+    </div>
+    <aside class="card text-center pos-fixed d-none d-sm-block aside-time">
+        <div class="card-header bgc-dark">
+            <div class="card-title text-white">距離活動報名結束還有</div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="timer h4" data-type="day"></div>
+                    <div class=" text-black-50">天</div>
+                </div>
+                <div class="col">
+                    <div class="timer h4" data-type="hour"></div>
+                    <div class=" text-black-50">時</div>
+                </div>
+                <div class="col">
+                    <div class="timer h4" data-type="minute"></div>
+                    <div class=" text-black-50">分</div>
+                </div>
+                <div class="col">
+                    <div class="timer h4" data-type="second"></div>
+                    <div class=" text-black-50">秒</div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <RouterLink v-bind:to="`/${this.code}#signup`" class="btn btn-block btn-outline-primary">
+                    立即報名
+                </RouterLink>
+            </div>
+        </div>
+    </aside>
 </template>
 <script>
+
+
 import axios from 'axios';
-import ActLayout from './ActLayout.vue';
+import moment from 'moment';
+import 'moment/dist/locale/zh-tw';
+import countdown from '../ActPage/Countdown.js';
 
 export default {
     name: "ActContent",
-    data(){
+    props:['act'],
+    data() {
         return {
-            pageContent:''
+            pageContent: {}
         }
     },
     computed:{
         code(){
             return this.$route.params.code;
-        },
-        id(){
-            return this.$route.params.id;
         }
     },
-    created(){
-        axios.get(`/api/content/${this.id}`).then(({data}) => this.pageContent == data);
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            () => { this.getData() },
+            { immediate: true }
+        )
     },
-    methods:{
-        
+    updated(){
+        const diff = moment.duration(new Date(this.act.regETime).getTime() - Date.now());
+        countdown(diff);
+    },
+    methods: {
+        getData(){
+            if (this.$route.params.id !== undefined){
+                axios.get(`/api/content/${this.$route.params.id}`)
+                .then(({ data }) => this.pageContent = data)
+                .catch(error => {
+                    if (error.response.status === 404) {
+                        this.$router.push({ name: 'NotFound' });
+                    }
+                });
+            }
+        }
     }
-    //components: { ActLayout }
 }
 </script>
+
+<style scoped>
+    .aside-time {
+        width: 17rem;transform: translateY(-50%)!important;top: 50%!important;right: 0!important;
+    }
+</style>

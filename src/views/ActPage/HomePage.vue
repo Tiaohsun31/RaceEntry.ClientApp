@@ -156,6 +156,9 @@ export default {
             return this.$route.params.code;
         }
     },
+    created(){
+        console.log("Homepage");
+    },
     updated() {
         const diff = moment.duration(new Date(this.act.regETime).getTime() - Date.now());
         countdown(diff);
@@ -166,7 +169,9 @@ export default {
         } 
     },
     mounted() {
-        axios.get(`/api/content/homePage/${this.code}`).then(({ data }) => this.pageContent = data).catch(error => {
+        axios.get(`/api/content/homePage/${this.code}`)
+        .then(({ data }) => this.pageContent = data)
+        .catch(error => {
             if (error.response.status === 404) {
                 this.$router.push({ name: 'NotFound' });
             }

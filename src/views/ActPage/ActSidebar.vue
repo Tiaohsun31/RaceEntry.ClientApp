@@ -82,7 +82,7 @@ export default {
                 if (this.isOutSide(element.urls)) {
                     window.open(element.urls, element.target);
                 } else {
-                    this.$router.push({path:element.urls});
+                    this.$router.push({path:`${element.urls}`});
                 }
             } else {
                 this.route.name = item.key;
@@ -90,7 +90,7 @@ export default {
                 if (this.isOutSide(item.list[0].urls)) {
                     window.open(item.list[0].urls, item.list[0].target);
                 } else {
-                    this.$router.push({ path: item.list[0].urls });
+                    this.$router.push({path:`${item.list[0].urls}`});
                 }
             }
         },

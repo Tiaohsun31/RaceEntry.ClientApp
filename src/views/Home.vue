@@ -158,7 +158,7 @@
                                     </div>
                                     <div class="row mt-4">
                                         <div class="col">
-                                            <router-link v-bind:to="`/${item.actCode}`"
+                                            <router-link v-bind:to="{name:'HomePage',params:{code:item.actCode}}"
                                                 class="btn btn-block btn-info text-white rounded-pill px-4">
                                                 活動詳情
                                             </router-link>
