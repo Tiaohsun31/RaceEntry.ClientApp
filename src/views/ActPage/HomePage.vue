@@ -1,7 +1,7 @@
 <template>
-    <div class="">
+    <div>
         <div v-if="pageContent.isDefault">
-            <div class="text-center" style=" background-color:#E4F4F1;">
+            <div class="text-center bgc-transparent">
                 <div class=" container py-4">
                     <h1 class="py-4 text-primary font-weight-bold"> {{ act.actName }} </h1>
                     <div class="mx-auto pt-3" style="max-width: 350px;">
@@ -119,7 +119,7 @@
         <div id="signup" class="row pt-md-5 pt-3 pb-5">
             <div class="col-md-4 offset-md-2 col-6">
                 <a asp-area="Entry" asp-controller="Personal" asp-action="Create" asp-route-code="@Model.Config.ActCode"
-                    class="btn btn-primary btn-block btn-lg">
+                    class="btn btn-block btn-lg btn-primary">
                     <i class="fas fa-user-alt mr-1"></i>
                     個人報名
                 </a>
@@ -127,7 +127,7 @@
             <div class="col-md-4 col-6">
                 <a href=""></a>
                 <a asp-area="Entry" asp-controller="Group" asp-action="Create" asp-route-code="@Model.Config.ActCode"
-                    class="btn btn-primary btn-block btn-lg">
+                    class="btn btn-block btn-lg btn-primary">
                     <i class="fas fa-users mr-1"></i>
                     團體報名
                 </a>
@@ -145,7 +145,7 @@ import countdown from '../ActPage/Countdown.js';
 
 export default {
     name: "HomePage",
-    props: ['act'],
+    props: ['act','style'],
     data() {
         return {
             pageContent: ''
@@ -155,9 +155,6 @@ export default {
         code() {
             return this.$route.params.code;
         }
-    },
-    created(){
-        console.log("Homepage");
     },
     updated() {
         const diff = moment.duration(new Date(this.act.regETime).getTime() - Date.now());
@@ -170,12 +167,12 @@ export default {
     },
     mounted() {
         axios.get(`/api/content/homePage/${this.code}`)
-        .then(({ data }) => this.pageContent = data)
-        .catch(error => {
-            if (error.response.status === 404) {
-                this.$router.push({ name: 'NotFound' });
-            }
-        });
+            .then(({ data }) => this.pageContent = data)
+            .catch(error => {
+                if (error.response.status === 404) {
+                    this.$router.push({ name: 'NotFound' });
+                }
+            });
     },
     methods: {
         signUpRange() {
@@ -185,17 +182,7 @@ export default {
 }
 </script>
 
-<style>
-@import '../../styles/content.css';
-
-.body-container {
-    background-color: #221d2e;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-}
-
+<style scoped>
 @media (max-width: 700px) {
     .body-container {
         background-size: cover;

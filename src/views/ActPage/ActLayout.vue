@@ -1,22 +1,10 @@
-<template>
-    <!-- <Layout>
-        <div id="content" class="">
-            <div class="row">
-                <div class="col-md-2">
-                    <ActSidebar v-bind:menubars="menubars"></ActSidebar>
-                </div>
-                <div class="col-md-10 col-12">
-                    <slot name="actContent"></slot>
-                </div>
-            </div>
-        </div>
-    </Layout> -->
-    <div class="body-container">
+TODO:設定新Style風格
 
+<template>
+    <div class="body-container">
         <nav id="navbar" class="navbar navbar-fixed navbar-expand-lg bgc-white">
             <Navbar></Navbar>
         </nav>
-
         <div class="main-container bgc-white">
 
             <!-- Sidebar -->
@@ -24,8 +12,15 @@
             <!-- End Sidebar-->
 
             <div class="main-content">
-                <main id="content" role="main" class="page-content container-plus m-0 p-0">
-                    <router-view v-bind:act="act"></router-view>
+                <main role="main" class="page-content container-plus m-0 p-0">
+                    <div id="content" v-bind:class="style.BannerWidth" v-bind:style="bgStyleObject">
+                        <div class="banner">
+                            <img v-if="act.banner" v-bind:src="act.banner" class="img-fluid d-none d-sm-block" v-bind:alt="act.title" />
+                            <img v-if="act.square" :src="act.square" class="img-fluid d-block d-sm-none" :alt="act.title" />
+                        </div>
+
+                        <router-view v-bind:act="act" v-bind:style="style"></router-view>
+                    </div>
                 </main>
                 <footer class="footer h-auto mt-0 d-none d-sm-block ">
                     <div class="footer-inner">
@@ -65,9 +60,8 @@
 import ActSidebar from './ActSidebar.vue';
 import Navbar from '../../components/Layout/Navbar.vue'
 import Aside from '../../components/Layout/Aside.vue'
-
+import { useHead  } from "@vueuse/head"
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
 export default {
     name: 'ActLoyout',
@@ -76,11 +70,22 @@ export default {
         Navbar,
         Aside,
     },
+    
     data() {
         return {
-            act: '',
+            act: {},
             menubars: [],
-            adImg: '',
+            adImg: {},
+            style:{},
+            // style:{
+            //     mainColor:'info',
+            //     textColor:'',
+            //     btnColor:'orange',
+            //     subColor:'dark',
+            //     bgColor:'light',
+            //     bgImage:'',
+            //     isContainer:false,
+            // }
         }
     },
     computed: {
@@ -89,12 +94,22 @@ export default {
         },
         id() {
             return this.$route.params.id;
+        },
+        bgStyleObject() {
+            return this.style.Bgimg ? {
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                backgroundAttachment: 'fixed',
+                backgroundImage: `url(${this.style.Bgimg})`,
+            }:''
         }
     },
     mounted() {
         axios.get(`/api/menubar/${this.code}`).then(({ data }) => this.menubars = data);
         axios.get(`/api/configs/act/${this.code}`).then(({ data }) => {
             this.act = data;
+            this.style = JSON.parse(data.style);
+            this.setSEO(data.seoTitle,data.seoDesc);
             if (Date.now() <= new Date(this.act.regSTime).getTime()) {
                 this.$router.push({ name: 'ComingSoon' });
             }
@@ -118,13 +133,25 @@ export default {
             }
         });
     },
-    created() {
-
-        console.log(this.code);
+    methods:{
+        setSEO(title, desc) {
+            useHead({
+                title: `${title}`,
+                meta: [ 
+                    { name: 'description', content: `${desc}`, itemprop: 'description' },
+                    { content: `${title}`, itemprop: 'name' },
+                    { name:'og:title',content:`${title}` },
+                    { name:'og:description',content:`${desc}` },
+                 ],
+            });
+            $('head meta[itemprop=name]').attr('content', title);
+            $('head meta[itemprop=description]').attr('content', desc);
+        }
     }
 }
 </script>
 
 <style>
 @import '../../styles/ace-themes.css';
+@import '../../styles/content.css';
 </style>
