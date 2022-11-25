@@ -6,14 +6,25 @@ import ComingSoon from '../views/ActPage/ComingSoon.vue';
 import ActContent from '../views/ActPage/ActContent.vue';
 import HomePage from '../views/ActPage/HomePage.vue';
 
+import Personal from '../views/Entry/Personal.vue';
+
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
+
+
 import NotFound from '../components/Layout/NotFound.vue';
 import HelloWorld from '../components/HelloWorld.vue';
 
 const routes = [
     { path: '/', component: Home },
     { name: 'Acts', path: '/acts', component: Acts },
+    {
+        path:'/entry',
+        component: ActLayout,
+        children:[
+            { name:'Personal', path:'/:code/personal',component:Personal }
+        ]
+    },
     {
         path: '/:code',
         component: ActLayout,

@@ -118,11 +118,10 @@
 
         <div id="signup" class="row pt-md-5 pt-3 pb-5">
             <div class="col-md-4 offset-md-2 col-6">
-                <a asp-area="Entry" asp-controller="Personal" asp-action="Create" asp-route-code="@Model.Config.ActCode"
-                    class="btn btn-block btn-lg btn-primary">
+                <RouterLink class="btn btn-block btn-lg btn-primary" v-bind:to="{name:'Personal',state:{operate:'create'}}">
                     <i class="fas fa-user-alt mr-1"></i>
                     個人報名
-                </a>
+                </RouterLink>
             </div>
             <div class="col-md-4 col-6">
                 <a href=""></a>

@@ -217,7 +217,7 @@ export default {
         axios.get('/api/configs/marquee').then(({data}) => this.marquee = data);
         axios.get('/api/configs/filter').then(({data}) => this.options = data);
         axios.get('/api/configs/banners').then(({data}) => this.banners = data);
-        axios.get('/api/configs/acts').then(({data}) => this.recommendActs = data);
+        axios.get('/api/configs/recommendActs').then(({data}) => this.recommendActs = data);
        
     },
     methods: {

@@ -106,7 +106,7 @@ export default {
     },
     mounted() {
         axios.get(`/api/menubar/${this.code}`).then(({ data }) => this.menubars = data);
-        axios.get(`/api/configs/act/${this.code}`).then(({ data }) => {
+        axios.get(`/api/acts/${this.code}`).then(({ data }) => {
             this.act = data;
             this.style = JSON.parse(data.style);
             this.setSEO(data.seoTitle,data.seoDesc);

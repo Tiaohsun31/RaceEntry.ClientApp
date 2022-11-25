@@ -214,7 +214,7 @@
         },
         created() {
             axios.get('/api/configs/filter').then(({ data }) => this.options = data);
-            axios.get('/api/configs/acts').then(({data}) => this.acts = data);
+            axios.get('/api/configs/recommendActs').then(({data}) => this.acts = data);
         },
         computed: {
             sortdata() {

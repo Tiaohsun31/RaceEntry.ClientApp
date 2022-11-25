@@ -1,10 +1,9 @@
 <template>
     <div class="d-sm-none footer footer-sm footer-fixed mt-0 bgc-primary">
         <div class="footer-inner">
-            <div
-                class="btn-group d-flex h-100 mx-2 border-x-1 border-t-2 brc-primary-m3 bgc-white-tp1 radius-t-1 shadow">
+            <div class="btn-group d-flex h-100 mx-2 border-x-1 border-t-2 brc-primary-m3 bgc-white-tp1 radius-t-1 shadow">
                 <button class="btn btn-outline-primary btn-h-lighter-primary btn-a-lighter-primary border-0 text-125"
-                    data-toggle="modal" data-target="#aside">
+                        data-toggle="modal" data-target="#aside">
                     賽事搜尋
                 </button>
             </div>
@@ -12,7 +11,7 @@
     </div>
     <Teleport to="body">
         <div class="modal fade aside-right ace-aside aside-below-nav my-2" id="aside" tabindex="-1"
-            aria-labelledby="asideLabel" aria-hidden="true">
+             aria-labelledby="asideLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content shadow border-0 radius-0">
 
@@ -47,14 +46,14 @@
                                                 <div class="btn-group-toggle " data-toggle="buttons">
                                                     <template v-for="item in options.years">
                                                         <label role="button"
-                                                            class=" d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 mb-1 overflow-hidden">
+                                                               class=" d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 mb-1 overflow-hidden">
                                                             <input type="checkbox" name="SelectedYears" v-bind:value="item" v-model="filter.selectedYears">
                                                             {{ item }}
                                                         </label>
                                                     </template>
                                                 </div>
                                             </div>
-                                    
+
                                             <div class="mb-3">
                                                 <label class="col-form-label text-dark-l4 font-bold"> 日期區間 </label>
                                                 <div class="input-group">
@@ -70,15 +69,15 @@
                                                     <input type="date" aria-label="EndDate" class="form-control" name="EndTime" v-model="filter.endTime">
                                                 </div>
                                             </div>
-                                    
+
                                             <div class="mb-3">
                                                 <label class="col-form-label text-dark-l4 font-bold"> 類別 </label>
                                                 <div class="btn-group-toggle" data-toggle="buttons">
                                                     <template v-for="item in options.categories">
                                                         <label role="button"
-                                                            class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 overflow-hidden">
-                                                            <input type="checkbox" name="SelectedCategories" 
-                                                            v-bind:value="item" v-model="filter.selectedCategories">
+                                                               class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 overflow-hidden">
+                                                            <input type="checkbox" name="SelectedCategories"
+                                                                   v-bind:value="item" v-model="filter.selectedCategories">
                                                             {{item}}
                                                         </label>
                                                     </template>
@@ -86,7 +85,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -98,44 +96,43 @@
             </div>
         </div>
     </Teleport>
-
 </template>
 
 <script>
-import SelectActs from '../SelectActs.vue';
-import axios from 'axios';
-import { store } from '../../store/store.js'
+    import SelectActs from '../SelectActs.vue';
+    import axios from 'axios';
+    import { store } from '../../store/store.js'
 
-export default {
-    name: 'Aside',
-    components:{
-        SelectActs
-    },
-    data() {
-        return {
-            acts:[],
-            options: {
-                years:[],
-                categories:[],
-            },
-            filter:{
-                selectedCategories:[],
-                selectedYears:[],
-                startTime:'',
-                endTime:''
+    export default {
+        name: 'Aside',
+        components: {
+            SelectActs
+        },
+        data() {
+            return {
+                acts: [],
+                options: {
+                    years: [],
+                    categories: [],
+                },
+                filter: {
+                    selectedCategories: [],
+                    selectedYears: [],
+                    startTime: '',
+                    endTime: ''
+                }
+            }
+        },
+        mounted() {
+            axios.get('/api/configs/filter').then(({ data }) => this.options = data);
+            axios.get('/api/configs/recommendActs').then(({ data }) => this.acts = data);
+        },
+        methods: {
+            toAct() {
+                $('#aside').modal('toggle');
+                store.setFilter(JSON.parse(JSON.stringify(this.filter)));
+                this.$router.push({ name: 'Acts' }).catch(() => { });
             }
         }
-    },
-    mounted(){
-        axios.get('/api/configs/filter').then(({data}) => this.options = data);
-        axios.get('/api/configs/acts').then(({data}) => this.acts = data);
-    },
-    methods:{
-        toAct() {
-            $('#aside').modal('toggle');
-            store.setFilter(JSON.parse(JSON.stringify(this.filter)));
-            this.$router.push({name: 'Acts'}).catch(()=>{});
-        }
     }
-}
 </script>
