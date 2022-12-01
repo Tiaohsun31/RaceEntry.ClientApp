@@ -19,18 +19,19 @@ const routes = [
     { path: '/', component: Home },
     { name: 'Acts', path: '/acts', component: Acts },
     {
-        path:'/entry',
+        path: '/entry',
         component: ActLayout,
-        children:[
-            { name:'Personal', path:'/:code/personal',component:Personal }
+        children: [
+            { name: 'CreatePersonal', path: '/:code/personal', component: Personal, props: { operate: 'create' }},
+            { name: 'EditPersonal', path: '/:code/personal/:userId', component: Personal, props: { operate: 'edit' }},
         ]
     },
     {
         path: '/:code',
         component: ActLayout,
         children: [
-            { name:'HomePage', path: '', component:HomePage },
-            { name:'ActContent', path: ':id(\\d+)', component:ActContent },
+            { name: 'HomePage', path: '', component: HomePage },
+            { name: 'ActContent', path: ':id(\\d+)', component: ActContent },
         ]
     },
 

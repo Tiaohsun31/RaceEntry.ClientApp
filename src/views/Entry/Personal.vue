@@ -5,7 +5,7 @@
                 {{ act.actName }}
                 <small class="page-info text-secondary-d2 text-nowrap">
                     <i class="fa fa-angle-double-right text-80"></i>
-                    <span> 新增成員 </span>
+                    <span v-text="operate == 'create' ? '新增成員' : '編輯成員'"> </span>
                 </small>
 
                 <!-- <small class="page-info text-secondary-d2 text-nowrap">
@@ -337,12 +337,14 @@
                 </div>
             </div>
             <!-- End 個人加購品 -->
-
-            <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
-                <div class="pt-2">下一步:選擇付款及寄送方式</div>
-                <div class="py-2">Next Step: Select payment and shipping</div>
-            </button>
-
+            <!-- Submit -->
+            <div>
+                <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                    <div class="pt-2">下一步:選擇付款及寄送方式</div>
+                    <div class="py-2">Next Step: Select payment and shipping</div>
+                </button>
+            </div>
+            <!-- End Submit -->
         </Form>
         <!-- Product Modal -->
         <div class="modal modal-lg fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -488,8 +490,8 @@ export default {
 
             const form = JSON.stringify(values, null,2);
             console.log(vm);
-           // const result = axios.post('https://testapi.org/post', usersName);
-            const result = axios.post(`/api/personal`, form, {
+
+            axios.post(`/api/personal`, form, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -503,10 +505,6 @@ export default {
                     Swal.fire(error.response.data);
                 }
             });
-            //console.log(JSON.stringify(values, null, 2));
-            //let aa = this.settings.freebie.filter(x => x.actGroupId.includes(this.formValues.selectedGroup));
-            //console.log(values);
-            //console.log(values);
         },
         isBirthdateValue() {
             if (this.formValues.user.birthdate && this.formValues.user.birthdate.trim()) {
