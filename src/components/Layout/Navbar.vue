@@ -120,13 +120,16 @@
                     </ul>
                 </div>
             </div>
-
+            <LoginModal></LoginModal>
         </div>
     </div>
 </template>
 
 <script>
+import LoginModal from './LoginModal.vue';
+
 export default {
-    name: 'Navbar'
+    name: "Navbar",
+    components: { LoginModal }
 }
 </script>
