@@ -4,6 +4,20 @@ import { createHead } from "@vueuse/head"
 import App from './App.vue'
 import Layout from './components/Layout/Layout.vue'
 
+import {  defineRule ,configure  } from 'vee-validate';
+import AllRules from '@vee-validate/rules';
+import { localize, setLocale } from '@vee-validate/i18n';
+import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
+Object.keys(AllRules).forEach(rule => {
+  defineRule(rule, AllRules[rule]);
+});
+
+configure({
+  generateMessage: localize({ zh_TW: zhTW }),
+  validateOnInput: true
+})
+setLocale('zh_TW');
+
 import 'bootstrap'
 import './ace'
 //const metaManager = createMetaManager();

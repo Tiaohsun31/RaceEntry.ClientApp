@@ -371,24 +371,24 @@
 
 <script>
 import axios from 'axios';
-import { Field, Form, ErrorMessage,defineRule ,configure  } from 'vee-validate';
-import AllRules from '@vee-validate/rules';
-import { localize, setLocale } from '@vee-validate/i18n';
-import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
+import { Field, Form, ErrorMessage  } from 'vee-validate';
+// import AllRules from '@vee-validate/rules';
+// import { localize, setLocale } from '@vee-validate/i18n';
+// import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
 import Swal from 'sweetalert2';
 //import * as yup from 'yup';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
-Object.keys(AllRules).forEach(rule => {
-  defineRule(rule, AllRules[rule]);
-});
+// Object.keys(AllRules).forEach(rule => {
+//   defineRule(rule, AllRules[rule]);
+// });
 
-configure({
-  generateMessage: localize({ zh_TW: zhTW }),
-  validateOnInput: true
-})
-setLocale('zh_TW')
+// configure({
+//   generateMessage: localize({ zh_TW: zhTW }),
+//   validateOnInput: true
+// })
+// setLocale('zh_TW')
 
 // const schema = yup.object({
 //     nation: yup.string().required("國籍 是必填欄"),

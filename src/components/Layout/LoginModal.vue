@@ -20,9 +20,7 @@
                     </li>
 
                     <li class="d-none d-lg-block nav-item">
-                        <a class="btn bgc-h-primary-l4 btn-brc-tp btn-outline-secondary btn-h-lighter-secondary btn-a-outline-primary btn-a-bgc-tp font-bold text-110"
-                            asp-area="" asp-controller="Login" asp-action="Logout" data-toggle="tooltip"
-                            data-placement="bottom" title="登出 Logout">
+                        <a href="#" v-on:click.prevent="logout" class="btn bgc-h-primary-l4 btn-brc-tp btn-outline-secondary btn-h-lighter-secondary btn-a-outline-primary btn-a-bgc-tp font-bold text-110">
                             <i class="fas fa-sign-out-alt"></i> 登出
                         </a>
                     </li>
@@ -34,8 +32,7 @@
                         </a>
                     </li>
                     <li class="d-lg-none nav-item mx-1">
-                        <a class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2  "
-                            asp-area="" asp-controller="Login" asp-action="Logout">
+                        <a href="#" v-on:click.prevent="logout" class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2 ">
                             <i class="fas fa-sign-out-alt mr-1"></i> 登出 Logout
                         </a>
                     </li>
@@ -57,15 +54,13 @@
                             class="shadow radius-1 p-0 dropdown-menu dropdown-menu-right dropdown-animated animated-2 brc-primary-m3 mt-lg-n1 mr-lg-n2 dropdown-caret">
 
                             <div id="id-col-main" class="col-12 bgc-white px-0 dropdown-clickable">
-
+                               
                                 <div class="tab-content tab-sliding border-0 p-0" data-swipe="right">
-
-                                    <div class="tab-pane active show mh-100 px-lg-0 dropdown-clickable"
-                                        id="id-tab-login">
+                                    <!-- 登入 Tab -->
+                                    <div class="tab-pane active show mh-100 px-lg-0" id="id-tab-login">
                                         <!-- show this in desktop -->
                                         <div class="d-none d-lg-block col-12 mt-lg-4  px-3">
-                                            <h4
-                                                class="text-dark-tp4 border-b-1 brc-secondary-l2 pb-1 text-140 font-bold">
+                                            <h4 class="text-dark-tp4 border-b-1 brc-secondary-l2 pb-1 text-140 font-bold">
                                                 <i class="fa fa-coffee text-orange-m1 mr-1"></i>
                                                 歡迎回來
                                             </h4>
@@ -75,51 +70,43 @@
                                         <h4 class="d-lg-none text-secondary-m1 my-4 text-center text-150 font-bold">
                                             歡迎回來
                                         </h4>
-
-                                        <form asp-area="" asp-controller="Login" asp-action="Index" method="post"
-                                            autocomplete="off" class="form-row mt-4 px-3 ">
+                                        <Form @submit="onSubmitLogin" class="form-row mt-4 px-3" autocomplete="off">
                                             <div class="form-group col-12">
-                                                <div
-                                                    class="d-flex align-items-center input-floating-label text-blue brc-blue-m2">
-                                                    <input name="email" placeholder="Email" type="email"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-login-email" required>
+                                                <div class="d-flex align-items-center input-floating-label text-blue brc-blue-m2">
+                                                    <Field type="email" label="Email" placeholder="Email" name="email" rules="required|email" class="form-control form-control-lg pr-4 shadow-none"></Field>
                                                     <i class="fa fa-user text-grey-m2 ml-n4"></i>
-                                                    <label class="floating-label text-grey-l1 ml-n3"
-                                                        for="id-login-email">
+                                                    <label class="floating-label text-grey-l1 ml-n3" for="id-login-email">
                                                         Email
                                                     </label>
                                                 </div>
+                                                <ErrorMessage name="email" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
-
+                                        
                                             <div class="form-group col-12">
-                                                <div
-                                                    class="d-flex align-items-center input-floating-label text-blue brc-blue-m2">
-                                                    <input name="password" placeholder="Password" type="password"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-login-password" required>
+                                                <div class="d-flex align-items-center input-floating-label text-blue brc-blue-m2">
+                                                    <Field name="password" label="密碼 Password" rules="required" placeholder="Password" type="password" 
+                                                           class="form-control form-control-lg pr-4 shadow-none">
+                                                    </Field>
                                                     <i class="fa fa-key text-grey-m2 ml-n4"></i>
-                                                    <label class="floating-label text-grey-l1 ml-n3"
-                                                        for="id-login-password">
+                                                    <label class="floating-label text-grey-l1 ml-n3" for="id-login-password">
                                                         密碼 Password
                                                     </label>
                                                 </div>
+                                                <ErrorMessage name="password" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
-
+                                        
                                             <div class="col-12 text-right text-md-right mt-2 mb-2">
-                                                <a href="#" class="text-primary-m1 text-95" data-toggle="tab"
-                                                    data-target="#id-tab-forgot">
+                                                <a href="#" class="text-primary-m1 text-95" data-toggle="tab" data-target="#id-tab-forgot">
                                                     忘記密碼?
                                                 </a>
                                             </div>
                                             <div class="form-group col-12">
-                                                <button type="submit"
-                                                    class="btn btn-primary btn-block px-4 btn-bold mt-2 mb-2">
+                                                <button type="submit" class="btn btn-primary btn-block px-4 btn-bold mt-2 mb-2">
                                                     登入 Login
                                                 </button>
                                             </div>
-                                        </form>
-
+                                        </Form>
+                                   
                                         <div class="bgc-white-tp2 text-secondary-d3 text-center text-90 mb-3"> -- OR --
                                         </div>
 
@@ -141,8 +128,7 @@
                                             </div>
                                         </div>
 
-                                        <div
-                                            class="dropdown-footer text-center py-25 mt-4 bgc-default-l4 border-t-1 brc-default-l2 w-100 ">
+                                        <div class="dropdown-footer text-center py-25 mt-4 bgc-default-l4 border-t-1 brc-default-l2 w-100 ">
                                             <div class="my-2">
                                                 非會員?
                                                 <a class="text-success-m1 text-600 mx-1" data-toggle="tab"
@@ -152,9 +138,9 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="tab-pane mh-100 px-3 px-lg-0 dropdown-clickable" id="id-tab-signup"
-                                        data-swipe-prev="#id-tab-login">
+                                    <!-- End 登入 Tab -->
+                                    <!-- 註冊 Tab -->
+                                    <div class="tab-pane mh-100 px-3 px-lg-0" id="id-tab-signup" data-swipe-prev="#id-tab-login">
 
                                         <!-- show this in desktop -->
                                         <div class="d-none d-lg-block col-12 mt-lg-4 px-0 px-3">
@@ -169,97 +155,86 @@
                                             新增帳號
                                         </div>
 
-                                        <form asp-area="" asp-controller="Login" asp-action="FastRegister" method="post"
-                                            autocomplete="off" class="form-row mt-4 px-3">
-                                            <div class="validation-summary-valid" data-valmsg-summary="true">
-                                                <ul>
-                                                    <li style="display:none"></li>
-                                                </ul>
-                                            </div>
+                                        <Form v-on:submit="onSubmitSignUp" autocomplete="off" class="form-row mt-4 px-3">
                                             <div class="form-group col-12">
-                                                <div
-                                                    class="d-flex align-items-center input-floating-label text-success brc-success-m2">
-                                                    <input name="fast.name" placeholder="姓名 Name" type="text"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-signup-name" maxlength="50" required />
-                                                    <i class="fa fa-envelope text-grey-m2 ml-n4"></i>
-                                                    <label class="floating-label text-grey-l1 text-100 ml-n3"
-                                                        for="id-signup-name">
-                                                        姓名 Name
-                                                    </label>
+                                                <div class="d-flex align-items-center input-floating-label text-success brc-success-m2">
+                                                    <Field name="name" label="姓名 Name" rules="required|max:50" placeholder="姓名 Name" type="text" 
+                                                        class="form-control form-control-lg pr-4 shadow-none" >
+                                                    </Field>
+                                                    <i class="far fa-id-card text-grey-m2 ml-n4"></i>
+                                                    <label class="floating-label text-grey-l1 ml-n3">姓名 Name</label>
                                                 </div>
+                                                <ErrorMessage name="name" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
 
                                             <div class="form-group col-12">
-                                                <div
-                                                    class="d-flex align-items-center input-floating-label text-success brc-success-m2">
-                                                    <input name="fast.email" placeholder="Email" type="email"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-signup-email" maxlength="200" required />
+                                                <div class="d-flex align-items-center input-floating-label text-success brc-success-m2">
+                                                    <Field name="email" label="Email" rules="required|email|max:200" placeholder="Email" type="email"
+                                                        class="form-control form-control-lg pr-4 shadow-none">
+                                                    </Field>
                                                     <i class="fa fa-envelope text-grey-m2 ml-n4"></i>
-                                                    <label class="floating-label text-grey-l1 text-100 ml-n3"
-                                                        for="id-signup-email">
+                                                    <label class="floating-label text-grey-l1 text-100 ml-n3">
                                                         Email
                                                     </label>
                                                 </div>
+                                                <ErrorMessage name="email" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
 
                                             <div class="form-group col-12">
-                                                <div
-                                                    class="d-flex align-items-center input-floating-label text-success brc-success-m2">
-                                                    <input name="fast.rocid" placeholder="身分證ID Number/護照Passport"
-                                                        type="text"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-signup-rocid" maxlength="10" required />
+                                                <div class="d-flex align-items-center input-floating-label text-success brc-success-m2">
+                                                    <Field name="rocid" label="身分證ID Number/護照Passport" rules="required|max:10" placeholder="身分證ID Number/護照Passport" type="text" 
+                                                        class="form-control form-control-lg pr-4 shadow-none" >
+                                                    </Field>
                                                     <i class="fa fa-envelope text-grey-m2 ml-n4"></i>
-                                                    <label class="floating-label text-grey-l1 text-100 ml-n3"
-                                                        for="id-signup-rocid">
+                                                    <label class="floating-label text-grey-l1 ml-n3">
                                                         身分證ID Number/護照Passport
                                                     </label>
                                                 </div>
+                                                <ErrorMessage name="rocid" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
 
                                             <div class="form-group col-12">
-                                                <div
-                                                    class="d-flex align-items-center input-floating-label text-success brc-success-m2">
-                                                    <input name="password" placeholder="Password" type="password"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-signup-password" minlength="6" maxlength="100"
-                                                        required />
+                                                <div class="d-flex align-items-center input-floating-label text-success brc-success-m2">
+                                                    <Field name="password" label="密碼 Password" rules="required|min:6|max:100" placeholder="Password" type="password"
+                                                        class="form-control form-control-lg pr-4 shadow-none">
+                                                    </Field>
                                                     <i class="fa fa-key text-grey-m2 ml-n4"></i>
-                                                    <label class="floating-label text-grey-l1 text-100 ml-n3"
-                                                        for="id-signup-password">
+                                                    <label class="floating-label text-grey-l1 text-100 ml-n3">
                                                         密碼 Password
                                                     </label>
                                                 </div>
+                                                <ErrorMessage name="password" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
 
                                             <div class="form-group col-12 mt-1">
                                                 <label class="d-inline-block mb-0 text-secondary-d2">
-                                                    <input type="checkbox" class="mr-1" id="id-agree" required />
-                                                    <span class="text-dark-m3"> 我已詳細閱讀並同意 <a href="#"
-                                                            data-toggle="modal" data-target="#termModal"
-                                                            class="text-blue-d2">服務條款</a></span>
+                                                    <Field name="isAgree" rules="required" class="mr-1" v-slot="{field}">
+                                                        <input type="checkbox" v-bind="field" v-model="checked">
+                                                    </Field>
+                                                    <span class="text-dark-m3"> 我已詳細閱讀並同意
+                                                        <a href="#" data-toggle="modal" data-target="#termModal" class="text-blue-d2">服務條款</a>
+                                                    </span>
+                                                    <ErrorMessage name="isAgree" class="text-danger pt-1" as="div" v-slot="{ message }">
+                                                        <p v-if="message">請詳細閱讀並同意服務條款</p>
+                                                    </ErrorMessage>
                                                 </label>
-                                                <button type="submit"
-                                                    class="btn btn-success btn-block px-4 btn-bold mt-2"> 註冊 Sign Up
+                                                <button type="submit" class="btn btn-success btn-block px-4 btn-bold mt-2"> 
+                                                    註冊 Sign Up
                                                 </button>
                                             </div>
-                                        </form>
-                                        <div
-                                            class="dropdown-footer text-center py-25 mt-1 bgc-default-l4 border-t-1 brc-default-l2 w-100 ">
+                                        </Form>
+                                        <div class="dropdown-footer text-center py-25 mt-1 bgc-default-l4 border-t-1 brc-default-l2 w-100">
                                             <div class="my-2">
                                                 已經是會員?
-                                                <a class="text-blue-d1 text-600 mx-1" data-toggle="tab"
-                                                    data-target="#id-tab-login" href="#">
+                                                <a class="text-blue-d1 text-600 mx-1" data-toggle="tab" data-target="#id-tab-login" href="#">
                                                     點此登入
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- End 註冊 Tab -->
 
-                                    <div class="tab-pane mh-100 px-3 px-lg-0 pos-rel dropdown-clickable"
-                                        id="id-tab-forgot" data-swipe-prev="#id-tab-login">
+                                    <div class="tab-pane mh-100 px-3 px-lg-0 pos-rel" id="id-tab-forgot" data-swipe-prev="#id-tab-login">
 
                                         <div class="d-none d-lg-block col-12 mt-lg-4 px-0 px-3">
                                             <h4 class="text-dark-tp4 border-b-1 brc-grey-l2 pb-1 text-130">
@@ -267,36 +242,35 @@
                                                 忘記密碼
                                             </h4>
                                         </div>
-
-                                        <form asp-area="" asp-controller="Login" asp-action="ForgetPassword"
-                                            autocomplete="off" class="form-row mt-4 px-3">
+                                        <Form @submit="onSubmitForgetPassword" autocomplete="off" class="form-row mt-4 px-3">
                                             <div class="form-group col-12">
                                                 <label class="text-secondary-d3 mb-3">
                                                     輸入您的Email和身分證號碼，我們將寄送一組新密碼至您註冊信箱:
                                                 </label>
                                                 <div class="d-flex align-items-center">
-                                                    <input name="email" type="email"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-recover-email" placeholder="Email" required />
+                                                    <Field name="email" rules="required|email" type="email" placeholder="Email" 
+                                                        class="form-control form-control-lg pr-4 shadow-none">
+                                                    </Field>
                                                     <i class="fa fa-envelope text-grey-m2 ml-n4"></i>
                                                 </div>
+                                                <ErrorMessage name="email" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
                                             <div class="form-group col-12">
                                                 <div class="d-flex align-items-center">
-                                                    <input name="rocid" placeholder="身分證號碼或護照號碼" type="text"
-                                                        class="form-control form-control-lg pr-4 shadow-none"
-                                                        id="id-recover-rocid" required />
+                                                    <Field name="rocid" rules="required" type="text" placeholder="身分證號碼或護照號碼" 
+                                                        class="form-control form-control-lg pr-4 shadow-none">
+                                                    </Field>
                                                     <i class="fa fa-key text-grey-m2 ml-n4"></i>
                                                 </div>
+                                                <ErrorMessage name="rocid" class="text-danger pt-1" as="div"></ErrorMessage>
                                             </div>
 
                                             <div class="form-group col-12 mt-1">
-                                                <button type="submit"
-                                                    class="btn btn-orange btn-block px-4 btn-bold mt-2 mb-4">
+                                                <button type="submit" class="btn btn-orange btn-block px-4 btn-bold mt-2 mb-4">
                                                     寄送 Send
                                                 </button>
                                             </div>
-                                        </form>
+                                        </Form>
                                         <div class="dropdown-footer text-center py-25 mt-4 bgc-default-l4 border-t-1 brc-default-l2 position-bc w-100"
                                             style="bottom: 0;">
                                             <div class="my-2">
@@ -349,8 +323,7 @@
                     ...
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                        onclick="$('#termModal').modal('hide');">Close</button>
+                    <button type="button" class="btn btn-secondary" onclick="$('#termModal').modal('hide');">Close</button>
                     <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
@@ -358,11 +331,26 @@
     </div>
 </template>
 <script>
+
+import { Field, Form, ErrorMessage } from 'vee-validate';
+
+const config = {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
+import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
     name: 'LoginModal',
+    components:{
+        Form,Field,ErrorMessage
+    },
     data() {
         return {
-            isAuthenticated: false
+            isAuthenticated: false,
+            checked:false
         }
     },
     mounted() {
@@ -373,6 +361,74 @@ export default {
         $(document).on('click.dropdown-clickable', '.dropdown-clickable', function (e) {
             e.stopImmediatePropagation();
         });
+    },
+    created(){
+        this.isLogined();
+    },
+    methods:{
+        onSubmitLogin(values) {
+            let user = {
+                email: values.email,
+                password: values.password
+            };
+
+            axios.post('/api/account/login', JSON.stringify(user, null, 2), config)
+                .then(() => this.isLogined())
+                .catch(error => {
+                    if (error.response.status === 404 || error.response.status === 400) {
+                        Swal.fire("會員不存在，或帳號密碼錯誤");
+                    }
+                });
+        },
+        onSubmitSignUp(values){
+            let user = {
+                name:values.name,
+                email:values.email,
+                rocid:values.rocid,
+                password:values.password,
+            };
+
+            axios.post('/api/register/fast', JSON.stringify(user, null, 2), config)
+                .then((response) => {
+                    if (response.status === 200) {
+                        Swal.fire("已完成註冊").then(() => {
+                            this.isLogined()
+                        })
+                    }
+                }).catch(error => {
+                    if (error.response.status === 400) {
+                        Swal.fire(error.response.data);
+                    }
+                });
+        },
+        onSubmitForgetPassword(values) {
+            let user = {
+                email: values.email,
+                rocid: values.rocid
+            };
+            axios.post('/api/account/forgetPassword', JSON.stringify(user, null, 2), config)
+                .then((response) => {
+                    if (response.status === 200) {
+                        this.$router.push({
+                            name: 'ForgetPassword', params: {
+                                email: values.email
+                            }
+                        });
+                    }
+                }).catch(error => {
+                    if (error.response.status === 404) {
+                        Swal.fire("會員不存在");
+                    }
+                })
+        },
+        isLogined(){
+            axios.get('/api/Account').then((response) => {
+                this.isAuthenticated = response.status === 200 && response.data;
+            });
+        },
+        logout(){
+            axios.post('/api/account/logout').then(() => this.isLogined());
+        }
     }
 }
 </script>
