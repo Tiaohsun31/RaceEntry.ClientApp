@@ -342,6 +342,7 @@ const config = {
 
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { store } from '../../store/store';
 export default {
     name: 'LoginModal',
     components:{
@@ -349,7 +350,7 @@ export default {
     },
     data() {
         return {
-            isAuthenticated: false,
+            //isAuthenticated: false,
             checked:false
         }
     },
@@ -361,6 +362,11 @@ export default {
         $(document).on('click.dropdown-clickable', '.dropdown-clickable', function (e) {
             e.stopImmediatePropagation();
         });
+    },
+    computed:{
+        isAuthenticated(){
+            return this.$store.state.isAuthenticated;
+        }
     },
     created(){
         this.isLogined();
@@ -423,7 +429,9 @@ export default {
         },
         isLogined(){
             axios.get('/api/Account').then((response) => {
-                this.isAuthenticated = response.status === 200 && response.data;
+                this.$store.commit('changeAuthenticated', { isAuthenticated: response.status === 200 && response.data })
+                //store.state.isAuthenticated = response.status === 200 && response.data;
+                //this.isAuthenticated = response.status === 200 && response.data;
             });
         },
         logout(){

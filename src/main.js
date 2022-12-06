@@ -1,9 +1,12 @@
 import { createApp } from 'vue'
 import { router } from './router'
+import { store }  from './store/main.js'
 import { createHead } from "@vueuse/head"
+
 import App from './App.vue'
 import Layout from './components/Layout/Layout.vue'
 
+// vee-validate
 import {  defineRule ,configure  } from 'vee-validate';
 import AllRules from '@vee-validate/rules';
 import { localize, setLocale } from '@vee-validate/i18n';
@@ -20,10 +23,10 @@ setLocale('zh_TW');
 
 import 'bootstrap'
 import './ace'
-//const metaManager = createMetaManager();
+
 const app = createApp(App);
 
 app.component('Layout', Layout);
-app.use(router).use(createHead());
+app.use(store).use(router).use(createHead());
 
 router.isReady().then(() => app.mount('#app'));

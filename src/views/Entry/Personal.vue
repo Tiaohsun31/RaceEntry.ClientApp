@@ -15,6 +15,11 @@
             </h1>
         </div>
 
+        <div v-show="(!isAuthenticated && operate === 'create')" class="alert alert-danger mb-4">
+            <i class="fas fa-info-circle mr-4 text-danger"></i>
+            <span>若您已加入會員，登入後可「快速報名」，且方便您查詢訂單，避免訂單遺漏。</span>
+        </div>
+
         <!-- 快速報名 -->
         <div class="card border-0 mb-3">
             <div class="card-header bgc-secondary-l4 brc-green-m1 border-0 border-l-4 radius-0 text-dark-tp2 mb-1">
@@ -455,6 +460,7 @@ export default {
             `/api/act/freebie/${this.code}`,
             `/api/act/addons/${this.code}`,
         ];
+
         Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
             .then(([{ data: actGroup }, { data: freebit }, { data:addons }]) => {
                 this.settings.actGroup = actGroup;
@@ -481,6 +487,9 @@ export default {
                 return this.settings.addons.filter(x => x.actGroupId == null || x.actGroupId?.includes(this.formValues.selectedGroup));
             }
             return this.settings.addons.filter(x => x.actGroupId == null);
+        },
+        isAuthenticated(){
+            return this.$store.state.isAuthenticated;
         }
     },
     methods: {
