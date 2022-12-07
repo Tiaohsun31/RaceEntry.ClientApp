@@ -38,7 +38,7 @@
                     </li>
                 </template>
                 <template v-else>
-                    <li class="nav-item dropdown px-lg-2 d-lg-flex flex-column justify-content-center">
+                    <li class="nav-item dropdown px-lg-2 d-lg-flex flex-column justify-content-center dd-backdrop">
                         <a class="d-none d-lg-block h-auto btn btn-outline-blue btn-bold radius-round border-2 dropdown-toggle px-2 px-xl-4 login-btn"
                             data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                             登入 Login
@@ -54,7 +54,7 @@
                             class="shadow radius-1 p-0 dropdown-menu dropdown-menu-right dropdown-animated animated-2 brc-primary-m3 mt-lg-n1 mr-lg-n2 dropdown-caret">
 
                             <div id="id-col-main" class="col-12 bgc-white px-0 dropdown-clickable">
-                               
+
                                 <div class="tab-content tab-sliding border-0 p-0" data-swipe="right">
                                     <!-- 登入 Tab -->
                                     <div class="tab-pane active show mh-100 px-lg-0" id="id-tab-login">
@@ -245,10 +245,10 @@
                                         <Form @submit="onSubmitForgetPassword" autocomplete="off" class="form-row mt-4 px-3">
                                             <div class="form-group col-12">
                                                 <label class="text-secondary-d3 mb-3">
-                                                    輸入您的Email和身分證號碼，我們將寄送一組新密碼至您註冊信箱:
+                                                    輸入您的Email和身分證號碼，我們將寄送一組臨時密碼至您註冊信箱:
                                                 </label>
                                                 <div class="d-flex align-items-center">
-                                                    <Field name="email" rules="required|email" type="email" placeholder="Email" 
+                                                    <Field name="email" label="Email" rules="required|email" type="email" placeholder="Email" 
                                                         class="form-control form-control-lg pr-4 shadow-none">
                                                     </Field>
                                                     <i class="fa fa-envelope text-grey-m2 ml-n4"></i>
@@ -257,7 +257,7 @@
                                             </div>
                                             <div class="form-group col-12">
                                                 <div class="d-flex align-items-center">
-                                                    <Field name="rocid" rules="required" type="text" placeholder="身分證號碼或護照號碼" 
+                                                    <Field name="rocid" label="身分證號碼或護照號碼" rules="required" type="text" placeholder="身分證號碼或護照號碼" 
                                                         class="form-control form-control-lg pr-4 shadow-none">
                                                     </Field>
                                                     <i class="fa fa-key text-grey-m2 ml-n4"></i>
@@ -342,7 +342,7 @@ const config = {
 
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { store } from '../../store/store';
+
 export default {
     name: 'LoginModal',
     components:{
@@ -350,7 +350,6 @@ export default {
     },
     data() {
         return {
-            //isAuthenticated: false,
             checked:false
         }
     },
@@ -373,65 +372,60 @@ export default {
     },
     methods:{
         onSubmitLogin(values) {
-            let user = {
-                email: values.email,
-                password: values.password
-            };
-
-            axios.post('/api/account/login', JSON.stringify(user, null, 2), config)
+            axios.post('/api/account/login', JSON.stringify(values, null, 2), config)
                 .then(() => this.isLogined())
                 .catch(error => {
                     if (error.response.status === 404 || error.response.status === 400) {
-                        Swal.fire("會員不存在，或帳號密碼錯誤");
+                        Swal.fire({ icon: 'error', title: '會員不存在，或帳號密碼錯誤' });
                     }
                 });
         },
         onSubmitSignUp(values){
-            let user = {
-                name:values.name,
-                email:values.email,
-                rocid:values.rocid,
-                password:values.password,
-            };
-
-            axios.post('/api/register/fast', JSON.stringify(user, null, 2), config)
-                .then((response) => {
-                    if (response.status === 200) {
-                        Swal.fire("已完成註冊").then(() => {
-                            this.isLogined()
+            axios.post('/api/register/fast', JSON.stringify(values, null, 2), config)
+                .then(({ status }) => {
+                    if (status === 200) {
+                        Swal.fire({
+                            title: '已完成註冊',
+                            text: "是否填寫完整會員資料，可加快您報名!",
+                            icon: 'success',
+                            showCancelButton: true,
+                            confirmButtonText: '是，我要填寫',
+                            cancelButtonText: '否'
+                        }).then((result) => {
+                            this.isLogined();
+                            if (result.isConfirmed) {
+                                //TODO push to register
+                                console.log('push to register');
+                            }
                         })
                     }
                 }).catch(error => {
                     if (error.response.status === 400) {
-                        Swal.fire(error.response.data);
+                        Swal.fire({ icon: 'error', title: error.response.data });
                     }
                 });
         },
         onSubmitForgetPassword(values) {
-            let user = {
-                email: values.email,
-                rocid: values.rocid
-            };
-            axios.post('/api/account/forgetPassword', JSON.stringify(user, null, 2), config)
-                .then((response) => {
-                    if (response.status === 200) {
-                        this.$router.push({
-                            name: 'ForgetPassword', params: {
-                                email: values.email
-                            }
+            axios.post('/api/account/forgetPassword', JSON.stringify(values, null, 2), config)
+                .then(({ status }) => {
+                    if (status === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '已寄送臨時密碼',
+                            text: '我們已寄送一組臨時密碼至您註冊信箱，為了您帳號安全，請變更密碼!'
+                        }).then(() => {
+                            this.$router.push({ name: 'ChangePassword', query: { email: encodeURIComponent(values.email) } });
                         });
                     }
                 }).catch(error => {
                     if (error.response.status === 404) {
-                        Swal.fire("會員不存在");
+                        Swal.fire({ icon: 'error', title: '會員不存在' });
                     }
                 })
         },
         isLogined(){
             axios.get('/api/Account').then((response) => {
                 this.$store.commit('changeAuthenticated', { isAuthenticated: response.status === 200 && response.data })
-                //store.state.isAuthenticated = response.status === 200 && response.data;
-                //this.isAuthenticated = response.status === 200 && response.data;
             });
         },
         logout(){

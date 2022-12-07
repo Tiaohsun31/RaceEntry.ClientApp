@@ -11,13 +11,13 @@ import Personal from '../views/Entry/Personal.vue';
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
 
-import ForgetPassword from '../views/Login/ForgetPassword.vue';
+import ChangePassword from '../views/Login/ChangePassword.vue';
 
 import NotFound from '../components/Layout/NotFound.vue';
 import HelloWorld from '../components/HelloWorld.vue';
 
 const routes = [
-    { path: '/', component: Home },
+    { name:'Home', path: '/', component: Home },
     { name: 'Acts', path: '/acts', component: Acts },
     {
         path: '/entry',
@@ -27,7 +27,7 @@ const routes = [
             { name: 'EditPersonal', path: '/:code/personal/:userId', component: Personal, props: { operate: 'edit' }},
         ]
     },
-    { name:'ForgetPassword', path:'/forgetPassword/:email?', component: ForgetPassword },
+    { name:'ChangePassword', path:'/changePassword', component: ChangePassword },
     {
         path: '/:code',
         component: ActLayout,
