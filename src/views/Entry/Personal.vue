@@ -21,14 +21,29 @@
         </div>
 
         <!-- 快速報名 -->
-        <div class="card border-0 mb-3">
+        <div v-if="isAuthenticated" class="card border-0 mb-3">
             <div class="card-header bgc-secondary-l4 brc-green-m1 border-0 border-l-4 radius-0 text-dark-tp2 mb-1">
                 <div class="card-title h5">
                     快速報名
                     <small class="text-uppercase"> fast registration </small>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <button type="button" class="btn btn-grey btn-h-primary btn-a-purple px-45 mr-3" v-on:click="importUser">
+                        匯入個人資料
+                    </button>
+                    <button type="button" class="btn btn-outline-danger px-45" v-on:click="clearUser">
+                        清空資料
+                    </button>
+                </div>
+                <!-- <div class="d-flex flex-column align-items-center justify-content-center mb-3">
+                    <hr class="w-100 mb-2 border-none border-t-3 brc-grey-l2 border-double">
+                    <div class="mt-n4 bgc-white-tp2 px-3 py-1 text-secondary-d3 text-90"> 或 </div>
+                </div> -->
+            </div>
         </div>
+
         <!-- End 快速報名 -->
         <Form v-on:submit="onSubmit" :initial-values="formValues" >
             <!-- 個人資料 -->
@@ -42,7 +57,7 @@
                 <div class="card-body">
                     <div class="form-row">
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
-                            <Field name="user.nation" label="國籍" rules="required" class="form-control text-dark-l5" as="select">
+                            <Field name="user.nationality" label="國籍" rules="required" class="form-control text-dark-l5" as="select">
                                 <option value="台灣">台灣</option>
                                 <option value="香港">香港</option>
                                 <option value="日本国">日本国</option>
@@ -69,7 +84,7 @@
                                 <option value="Zimbabwe">Zimbabwe</option>
                                 <option value="Other">Other</option>
                             </Field>
-                            <ErrorMessage name="user.nation" class="text-danger" as="div" />
+                            <ErrorMessage name="user.nationality" class="text-danger" as="div" />
                         </div>
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
                             <div class="d-flex align-items-center input-floating-label text-blue-m1 brc-blue-m2">
@@ -343,7 +358,7 @@
             </div>
             <!-- End 個人加購品 -->
             <!-- Submit -->
-            <div>
+            <div class="mb-5">
                 <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                     <div class="pt-2">下一步:選擇付款及寄送方式</div>
                     <div class="py-2">Next Step: Select payment and shipping</div>
@@ -377,11 +392,7 @@
 <script>
 import axios from 'axios';
 import { Field, Form, ErrorMessage  } from 'vee-validate';
-// import AllRules from '@vee-validate/rules';
-// import { localize, setLocale } from '@vee-validate/i18n';
-// import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
 import Swal from 'sweetalert2';
-//import * as yup from 'yup';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -430,16 +441,11 @@ export default {
         Field, Form, ErrorMessage,
         Datepicker 
     },
-    setup(){
-        return {
-            schema
-        }
-    },
     data() {
         return {
             formValues: {
                 user:{
-                    nation: '台灣',
+                    nationality: '台灣',
                     gender:'',
                     birthdate:'',
                 },
@@ -493,20 +499,31 @@ export default {
         }
     },
     methods: {
+        importUser(){
+            axios.get('/api/account/user').then(({data}) => {
+                this.formValues.user = data;
+            }).catch(error=>{
+                if (error.response.status === 404) {
+                    Swal.fire("找不到會員");
+                };
+            })
+        },
+        clearUser(){
+            this.formValues.user = {};
+        },
         onSubmit(values) {
             values.selectedAddons = this.formValues.selectedAddons;
             values.actCode = this.code;
 
             const form = JSON.stringify(values, null,2);
-            console.log(vm);
 
             axios.post(`/api/personal`, form, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(response => { console.log(response) })
+            })
+            .then(response => { console.log(response) })
             .catch(error => {
-                console.log(error);
                 if (error.response.status === 404) {
                     this.$router.push({ name: 'NotFound' });
                 };
