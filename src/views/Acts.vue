@@ -3,80 +3,7 @@
         <div class="bg-light">
             <div class="container pt-3">
                 <!-- Search and Filter-->
-                <div id="search" class="card card-body border-0">
-                    
-                    <div class="row justify-content-md-center">
-                        <label class="col-form-label col-md-2 d-none d-sm-block"> 活動列表 </label>
-                        <div class="col-12 col-md-10 mb-3">
-                            <SelectActs v-bind:acts="acts"></SelectActs>
-                        </div>
-                    </div>
-
-                    <div class="accordion mt-4" id="accordionExample">
-                        <div class="card">
-                            <div class="card-header" id="headingOne">
-                                <h2 class="card-title bgc-green-l3 text-dark-tp4 brc-green-tp1">
-                                    <a class="btn py-3 btn-lighter-secondary brc-h-green-m1 border-l-6 accordion-toggle radius-0 collapsed"
-                                        href="#collapseOne" data-toggle="collapse" aria-expanded="false" aria-controls="collapseOne">
-                                        <i class="fa fa-angle-right toggle-icon mr-1"></i>
-                                        進階搜尋
-                                    </a>
-                                </h2>
-                            </div>
-                
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                <div class="card-body border-0">
-                                    <div class="row mt-md-2">
-                                        <div class="col-12 mb-4">
-                                            <label class="col-form-label text-dark-l4"> 年份 </label>
-                                            <div class="btn-group-toggle " data-toggle="buttons">
-                                                <template v-for="item in options.years">
-                                                    <label role="button" class=" d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 overflow-hidden" 
-                                                        v-bind:class="store.filter.selectedYears.includes(item) ? 'active' : ''">
-                                                        <input type="checkbox" name="SelectedYears" v-bind:value="item" v-model="store.filter.selectedYears">
-                                                        {{ item }}
-                                                    </label>
-                                                </template>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 mb-4">
-                                            <label class="col-form-label text-dark-l4"> 日期區間 </label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> 從 </span>
-                                                </div>
-                                                <input type="date" aria-label="StartDate" class="form-control" name="StartTime" v-model="store.filter.startTime">
-                                            </div>
-                                            <div class="input-group mt-2">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> 到 </span>
-                                                </div>
-                                                <input type="date" aria-label="EndDate" class="form-control" name="EndTime" v-model="store.filter.endTime">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 mb-4">
-                                            <label class="col-form-label text-dark-l4"> 類別 </label>
-                                            <div class="btn-group-toggle " data-toggle="buttons">
-                                                <template v-for="item in options.categories">
-                                                    <label role="button"
-                                                        class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 overflow-hidden"
-                                                        v-bind:class="store.filter.selectedCategories.includes(item) ? 'active' : ''">
-                                                        <input type="checkbox" name="SelectedCategories" v-bind:value="item" v-model="store.filter.selectedCategories">
-                                                        {{ item }}
-                                                    </label>
-                                                </template>
-                                            </div>
-                                        </div>
-            
-                                        <!-- <div class="col-12 mt-2">
-                                            <button type="submit" class="btn btn-orange btn-block"> 搜尋 </button>
-                                        </div> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <SearchFilter position="Acts"></SearchFilter>
                 <!-- End Search and Filter -->
                 <div class="mt-4 mt-md-5">
                     <div class="row">
@@ -105,7 +32,10 @@
                                 </div>
                             </div>
                             <div class="mt-4" v-for="item in sortdata">
-                                <h5 > <span class="h3 text-danger"> {{item.month}} </span>月，{{item.year}} </h5>
+                                <h5 v-show="item.acts.length != 0"> 
+                                    <span class="h3 text-danger"> {{item.month}} </span>
+                                    月，{{item.year}} 
+                                </h5>
                                 <div class="card mb-3" v-for="element in item.acts" :Key="element.actCode">
                                     <div class="row">
                                         <div class="col-md-3 col-4 pos-rel pr-0">
@@ -190,7 +120,7 @@
 
 <script>
     
-    import SelectActs from '../components/SelectActs.vue'
+    import SearchFilter from '../components/Layout/SearchFilter.vue';
     import AdSidebar from '../components/AdSidebar.vue';
 
     import axios from 'axios';
@@ -201,11 +131,10 @@
 
     export default {
         components: {
-            SelectActs,AdSidebar
+            SearchFilter,AdSidebar
         },
         data() {
             return {
-                options: [],
                 isApply: false,
                 orderby: 'desc',
                 acts:[],
@@ -221,33 +150,35 @@
                 let data = this.isApply ? this.acts.filter(x => x.canSignUp === true) : JSON.parse(JSON.stringify(this.acts));
 
                 if (this.store.filter != null) {
+                    
                     if (this.store.filter.selectedYears.length > 0) {
-                        data = data.filter(x => this.store.filter.selectedYears.includes(x.year));
+                       data = data.filter(x => this.store.filter.selectedYears.includes(x.year));
                     };
+
                     if (this.store.filter.startTime != '') {
                         let startTime = new Date(this.store.filter.startTime).getTime();
-                        data = data.filter(x => {
-                            return x.acts.filter(s => {
-                                let actDate = new Date(s.actDate).getTime();
-                                return actDate >= startTime;
-                            }).length > 0;
+                        data.filter(eachMonth => {
+                            eachMonth.acts = eachMonth.acts.filter(({actDate}) => {
+                                let actTimeSpan = new Date(actDate).getTime();
+                                return actTimeSpan >= startTime;
+                            })
                         });
                     };
                     if (this.store.filter.endTime != '') {
                         let endTime = new Date(this.store.filter.endTime).getTime();
-                        data = data.filter(x => {
-                            return x.acts.filter(s => {
-                                let actDate = new Date(s.actDate).getTime();
-                                return actDate <= endTime;
-                            }).length > 0;
+                        data.filter(eachMonth => {
+                            eachMonth.acts = eachMonth.acts.filter(({actDate}) => {
+                                let actTimeSpan = new Date(actDate).getTime();
+                                return actTimeSpan <= endTime;
+                            })
                         });
                     };
                     if (this.store.filter.selectedCategories.length > 0) {
-                        data = data.filter(x => {
-                            return x.acts.filter(s => {
-                                return this.store.filter.selectedCategories.includes(x.categories);
-                            }).length > 0;
-                        });
+                        data.filter(eachMonth => {
+                            eachMonth.acts = eachMonth.acts.filter(s => {
+                                return this.store.filter.selectedCategories.includes(s.category);
+                            })
+                        })
                     };
                 }
 
@@ -285,7 +216,7 @@
             },
             shortDate(value) {
                 return moment(value).format('YYYY-MM-DD');
-            }
+            },
         }
     }
 </script>

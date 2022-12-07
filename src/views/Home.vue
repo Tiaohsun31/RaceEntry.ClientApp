@@ -68,63 +68,7 @@
         <!-- End Banner-->
         <!-- Search and Filter-->
         <div class="container mt-md-4">
-        
-            <div class="row justify-content-md-center">
-                <div class="col col-md-8">
-                    <SelectActs v-bind:acts="recommendActs"></SelectActs>
-                </div>
-            </div>
-        
-            <div class="text-center my-md-5 my-3"> -- OR -- </div>
-        
-            <div class="row my-md-4">
-                <div class="col-md-5 col-12">
-                    <label class="col-form-label text-dark-l4 font-bold h5"> 年份 </label>
-                    <div class="btn-group-toggle " data-toggle="buttons">
-                        <template v-for="item in options.years">
-                            <label role="button" class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 mb-1 overflow-hidden">
-                                <input type="checkbox" name="SelectedYears" v-bind:value="item" v-model="filter.selectedYears">
-                                {{ item }}
-                            </label>
-                        </template>
-                    </div>
-                </div>
-                <div class="col-md-5 col-12">
-                    <label class="col-form-label text-dark-l4 font-bold h5"> 日期區間 </label>
-                    <div class="d-none d-sm-block">
-                        <div class="input-group ">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"> 從 </span>
-                            </div>
-                            <input type="date" aria-label="StartDate" class="form-control" name="StartTime" v-model="filter.startTime">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"> 到 </span>
-                            </div>
-                            <input type="date" aria-label="EndDate" class="form-control" name="EndTime" v-model="filter.endTime">
-                        </div>
-                    </div>
-        
-                    <div class="d-block d-sm-none">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"> 從 </span>
-                            </div>
-                            <input type="date" aria-label="StartDate" class="form-control d-block d-sm-none" name="StartTime" v-model="filter.startTime">
-                        </div>
-                        <div class="input-group mt-2">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"> 到 </span>
-                            </div>
-                            <input type="date" aria-label="EndDate" class="form-control d-block d-sm-none" name="EndTime" v-model="filter.endTime">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-12">
-                    <label class="col-form-label text-white h5"> 搜尋 </label>
-                    <button type="button" class="btn btn-orange btn-block" v-on:click="toAct()"> 搜尋 </button>
-                </div>
-            </div>
-        
+            <SearchFilter position="Home"></SearchFilter>
         </div>
         <!-- End Search and Filter -->
         <!-- Act List -->
@@ -188,37 +132,28 @@
 
 <script>
 
-import SelectActs from '../components/SelectActs.vue';
+
+import SearchFilter from '../components/Layout/SearchFilter.vue';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/dist/locale/zh-tw';
 
-import { store } from '../store/store.js'
-
 export default {
     components:{
-        SelectActs
+        SearchFilter
     },
     data() {
         return {
             marquee: [],
             recommendActs: [],
             banners:[],
-            options:[],
-            filter:{
-                selectedCategories:[],
-                selectedYears:[],
-                startTime:'',
-                endTime:''
-            },
         }
     },
     mounted() {
         axios.get('/api/configs/marquee').then(({data}) => this.marquee = data);
-        axios.get('/api/configs/filter').then(({data}) => this.options = data);
         axios.get('/api/configs/banners').then(({data}) => this.banners = data);
-        axios.get('/api/configs/recommendActs').then(({data}) => this.recommendActs = data);
-       
+        axios.get('/api/configs/recommendActs?number=12').then(({data}) => this.recommendActs = data);
+
     },
     methods: {
         actDate: function (value) {
@@ -227,10 +162,6 @@ export default {
         shortDate: function (value) {
             return moment(value).format('YYYY-MM-DD');
         },
-        toAct() {
-            store.setFilter(JSON.parse(JSON.stringify(this.filter)));
-            this.$router.push({name: 'Acts'}).catch(()=>{});
-        }
     }
 }
 </script>
