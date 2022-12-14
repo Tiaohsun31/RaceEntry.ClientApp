@@ -82,9 +82,8 @@
                         加購明細
                     </h5>
                     <ul class="list-group">
-                        <li v-for="(item,index) in formValues.addons"
-                            class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ item.name + (item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
+                        <li v-for="item in formValues.addons" class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.name + (item.spec == null || item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
                             <button type="button" class="close" aria-label="Close" v-on:click="removeCart(item)">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -182,10 +181,13 @@
                 <span>至少要有一名團隊成員才能結帳</span>
             </div>
             
-            <a asp-controller="Checkout" asp-action="Index" class="btn btn-lighter-success btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+            <button type="button" v-on:click="addAddons()"
+                class="btn btn-lighter-success btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3"
+                v-bind:disabled="formValues.members.length === 0">
                 <div class="pt-2">下一步:選擇付款及寄送方式</div>
                 <div class="py-2">Next Step: Select payment and shipping</div>
-            </a>
+            </button>
+            
         </div>
         <!-- 編輯團隊資料 -->
         <div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel" aria-hidden="true">
@@ -349,7 +351,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 export default {
     name: 'Group',
     props:['act'],
-    components: { Field, Form, ErrorMessage, Datepicker,Members },
+    components: { Field, Form, ErrorMessage, Datepicker, Members },
     data(){
         return {
             formValues:{
@@ -399,8 +401,12 @@ export default {
     },
     methods:{
         getGroup() {
-            axios.get(`/api/group/info/${this.orderId}`).then(({ data }) => {
+            axios.get(`/api/group/info/${this.orderId}`)
+            .then(({ data }) => {
                 this.formValues.contact = data;
+                if (this.formValues.contact.addons) {
+                    this.formValues.addons = data.addons;
+                };
                 this.date = [data.startTime, data.endTime];
             }).catch(error => {
                 if (error.response.status === 400) {
@@ -431,6 +437,26 @@ export default {
             }).catch(error => {
                 if (error.response.status === 400) {
                     Swal.fire(error.response.data);
+                }
+            });
+        },
+        addAddons(){
+            let addons = {
+                orderId:this.orderId,
+                selectedAddons:this.formValues.addons
+            };
+            axios.post('/api/group/groupAddons',JSON.stringify(addons, null, 2), {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.status === 204) {
+                    this.getGroup();
+                }
+            })
+            .catch(error=>{
+                if (error.response.status === 400 || error.response.status === 404){
+                    Swal.fire("尚未開放報名或報名已截止");
                 }
             });
         },
