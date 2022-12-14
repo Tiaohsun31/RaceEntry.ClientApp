@@ -7,6 +7,9 @@ import ActContent from '../views/ActPage/ActContent.vue';
 import HomePage from '../views/ActPage/HomePage.vue';
 
 import Personal from '../views/Entry/Personal.vue';
+import CreateGroup from '../views/Entry/CreateGroup.vue';
+import Group from '../views/Entry/Group.vue';
+import UploadFile from '../views/Entry/uploadFile.vue';
 
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
@@ -23,8 +26,12 @@ const routes = [
         path: '/entry',
         component: ActLayout,
         children: [
-            { name: 'CreatePersonal', path: '/:code/personal', component: Personal, props: { operate: 'create' }},
-            { name: 'EditPersonal', path: '/:code/personal/:userId', component: Personal, props: { operate: 'edit' }},
+            { name: 'CreatePersonal', path: '/:code/personal', component: Personal, props: { operate: 'create' } },
+            { name: 'EditPersonal', path: '/:code/personal/:userId', component: Personal, props: { operate: 'edit' } },
+            { name: 'CreateGroup', path: '/:code/group/create', component: CreateGroup },
+            { name: 'Group', path: '/:code/group', component: Group },
+            { name: 'AddMember', path: '/:code/addMember', component: Personal, props: { operate: 'create' } },
+            { name: 'UploadFile', path: '/:code/uploadFile', component: UploadFile}
         ]
     },
     { name:'ChangePassword', path:'/changePassword', component: ChangePassword },

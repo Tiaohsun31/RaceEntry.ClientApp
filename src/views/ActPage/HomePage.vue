@@ -124,7 +124,7 @@
                 </RouterLink>
             </div>
             <div class="col-md-4 col-6">
-                <RouterLink v-bind:to="{name:'EditPersonal',params:{userId:'123'}}" class="btn btn-block btn-lg btn-primary">
+                <RouterLink v-bind:to="{name:'CreateGroup'}" class="btn btn-block btn-lg btn-primary">
                     <i class="fas fa-users mr-1"></i>
                     團體報名
                 </RouterLink>
@@ -134,7 +134,6 @@
 </template>
 
 <script>
-
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/dist/locale/zh-tw';

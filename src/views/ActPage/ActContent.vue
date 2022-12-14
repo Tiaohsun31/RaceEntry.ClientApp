@@ -34,9 +34,8 @@
         </div>
     </aside>
 </template>
+
 <script>
-
-
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/dist/locale/zh-tw';

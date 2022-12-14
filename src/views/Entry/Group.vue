@@ -1,0 +1,504 @@
+//TODO 社群分享連結
+<template>
+    <div class="container py-4">
+        <div class="page-header pb-3">
+            <h1 class="page-title text-primary-d2 text-150 d-none d-sm-block">
+                {{ act.actName }}
+                <small class="page-info text-secondary-d2 text-nowrap">
+                    <i class="fa fa-angle-double-right text-80"></i>
+                    新增團隊
+                </small>
+        
+                <small class="page-info text-secondary-d2 text-nowrap">
+                    <i class="fa fa-angle-double-right text-80"></i>
+                    {{ formValues.contact.groupName }}
+                </small>
+            </h1>
+        </div>
+        <div class="text-right mb-3">
+            <button type="button" data-toggle="modal" data-target="#editContactModal" class="btn px-4 btn-light-warning btn-text-dark mb-1"> 修改團隊資料 </button>
+        </div>
+
+        <div class="card border-0">
+            <div class="card-header bgc-secondary-l4 brc-green-m1 border-0 border-l-4 radius-0 text-dark-tp2 mb-1">
+                <div class="card-title h5">
+                    {{ formValues.contact.groupName }} 團員
+                    <small class="text-uppercase"> Members </small>
+                </div>
+            </div>
+            <div class="card-body">
+                <div v-if="formValues.members.length == 0" class="jumbotron text-center radius-1 d-flex justify-content-center align-items-center mt-4" style="height: 500px;">
+                    <div class="container row">
+                        <h2 class="col-12">{{ formValues.contact.groupName }} 還沒有參與者，請先新增隊員</h2>
+                        <div class="col-4 offset-4">
+                            <div v-if="formValues.contact.isShare">
+                                <hr class="border-dotted brc-primary-m4 my-4" />
+                                <button data-toggle="modal" data-target="#apply-share-modal"
+                                    class="btn btn-lightgrey btn-h-info btn-a-outline-info btn-lg mb-1 px-4 mt-4 btn-block">
+                                    分享連結報名
+                                </button>
+                            </div>
+
+                            <div>
+                                <hr class="border-dotted brc-primary-m4 my-4" />
+                                <RouterLink :to="{name:'AddMember'}" class="btn btn-lightgrey btn-h-info btn-a-outline-info btn-lg mb-1 px-4 mt-4 btn-block">
+                                    新增團員
+                                </RouterLink>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div v-else>
+                    <div class="my-3 text-right">
+                        <button v-if="formValues.contact.isShare" data-toggle="modal" data-target="#apply-share-modal"
+                            class="btn btn-lightgrey btn-h-info btn-a-outline-info mb-1 mr-2">
+                            分享連結報名
+                        </button>
+                        <RouterLink :to="{name:'AddMember'}" class="btn btn-lightgrey btn-h-info btn-a-outline-info mb-1 mr-2">
+                            新增團員
+                        </RouterLink>
+                    </div>
+                    <!-- 團隊列表 -->
+                    <Members v-bind:members="formValues.members" v-bind:isReadOnly="act.isReadOnly"></Members>
+                    <!-- End 團隊列表 -->
+                </div>
+
+            </div>
+        </div>
+        <!-- 團體加購品 -->
+        <div class="card border-0 my-5">
+            <div class="card-header bgc-secondary-l4 brc-green-m1 border-0 border-l-4 radius-0 text-dark-tp2 mb-1">
+                <div class="card-title h5">
+                    團體加購品
+                    <small class="text-uppercase"> Group Add-ons </small>
+                </div>
+            </div>
+            <!-- 已加購清單 -->
+            <div v-if="formValues.addons.length > 0" class="card-body pt-3">
+                <div class="my-3">
+                    <h5 class="text-120 text-grey-d3">
+                        <i class="fa fa-star mr-1 text-orange text-90"></i>
+                        加購明細
+                    </h5>
+                    <ul class="list-group">
+                        <li v-for="(item,index) in formValues.addons"
+                            class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.name + (item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
+                            <button type="button" class="close" aria-label="Close" v-on:click="removeCart(item)">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div v-if="addons.length > 0" class="card-body pt-3">
+                <div class="row text-600 text-95 text-secondary-d3 bgc-grey-l4 py-25 border-y-2">
+                    <div class="d-none d-sm-block col-2"> </div>
+                    <div class="col-12 col-sm-4"> 商品名稱與描述 </div>
+                    <div class="col-sm-2 d-none d-sm-block"> 單價 </div>
+                    <div class="col-sm-2 d-none d-sm-block"> 規格 </div>
+                    <div class="col-sm-2 d-none d-sm-block"> 數量 </div>
+                </div>
+                <div class="text-95 text-dark-m3">
+        
+                    <div v-for="element in addons" class="row pb-2 mb-sm-0 py-sm-2 border-b-1 brc-secondary-l3 align-items-center">
+                        <div class="d-none d-sm-block col-2">
+                            <img class="radius-1 mb-1 mb-sm-0 mr-3" v-bind:alt="element.name"
+                                style="width: 100px; height: 100px;" v-bind:src="element.thumbnail">
+                        </div>
+        
+                        <div class="col-12 col-sm-4 px-0">
+                            <div class="d-block d-sm-none text-center py-25 bgc-blue-l3 border-b-1 brc-secondary-l3">
+                                <span v-if="element.images" v-text="element.name"></span>
+                                <a v-else href="#" class="btn-text-dark btn-h-text-primary"
+                                    v-on:click.prevent="showImages(element.productId)">
+                                    {{element.name}} <i class="far fa-image w-2"></i>
+                                </a>
+                                <span v-if="element.label" class="badge bgc-pink text-white text-xs ml-1"
+                                    v-text="element.label"></span>
+                            </div>
+                            <div class="d-none d-sm-inline-block text-130">
+                                <span v-if="element.images" v-text="element.name"></span>
+                                <a v-else href="#" class="btn-text-dark btn-h-text-primary"
+                                    v-on:click.prevent="showImages(element.productId)">
+                                    {{element.name}} <i class="far fa-image w-2"></i>
+                                </a>
+                                <span v-if="element.label" class="badge bgc-pink text-white text-xs ml-2"
+                                    v-text="element.label">
+                                </span>
+                            </div>
+                            <div class="mt-1 d-none d-sm-block" v-text="element.description"></div>
+                        </div>
+        
+                        <div class="col-sm-2 col-4 mt-2" v-text="'NT$'+element.unitPrice"></div>
+        
+                        <div class="col-sm-2 col-4 mt-2">
+                            <div v-if="element.specs.length > 0">
+                                <template v-if="element.specs.length == 1">
+                                    <select v-bind:id="'addonsSpecs'+element.productId" class="form-control"
+                                        v-on:change="resetQty(element.productId)">
+                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
+                                        <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
+                                            v-bind:value="(option.name || option.title)">
+                                            {{ option.name || option.title }}
+                                            {{ option.disabled ? "已售完" : "" }}
+                                        </option>
+                                    </select>
+                                </template>
+        
+                                <template v-else>
+                                    <select v-bind:id="'addonsSpecs'+element.productId" class="form-control" v-on:change="resetQty(element.productId)">
+                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
+                                        <optgroup v-for="options in element.specs" v-bind:label="options.key == null ? '' : options.key">
+                                            <option v-for="item in options.list" v-bind:disabled="item.disabled"
+                                                v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${item.title}${item.name}`">
+                                                {{ item.name || item.title }}
+                                                {{ item.disabled ? "已售完" : "" }}
+                                            </option>
+                                        </optgroup>
+                                    </select>
+                                </template>
+                            </div>
+                        </div>
+        
+                        <div class="col-sm-2 col-4 mt-2">
+                            <select class="form-control" v-bind:id="'addonsQty'+element.productId"
+                                v-on:change="addCart($event.target,element)">
+                                <option value="0">0</option>
+                                <option v-bind:value="n" v-for="n in element.limitQty" v-text="n"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+        <!-- End 團體加購品 -->
+        <div class="my-4">
+
+            <div v-if="formValues.members.length == 0" class="alert alert-danger mb-4">
+                <i class="fas fa-info-circle mr-4 text-danger"></i>
+                <span>至少要有一名團隊成員才能結帳</span>
+            </div>
+            
+            <a asp-controller="Checkout" asp-action="Index" class="btn btn-lighter-success btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                <div class="pt-2">下一步:選擇付款及寄送方式</div>
+                <div class="py-2">Next Step: Select payment and shipping</div>
+            </a>
+        </div>
+        <!-- 編輯團隊資料 -->
+        <div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editContactModalLabel"> 編輯團隊資料 </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <Form @submit="EditBase" :initial-values="formValues">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="contact.groupName" class="mb-2"> 團隊名稱 </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"> <i class="fa fa-users"></i> </div>
+                                    </div>
+                                    <Field id="contact.groupName" name="contact.groupName" label="團隊名稱" rules="required|max:15" type="text"
+                                        class="form-control " placeholder="Group Name">
+                                    </Field>
+                                </div>
+                                <ErrorMessage name="contact.groupName" class="text-danger" as="div"></ErrorMessage>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact.name" class="mb-2"> 姓名 </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"> <i class="fas fa-user"></i> </div>
+                                    </div>
+                                    <Field id="contact.name" name="contact.name" label="姓名" rules="required|max:50" type="text" class="form-control"
+                                        placeholder="Leader Name (領隊預設為收件人)" aria-describedby="nameHelp">
+                                    </Field>
+                                </div>
+                                <ErrorMessage name="contact.name" class="text-danger pt-1" as="div"></ErrorMessage>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact.email" class="mb-0"> Email </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"> <i class="fas fa-envelope"></i> </div>
+                                    </div>
+                                    <Field id="contact.email" name="contact.email" label="Email" rules="required|email" class="form-control"
+                                        placeholder="Leader Email">
+                                    </Field>
+                                </div>
+                                <ErrorMessage name="contact.email" class="text-danger pt-1" as="div"></ErrorMessage>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact.phoneNumber" class="mb-0"> 手機號碼 </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"> <i class="fas fa-mobile px-1"></i> </div>
+                                    </div>
+                                    <Field id="contact.phoneNumber" name="contact.phoneNumber" label="手機號碼" rules="required|max:10"
+                                        class="form-control" placeholder="Leader Phone Number">
+                                    </Field>
+                                </div>
+                                <ErrorMessage name="contact.phoneNumber" class="text-danger pt-1" as="div"></ErrorMessage>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input id="isShare" v-model="isShare" type="checkbox" class="form-check-input" data-toggle="collapse"
+                                        data-target="#multiCollapseRange" aria-expanded="false" aria-controls="multiCollapseRange">
+                                    <label class="form-check-label" for="isShare">是否產生分享連結</label>
+                                </div>
+                            </div>
+                            <div id="multiCollapseRange" class="collapse">
+                                <div class="form-group">
+                                    <label class="mb-3"> 連結有效時間 </label>
+                                    <div class="row">
+                                        <div class="col-sm-8 col-md-7">
+                                            <Datepicker v-model="date" range multi-calendars locale="zh" format="yyyy/MM/dd" textInput autoApply
+                                                :enableTimePicker="false" utc :clearable="false" />
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">可修改分享連結有效時間，時間過期與確認訂單後，將自動關閉分享連結</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">不儲存，關閉</button>
+                            <button type="submit" class="btn btn-primary">儲存</button>
+                        </div>
+                    </Form>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- End 編輯團隊資料 -->
+        <!-- Product Modal -->
+        <div class="modal modal-lg fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Product Modal -->
+        <!-- Share Modal -->
+        <div class="modal fade" id="apply-share-modal" tabindex="-1" aria-labelledby="apply-share-modalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="apply-share-modalLabel"> 分享 </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mt-2 mb-3">
+                            <label for="shareLink"> 連結分享 </label>
+                            <div class="input-group">
+                                <input type="text" v-bind:value="formValues.contact.shareUri" class="form-control" aria-label="Join code" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" @click="copy">複製
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mt-2 mb-3">
+                            <label for="socialShareLink"> 社群連結分享 </label>
+                            <div class="row mt-2">
+                                <div class="col-md-5">
+                                    <div class="text-150">
+                                        <a href="#"><i class="bgc-green-d2 p-25 w-6 mx-1 radius-round fab fa-line text-white text-center"></i></a>
+                                        <a href="#"><i class="bgc-blue-d2 p-25  mx-1 w-6 radius-round fab fa-facebook-square text-white text-center"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Share Modal -->
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import Members from '../Entry/Members.vue';
+import { Field,Form,ErrorMessage } from 'vee-validate';
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
+export default {
+    name: 'Group',
+    props:['act'],
+    components: { Field, Form, ErrorMessage, Datepicker,Members },
+    data(){
+        return {
+            formValues:{
+                contact:{
+                    groupName:'Test',
+                    isShare:true,
+                },
+                addons:[],
+                members:[],
+            },
+            addons:[],
+            isShare:false,
+            date:[],
+        }
+    },
+    created() {
+        if (this.orderId == '') {
+            this.$router.push({ name: 'CreateGroup' });
+        }
+    },
+    mounted(){
+        this.getGroup();
+
+        let endpoints = [
+            `/api/act/groupaddons/${this.code}`,
+            `/api/Group/GetMembers/${this.orderId}`,
+        ];
+
+        Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
+            .then(([{ data: addons },{ data:members} ]) => {
+                this.addons = addons;
+                this.formValues.members = members;
+               
+            }).catch(error => {
+                if (error.response.status === 404) {
+                    this.$router.push({ name: 'CreateGroup' });
+                }
+            });
+    },
+    computed: {
+        orderId() {
+            return sessionStorage.getItem("orderId");
+        },
+        code(){
+            return this.$route.params.code;
+        }
+    },
+    methods:{
+        getGroup() {
+            axios.get(`/api/group/info/${this.orderId}`).then(({ data }) => {
+                this.formValues.contact = data;
+                this.date = [data.startTime, data.endTime];
+            }).catch(error => {
+                if (error.response.status === 400) {
+                    Swal.fire(error.response.data);
+                };
+                if (error.response.status === 404) {
+                    Swal.fire("找不到資料").then(() => {
+                        this.$router.push({ name: 'CreateGroup' });
+                    });
+                }
+            })
+        },
+        EditBase(values){
+            values.contact.actCode = this.code;
+            values.contact.isShare = this.isShare;
+            values.contact.startTime = this.date[0];
+            values.contact.endTime = this.date[1];
+
+            axios.patch(`/api/group/${this.orderId}`, JSON.stringify(values.contact, null, 2), {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.status === 204) {
+                    this.getGroup();
+                    $('#editContactModal').modal('hide');
+                }
+            }).catch(error => {
+                if (error.response.status === 400) {
+                    Swal.fire(error.response.data);
+                }
+            });
+        },
+        showImages: function (productId) {
+            let product = this.addons.find(x => x.productId == productId);
+
+            if (product && product.images) {
+                let modal = $('#productModal');
+                modal.modal('show');
+                modal.find('.modal-title').text(product.name);
+                modal.find('.modal-body').empty();
+            
+                $.each(product.images?.split(','), function (i, item) {
+                    $('#productModal').find('.modal-body').append(
+                        $('<img>', { src: item, alt: product.name, class: "img-fluid" })
+                    );
+                });
+            }
+        },
+        resetQty(productId) {
+            $('#addonsQty' + productId).val(0);
+        },
+        addCart: function (target, element) {
+            let selectedQty = $('#' + target.id + " :selected").val();
+            let addons = {
+                productId: element.productId,
+                name: element.name,
+                qty: selectedQty,
+                spec: ""
+            };
+
+            if (element.specs.length > 0) {
+                let selectedSpec = $('#addonsSpecs' + element.productId + " :selected").val();
+                if (selectedSpec == "") {
+                    Swal.fire({ icon: 'warning', text: `請先選擇 ${element.name} 規格` });
+                    $('#' + target.id).val(0);
+                    return;
+                } else {
+                    addons.spec = selectedSpec;
+                }
+            };
+
+            let findCart = this.findCart(addons.productId, addons.spec);
+            if (findCart == -1) {
+                if (selectedQty > 0) this.formValues.addons.push(addons);
+            } else {
+                if (selectedQty == 0) {
+                    this.removeCart(addons);
+                } else {
+                    this.formValues.addons[findCart].qty = selectedQty;
+                }
+            }
+        },
+        findCart: function (productId, spec) {
+            if (spec != "") {
+                return this.formValues.addons.findIndex(x => x.productId == productId && x.spec == spec);
+            }
+            return this.formValues.addons.findIndex(x => x.productId == productId);
+        },
+        removeCart: function (element) {
+            let findCart = this.findCart(element.productId, element.spec);
+            if (findCart != -1) {
+                this.formValues.addons.splice(findCart, 1);
+            };
+        },
+        copy(){
+            navigator.clipboard.writeText(this.formValues.contact.shareUri);
+        }
+    }
+}
+</script>

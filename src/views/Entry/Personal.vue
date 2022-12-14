@@ -3,19 +3,21 @@
         <div class="page-header py-4">
             <h1 class="page-title text-primary-d2 text-150 d-none d-sm-block">
                 {{ act.actName }}
-                <small class="page-info text-secondary-d2 text-nowrap">
+
+                <small v-if="settings.contact.groupName" class="page-info text-secondary-d2 text-nowrap">
                     <i class="fa fa-angle-double-right text-80"></i>
-                    <span v-text="operate == 'create' ? '新增成員' : '編輯成員'"> </span>
+                    {{settings.contact.groupName}}
                 </small>
 
-                <!-- <small class="page-info text-secondary-d2 text-nowrap">
+                <small class="page-info text-secondary-d2 text-nowrap">
                     <i class="fa fa-angle-double-right text-80"></i>
-                    123
-                </small> -->
+                    <span v-text="operate !== 'create' ? '編輯成員' : '新增成員'"> </span>
+                </small>
+
             </h1>
         </div>
 
-        <div v-show="(!isAuthenticated && operate === 'create')" class="alert alert-danger mb-4">
+        <div v-show="(!isAuthenticated && this.$route.name !== 'AddMember' && operate === 'create')" class="alert alert-danger mb-4">
             <i class="fas fa-info-circle mr-4 text-danger"></i>
             <span>若您已加入會員，登入後可「快速報名」，且方便您查詢訂單，避免訂單遺漏。</span>
         </div>
@@ -274,11 +276,11 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                     
-                                <input type="hidden" name="selectedAddons.Index" v-bind:value="'A'+index" />
+                                <!-- <input type="hidden" name="selectedAddons.Index" v-bind:value="'A'+index" />
                                 <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].productId'" v-bind:value="item.productId">
                                 <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].name'" v-bind:value="item.name">
                                 <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].spec'" v-bind:value="item.spec">
-                                <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].qty'" v-bind:value="item.qty">
+                                <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].qty'" v-bind:value="item.qty"> -->
                             </li>
                         </ul>
                     </div>
@@ -358,11 +360,38 @@
             </div>
             <!-- End 個人加購品 -->
             <!-- Submit -->
-            <div class="mb-5">
+            <div v-if="this.$route.name === 'CreatePersonal'" class="mb-5">
                 <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                     <div class="pt-2">下一步:選擇付款及寄送方式</div>
                     <div class="py-2">Next Step: Select payment and shipping</div>
                 </button>
+            </div>
+            <div v-else-if="this.$route.name === 'EditPersonal'">
+                <div class="row">
+                    <div class="col-6">
+                        <a class="btn btn-lighter-secondary btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                            <div class="pt-2">不儲存，回上一頁</div>
+                            <div class="py-2">No Save，Redirect To Previous Page </div>
+                        </a>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+            </div>
+            <div v-else-if="this.$route.name === 'AddMember'">
+                <div class="row">
+                    <div class="col-6">
+                        <a class="btn btn-lighter-secondary btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                            <div class="pt-2">不儲存，回上一頁</div>
+                            <div class="py-2">No Save，Redirect To Previous Page </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                            <div class="pt-2">加入「 {{settings.contact.groupName}} 」隊伍</div>
+                            <div class="py-2">Join in「 {{settings.contact.groupName}} 」</div>
+                        </button>
+                    </div>
+                </div>
             </div>
             <!-- End Submit -->
         </Form>
@@ -391,7 +420,7 @@
 
 <script>
 import axios from 'axios';
-import { Field, Form, ErrorMessage  } from 'vee-validate';
+import { Field, Form, ErrorMessage } from 'vee-validate';
 import Swal from 'sweetalert2';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -454,6 +483,7 @@ export default {
                 selectedAddons:[]
             },
             settings:{
+                contact:{},
                 actGroup:[],
                 freebie:[],
                 addons:[]
@@ -477,6 +507,23 @@ export default {
                     this.$router.push({ name: 'NotFound' });
                 }
             });
+
+        if (this.$route.name === 'AddMember') {
+            let orderId = sessionStorage.getItem("orderId");
+            if (orderId === '') {
+                this.$router.push({ name: 'CreateGroup' });
+            };
+            axios.get(`/api/group/info/${orderId}`).then(({ data }) => {
+                this.settings.contact = data;
+            }).catch(error => {
+                if (error.response.status === 400) {
+                    Swal.fire(error.response.data);
+                };
+                if (error.response.status === 404) {
+                    Swal.fire("找不到資料").then(() => this.$router.push({ name: 'CreateGroup' }));
+                }
+            })
+        }
     },
     computed: {
         code(){
@@ -496,7 +543,7 @@ export default {
         },
         isAuthenticated(){
             return this.$store.state.isAuthenticated;
-        }
+        },
     },
     methods: {
         importUser(){
@@ -515,15 +562,43 @@ export default {
             values.selectedAddons = this.formValues.selectedAddons;
             values.actCode = this.code;
 
+            let url = '/api/personal';
+            let redirctToName = 'Checkout';
+            if (this.$route.name === 'AddMember') {
+                values.orderId = sessionStorage.getItem("orderId");
+                url = '/api/personal/Addmember';
+                redirctToName = 'Group';
+            }
             const form = JSON.stringify(values, null,2);
 
-            axios.post(`/api/personal`, form, {
+            axios.post(url, form, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => { console.log(response) })
-            .catch(error => {
+            .then(response => {
+                if (this.$route.name === 'CreatePersonal') {
+                    sessionStorage.setItem("orderId", response.data.orderId);
+                };
+                if (response.data.needUploads) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '報名成功',
+                        text: '報名組別需上傳相關文件，您是否要現在上傳文件!?',
+                        showCancelButton: true,
+                        confirmButtonText: '是，我要上傳文件',
+                        cancelButtonText: '否'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.$router.push({ name: 'UploadFile' });
+                        } else {
+                            this.$router.push({ name: redirctToName });
+                        }
+                    })
+                } else {
+                    this.$router.push({ name: redirctToName });
+                }
+            }).catch(error => {
                 if (error.response.status === 404) {
                     this.$router.push({ name: 'NotFound' });
                 };

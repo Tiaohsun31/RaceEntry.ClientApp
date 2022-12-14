@@ -1,3 +1,4 @@
+//TODO push to register
 <template>
     <button type="button" class="d-style mr-4 px-4 navbar-toggler btn btn-burger static d-flex d-lg-none collapsed"
         data-toggle="collapse" data-target="#navbarMenu2" aria-controls="navbarMenu2" aria-expanded="false"
