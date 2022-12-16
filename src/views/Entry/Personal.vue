@@ -415,7 +415,8 @@ import axios from 'axios';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import Swal from 'sweetalert2';
 import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+import '@vuepic/vue-datepicker/dist/main.css';
+import {axiosResponseStatus} from '../axiosHandlingErrors';
 
 const config = {
     headers: {
@@ -463,11 +464,7 @@ export default {
                 this.settings.actGroup = actGroup;
                 this.settings.freebie = freebit;
                 this.settings.addons = addons;
-            }).catch(error => {
-                if (error.response.status === 404) {
-                    this.$router.push({ name: 'NotFound' });
-                }
-            });
+            }).catch(error => axiosResponseStatus(error));
 
         if (this.$route.name === 'AddMember') {
             let orderId = sessionStorage.getItem("orderId");
@@ -476,14 +473,7 @@ export default {
             };
             axios.get(`/api/group/info/${orderId}`).then(({ data }) => {
                 this.settings.contact = data;
-            }).catch(error => {
-                if (error.response.status === 400) {
-                    Swal.fire(error.response.data);
-                };
-                if (error.response.status === 404) {
-                    Swal.fire("找不到資料").then(() => this.$router.push({ name: 'CreateGroup' }));
-                }
-            })
+            }).catch(error => axiosResponseStatus(error))
         };
         if (this.$route.name === 'EditPersonal') {
             axios.get(`/api/personal/${this.userId}`).then(({data})=>{
@@ -491,10 +481,7 @@ export default {
                 this.formValues.selectedGroup = data.actGroupId;
                 this.formValues.selectedFreebie = data.freebie;
                 this.selectedAddons = data.addons;
-            })
-            .catch(() => {
-                this.$router.push({name:'NotFound'});
-            });
+            }).catch(error => axiosResponseStatus(error));
         }
     },
     computed: {
@@ -522,11 +509,7 @@ export default {
         importUser(){
             axios.get('/api/account/user').then(({data}) => {
                 this.formValues.user = data;
-            }).catch(error=>{
-                if (error.response.status === 404) {
-                    Swal.fire("找不到會員");
-                };
-            })
+            }).catch(error => axiosResponseStatus(error))
         },
         clearUser(){
             this.formValues.user = {};
@@ -552,7 +535,6 @@ export default {
             }
         },
         mapToselectedFreebie(values) {
-            //console.log(values);
             let temp = [];
             this.getfreebie.forEach(element => {
                 let find = values.find(x => {
@@ -574,15 +556,8 @@ export default {
             axios.post('/api/order/personal', form, config)
                 .then(response => {
                     sessionStorage.setItem("orderId", response.data.orderId);
-                    this.responsedResult(response,'報名成功', 'Checkout');
-                }).catch(error => {
-                    if (error.response.status === 404) {
-                        this.$router.push({ name: 'NotFound' });
-                    };
-                    if (error.response.status === 400) {
-                        Swal.fire({ icon: 'error', title: error.response.data });
-                    }
-                });
+                    this.responsedResult(response, '報名成功', 'Checkout');
+                }).catch(error => axiosResponseStatus(error));
         },
         editPersonal(values) {
             values.userInfoId = this.userId;
@@ -591,14 +566,7 @@ export default {
             axios.patch(`/api/personal/${this.userId}`, form, config)
             .then(response => {
                 this.responsedResult(response,'修改成功', '');
-            }).catch(error => {
-                if (error.response.status === 404) {
-                    this.$router.push({ name: 'NotFound' });
-                };
-                if (error.response.status === 400) {
-                    Swal.fire({ icon: 'error', title: error.response.data });
-                }
-            });
+            }).catch(error => axiosResponseStatus(error));
         },
         addPersonal(values){
             values.orderId = sessionStorage.getItem("orderId");
@@ -607,14 +575,7 @@ export default {
             axios.post('/api/personal/Addmember', form, config)
                 .then(response => {
                     this.responsedResult(response,'報名成功', 'Group');
-                }).catch(error => {
-                    if (error.response.status === 404) {
-                        this.$router.push({ name: 'NotFound' });
-                    };
-                    if (error.response.status === 400) {
-                        Swal.fire({ icon: 'error', title: error.response.data });
-                    }
-                });
+                }).catch(error => axiosResponseStatus(error));
         },
         responsedResult(response,title,redirctToName) {
             if (response.data.needUploads) {
