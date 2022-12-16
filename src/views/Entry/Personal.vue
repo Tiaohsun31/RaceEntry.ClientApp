@@ -224,31 +224,33 @@
                                 `／$NT${element.unitPrice}`)}} </span>
                             <span v-show="element.description"> ({{element.description}}) </span>
                         </div>
-                        <Field type="hidden" v-bind:name="`selectedFreebie[${index}].productId`" v-bind:value="element.productId" :keep-value="true"  />
-                        <Field type="hidden" v-bind:name="`selectedFreebie[${index}].name`" v-bind:value="element.name" :keep-value="true" />
                         <div v-if="element.specs.length > 0" class="mb-3 mt-2">
                             <div v-if="element.specs.length == 1">
-                                <Field v-bind:name="`selectedFreebie[${index}].spec`" v-bind:label="element.name" class="form-control" title="請選擇規格" rules="required" as="select" 
-                                :selected="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].spec}` :''"
-                                :keep-value="true">
-                                    <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                    <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
-                                        v-bind:value="`${option.title || option.name}`">
-                                        {{ option.name || option.title }} {{ option.disabled ? "已售完" : "" }}
-                                    </option>
+                                <Field :name="`selectedFreebie[${index}].spec`" :label="element.name" rules="required" as="div"
+                                    :value="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].productId},${formValues.selectedFreebie[index].spec}` :''" :keep-value="true"
+                                    v-slot="{field,value}">
+                                    <select v-bind="field" :value="value" class="form-control" title="請選擇規格">
+                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
+                                        <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
+                                            v-bind:value="`${element.productId},${option.title || option.name}`">
+                                            {{ option.name || option.title }} {{ option.disabled ? "已售完" : "" }}
+                                        </option>
+                                    </select>
                                 </Field>
                             </div>
                             <div v-else>
-                                <Field v-bind:name="`selectedFreebie[${index}].spec`" v-bind:label="element.name" class="form-control" title="請選擇規格" rules="required" as="select" 
-                                :selected="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].spec}` :''"
-                                :keep-value="true">
-                                    <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                    <optgroup v-for="options in element.specs" v-bind:label="options.key == '' ? '' : options.key">
-                                        <option v-for="item in options.list" v-bind:disabled="item.disabled"
-                                            v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${item.title}${item.name}`"
-                                            v-bind:label="`${item.name || item.title} ${item.disabled ? '已售完' : ''}`">
-                                        </option>
-                                    </optgroup>
+                                <Field :name="`selectedFreebie[${index}].spec`" :label="element.name" rules="required" as="div"
+                                    :value="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].productId},${formValues.selectedFreebie[index].spec}` :''" :keep-value="true"
+                                    v-slot="{field,value}">
+                                    <select v-bind="field" :value="value" class="form-control" title="請選擇規格">
+                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
+                                        <optgroup v-for="options in element.specs" v-bind:label="options.key == '' ? '' : options.key">
+                                            <option v-for="item in options.list" v-bind:disabled="item.disabled"
+                                                v-bind:value="item.title != '' && item.name != '' ? `${element.productId},${item.title}-${item.name}` : `${element.productId},${item.title}${item.name}`"
+                                                v-bind:label="`${item.name || item.title} ${item.disabled ? '已售完' : ''}`">
+                                            </option>
+                                        </optgroup>
+                                    </select>
                                 </Field>
                             </div>
                             <ErrorMessage v-bind:name="`selectedFreebie[${index}].spec`" class="text-danger" as="div" />
@@ -266,14 +268,14 @@
                         <small class="text-uppercase"> Personal Add-ons </small>
                     </div>
                 </div>
-                <div v-if="formValues.selectedAddons.length > 0" class="card-body pt-3">
+                <div v-if="selectedAddons.length > 0" class="card-body pt-3">
                     <div class="my-3">
                         <h5 class="text-120 text-grey-d3">
                             <i class="fa fa-star mr-1 text-orange text-90"></i>
                             加購明細
                         </h5>
                         <ul class="list-group">
-                            <li v-for="(item,index) in formValues.selectedAddons"
+                            <li v-for="item in selectedAddons" :key="item.productId"
                                 class="list-group-item d-flex justify-content-between align-items-center">
                                 {{ item.name + (item.spec == null || item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
                                 <button type="button" class="close" aria-label="Close" v-on:click="removeCart(item)">
@@ -332,8 +334,7 @@
                                         </select>
                                     </template>
                                     <template v-else>
-                                        <select v-bind:id="'addonsSpecs'+element.productId" class="form-control"
-                                            v-on:change="resetQty(element.productId)">
+                                        <select v-bind:id="'addonsSpecs'+element.productId" class="form-control" v-on:change="resetQty(element.productId)">
                                             <option value="" disabled hidden selected> -- 請選擇 -- </option>
                                             <optgroup v-for="options in element.specs" v-bind:label="options.key == null ? '' : options.key">
                                                 <option v-for="item in options.list" v-bind:disabled="item.disabled"
@@ -439,8 +440,8 @@ export default {
                 },
                 selectedGroup:'',
                 selectedFreebie:[],
-                selectedAddons:[],
             },
+            selectedAddons:[],
             settings:{
                 contact:{},
                 actGroup:[],
@@ -489,7 +490,7 @@ export default {
                 this.formValues.user = data;
                 this.formValues.selectedGroup = data.actGroupId;
                 this.formValues.selectedFreebie = data.freebie;
-                this.formValues.selectedAddons = data.addons;
+                this.selectedAddons = data.addons;
             })
             .catch(() => {
                 this.$router.push({name:'NotFound'});
@@ -532,7 +533,7 @@ export default {
         },
         onSubmit(values) {
             values.actCode = this.code;
-            values.selectedAddons = this.formValues.selectedAddons;
+            values.selectedAddons = this.selectedAddons;
             values.selectedFreebie = this.mapToselectedFreebie(values.selectedFreebie);
 
             const page = this.$route.name;
@@ -551,13 +552,18 @@ export default {
             }
         },
         mapToselectedFreebie(values) {
+            //console.log(values);
             let temp = [];
             this.getfreebie.forEach(element => {
-                let find = values.find(x => x.productId == element.productId);
+                let find = values.find(x => {
+                    if (x) {
+                        return x.spec?.split(',')[0] == element.productId
+                    }
+                });
                 temp.push({
                     productId: element.productId,
                     name: element.name,
-                    spec: find?.spec ? find.spec : ''
+                    spec: find ? find.spec?.split(',')[1] : ''
                 });
             });
             return temp;
@@ -565,7 +571,7 @@ export default {
         createPersonalOrder(values){
             const form = JSON.stringify(values, null,2);
 
-            axios.post('/api/personal', form, config)
+            axios.post('/api/order/personal', form, config)
                 .then(response => {
                     sessionStorage.setItem("orderId", response.data.orderId);
                     this.responsedResult(response,'報名成功', 'Checkout');
@@ -581,6 +587,7 @@ export default {
         editPersonal(values) {
             values.userInfoId = this.userId;
             const form = JSON.stringify(values, null, 2);
+
             axios.patch(`/api/personal/${this.userId}`, form, config)
             .then(response => {
                 this.responsedResult(response,'修改成功', '');
@@ -591,11 +598,12 @@ export default {
                 if (error.response.status === 400) {
                     Swal.fire({ icon: 'error', title: error.response.data });
                 }
-            })
+            });
         },
         addPersonal(values){
             values.orderId = sessionStorage.getItem("orderId");
             const form = JSON.stringify(values, null,2);
+
             axios.post('/api/personal/Addmember', form, config)
                 .then(response => {
                     this.responsedResult(response,'報名成功', 'Group');
@@ -712,28 +720,28 @@ export default {
                     addons.spec = selectedSpec;
                 }
             };
-
+            
             let findCart = this.findCart(addons.productId, addons.spec);
             if (findCart == -1) {
-                if (selectedQty > 0) this.formValues.selectedAddons.push(addons);
+                if (selectedQty > 0) this.selectedAddons.push(addons);
             } else {
                 if (selectedQty == 0) {
                     this.removeCart(addons);
                 } else {
-                    this.formValues.selectedAddons[findCart].qty = selectedQty;
+                    this.selectedAddons[findCart].qty = selectedQty;
                 }
             }
         },
         findCart: function (productId, spec) {
             if (spec != "") {
-                return this.formValues.selectedAddons.findIndex(x => x.productId == productId && x.spec == spec);
+                return this.selectedAddons.findIndex(x => x.productId == productId && x.spec == spec);
             }
-            return this.formValues.selectedAddons.findIndex(x => x.productId == productId);
+            return this.selectedAddons.findIndex(x => x.productId == productId);
         },
         removeCart: function (element) {
             let findCart = this.findCart(element.productId, element.spec);
             if (findCart != -1) {
-                this.formValues.selectedAddons.splice(findCart, 1);
+                this.selectedAddons.splice(findCart, 1);
             };
         },
     }

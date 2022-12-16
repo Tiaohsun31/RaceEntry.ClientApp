@@ -167,7 +167,7 @@ export default {
         this.date = [startDate, endDate];
 
         //TODO Test
-        //sessionStorage.setItem("orderId","3ec65b33-dc1c-49d0-2ffb-08dadcb05da7")
+        sessionStorage.setItem("orderId","7fd3febb-2030-412c-a4e3-08dadf10a5ed")
     },
     computed:{
         isAuthenticated(){
@@ -187,7 +187,7 @@ export default {
             values.startTime = this.date[0];
             values.endTime = this.date[1];
 
-            axios.post('/api/group',JSON.stringify(values,null,2),{
+            axios.post('/api/order',JSON.stringify(values,null,2),{
                 headers:{
                     'Content-Type': 'application/json'
                 }
