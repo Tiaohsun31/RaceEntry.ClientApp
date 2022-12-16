@@ -187,7 +187,7 @@
                 <div class="pt-2">下一步:選擇付款及寄送方式</div>
                 <div class="py-2">Next Step: Select payment and shipping</div>
             </button>
-            
+
         </div>
         <!-- 編輯團隊資料 -->
         <div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel" aria-hidden="true">
@@ -344,27 +344,27 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Members from '../Entry/Members.vue';
-import { Field,Form,ErrorMessage } from 'vee-validate';
+import { Field, Form, ErrorMessage } from 'vee-validate';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
     name: 'Group',
-    props:['act'],
+    props: ['act'],
     components: { Field, Form, ErrorMessage, Datepicker, Members },
-    data(){
+    data() {
         return {
-            formValues:{
-                contact:{
-                    groupName:'Test',
-                    isShare:true,
+            formValues: {
+                contact: {
+                    groupName: 'Test',
+                    isShare: true,
                 },
-                addons:[],
-                members:[],
+                addons: [],
+                members: [],
             },
-            addons:[],
-            isShare:false,
-            date:[],
+            addons: [],
+            isShare: false,
+            date: [],
         }
     },
     created() {
@@ -372,7 +372,7 @@ export default {
             this.$router.push({ name: 'CreateGroup' });
         }
     },
-    mounted(){
+    mounted() {
         this.getGroup();
 
         let endpoints = [
@@ -381,10 +381,10 @@ export default {
         ];
 
         Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
-            .then(([{ data: addons },{ data:members} ]) => {
+            .then(([{ data: addons }, { data: members }]) => {
                 this.addons = addons;
                 this.formValues.members = members;
-               
+
             }).catch(error => {
                 if (error.response.status === 404) {
                     this.$router.push({ name: 'CreateGroup' });
@@ -395,31 +395,31 @@ export default {
         orderId() {
             return sessionStorage.getItem("orderId");
         },
-        code(){
+        code() {
             return this.$route.params.code;
         }
     },
-    methods:{
+    methods: {
         getGroup() {
             axios.get(`/api/group/info/${this.orderId}`)
-            .then(({ data }) => {
-                this.formValues.contact = data;
-                if (this.formValues.contact.addons) {
-                    this.formValues.addons = data.addons;
-                };
-                this.date = [data.startTime, data.endTime];
-            }).catch(error => {
-                if (error.response.status === 400) {
-                    Swal.fire(error.response.data);
-                };
-                if (error.response.status === 404) {
-                    Swal.fire("找不到資料").then(() => {
-                        this.$router.push({ name: 'CreateGroup' });
-                    });
-                }
-            })
+                .then(({ data }) => {
+                    this.formValues.contact = data;
+                    if (this.formValues.contact.addons) {
+                        this.formValues.addons = data.addons;
+                    };
+                    this.date = [data.startTime, data.endTime];
+                }).catch(error => {
+                    if (error.response.status === 400) {
+                        Swal.fire(error.response.data);
+                    };
+                    if (error.response.status === 404) {
+                        Swal.fire("找不到資料").then(() => {
+                            this.$router.push({ name: 'CreateGroup' });
+                        });
+                    }
+                })
         },
-        EditBase(values){
+        EditBase(values) {
             values.contact.actCode = this.code;
             values.contact.isShare = this.isShare;
             values.contact.startTime = this.date[0];
@@ -440,22 +440,22 @@ export default {
                 }
             });
         },
-        addAddons(){
+        addAddons() {
             let addons = {
-                orderId:this.orderId,
-                selectedAddons:this.formValues.addons
+                orderId: this.orderId,
+                selectedAddons: this.formValues.addons
             };
-            axios.post('/api/group/groupAddons',JSON.stringify(addons, null, 2), {
+            axios.post('/api/group/groupAddons', JSON.stringify(addons, null, 2), {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }).then(response => {
                 if (response.status === 204) {
                     this.getGroup();
+
                 }
-            })
-            .catch(error=>{
-                if (error.response.status === 400 || error.response.status === 404){
+            }).catch(error => {
+                if (error.response.status === 400 || error.response.status === 404) {
                     Swal.fire("尚未開放報名或報名已截止");
                 }
             });
@@ -468,7 +468,7 @@ export default {
                 modal.modal('show');
                 modal.find('.modal-title').text(product.name);
                 modal.find('.modal-body').empty();
-            
+
                 $.each(product.images?.split(','), function (i, item) {
                     $('#productModal').find('.modal-body').append(
                         $('<img>', { src: item, alt: product.name, class: "img-fluid" })
@@ -522,7 +522,7 @@ export default {
                 this.formValues.addons.splice(findCart, 1);
             };
         },
-        copy(){
+        copy() {
             navigator.clipboard.writeText(this.formValues.contact.shareUri);
         }
     }

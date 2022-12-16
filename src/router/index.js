@@ -10,6 +10,7 @@ import Personal from '../views/Entry/Personal.vue';
 import CreateGroup from '../views/Entry/CreateGroup.vue';
 import Group from '../views/Entry/Group.vue';
 import UploadFile from '../views/Entry/uploadFile.vue';
+import Checkout from '../views/Entry/Checkout.vue';
 
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
@@ -20,7 +21,7 @@ import NotFound from '../components/Layout/NotFound.vue';
 import HelloWorld from '../components/HelloWorld.vue';
 
 const routes = [
-    { name:'Home', path: '/', component: Home },
+    { name: 'Home', path: '/', component: Home },
     { name: 'Acts', path: '/acts', component: Acts },
     {
         path: '/entry',
@@ -31,10 +32,11 @@ const routes = [
             { name: 'CreateGroup', path: '/:code/group/create', component: CreateGroup },
             { name: 'Group', path: '/:code/group', component: Group },
             { name: 'AddMember', path: '/:code/addMember', component: Personal, props: { operate: 'create' } },
-            { name: 'UploadFile', path: '/:code/uploadFile', component: UploadFile}
+            { name: 'UploadFile', path: '/:code/uploadFile', component: UploadFile },
+            { name: 'Checkout', path: '/:code/checkout', component: Checkout }
         ]
     },
-    { name:'ChangePassword', path:'/changePassword', component: ChangePassword },
+    { name: 'ChangePassword', path: '/changePassword', component: ChangePassword },
     {
         path: '/:code',
         component: ActLayout,
@@ -46,10 +48,10 @@ const routes = [
 
     //{ name:'HomePage', path: '/Activities/:code', component:HomePage },
     // { name:'Activities', path: '/Activities/:code/:id', component: ActLayout },
-    { name:'ComingSoon', path: '/ComingSoon/:code', component:ComingSoon },
-    { name:'NotFound', path:'/:pathMatch(.*)*', component:NotFound }
+    { name: 'ComingSoon', path: '/ComingSoon/:code', component: ComingSoon },
+    { name: 'NotFound', path: '/:pathMatch(.*)*', component: NotFound }
 ]
-  
+
 export const router = createRouter({
     history: createWebHistory(),
     linkActiveClass: 'active',

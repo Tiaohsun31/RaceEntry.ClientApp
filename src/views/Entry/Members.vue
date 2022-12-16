@@ -41,7 +41,7 @@
                                 </RouterLink>
                                 <button v-if="members.length > 1" type="button"
                                     class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-danger btn-a-lighter-danger"
-                                    onclick="cancel('member','@item.UserInfoId')">
+                                    @click="cancel(element.userInfoId)">
                                     <i class="fa fa-trash-alt mr-1"></i>
                                     刪除
                                 </button>
@@ -64,7 +64,7 @@
                                             <i class="fa fa-pencil-alt text-orange mr-1 p-2 w-4"></i>
                                             編輯
                                         </a>
-                                        <a href="#" onclick="Delete(item.teamId,item.teamName)" class="dropdown-item">
+                                        <a href="#" @click="cancel(item.userInfoId)" class="dropdown-item">
                                             <i class="fa fa-trash-alt text-danger-m1 mr-1 p-2 w-4"></i>
                                             刪除
                                         </a>
@@ -173,8 +173,42 @@
 </template>
 <script>
 
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
 export default {
     name: 'Members',
-    props: ['members','isReadOnly']
+    props: ['members','isReadOnly'],
+    methods:{
+        cancel(id) {
+            let user = this.members.findIndex(x => x.userInfoId === id);
+            if (user === -1) {
+                Swal.fire({icon:'error',title:'資料不存在，無法刪除'});
+                return;
+            }
+            Swal.fire({
+                title: '是否取消報名?',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '否!',
+                confirmButtonText: '是!我要取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`/api/personal/${id}`)
+                    .then(response => {
+                        if (response.status === 204) {
+                            Swal.fire({ icon: 'success', title: "已取消報名" }).then(() => {
+                                this.members.splice(user, 1);
+                            })
+                        }
+                    });
+                }
+            }).catch(error => {
+                if (error.response.status === 404) {
+                    Swal.fire({icon:'error',title:'資料不存在，無法刪除'});
+                }
+            })
+        }
+    }
 }
 </script>

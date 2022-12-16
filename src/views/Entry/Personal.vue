@@ -108,7 +108,7 @@
                             <ErrorMessage name="user.name" class="text-danger" as="div" />
                         </div>
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">                           
-                            <Field name="user.gender" label="法定性別" rules="required" class="form-control text-dark-l5" v-model="formValues.gender" v-on:change="changeSelectedGroup" as="select">
+                            <Field name="user.gender" label="法定性別" rules="required" class="form-control text-dark-l5" v-model="formValues.user.gender" v-on:change="changeSelectedGroup" as="select">
                                 <option hidden value=""> -- 法定性別 -- </option>
                                 <option value="男"> 男 </option>
                                 <option value="女"> 女 </option>
@@ -188,20 +188,22 @@
                 <div class="card-body">
                     <div class="row d-flex mx-1 mx-lg-0 btn-group btn-group-toggle" data-toggle="buttons">
                         <div v-for="item in settings.actGroup" class="col-6 col-sm-2 mb-3">
-                            <label class="d-style btn btn-outline-info py-md-3 px-md-4 py-25 px-3 text-110 mr-3 shadow-sm radius-1 w-100" v-bind:class="{'disabled':allowEntry(item) != ''}">
-                                <Field class="invisible pos-abs" label="報名項目" rules="required" type="radio" name="selectedGroup" v-model="formValues.selectedGroup" v-bind:value="item.actGroupId"></Field>
-                                {{item.name}}
-                                <span class="d-block text-90">
-                                    NT$ {{item.unitPrice}}
-                                    <div v-show="allowEntry(item) != ''" class="text-center text-danger text-90"> {{allowEntry(item)}} </div>
-                                </span>
-                            </label>
+                            <Field v-slot="{ field }" label="報名項目" rules="required" name="selectedGroup" type="radio" :value="item.actGroupId" v-model="formValues.selectedGroup">
+                                <label class="d-style btn btn-outline-info py-md-3 px-md-4 py-25 px-3 text-110 mr-3 shadow-sm radius-1 w-100" 
+                                     v-bind:class="{'disabled':allowEntry(item) != '','active':item.actGroupId === formValues.selectedGroup}">
+                                    <input class="invisible pos-abs" type="radio" name="selectedGroup" v-bind="field" :value="item.actGroupId" />
+                                    {{item.name}}
+                                    <span class="d-block text-90">
+                                        NT$ {{item.unitPrice}}
+                                        <div v-show="allowEntry(item) != ''" class="text-center text-danger text-90"> {{allowEntry(item)}} </div>
+                                    </span>
+                                </label>
+                            </Field>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- End 報名項目 -->
-
             <!-- 附贈項目 -->
             <div v-if="getfreebie != null && getfreebie.length > 0" class="card border-0">
                 <div class="card-header bgc-secondary-l4 brc-green-m1 border-0 border-l-4 radius-0 text-dark-tp2 mb-1">
@@ -222,27 +224,29 @@
                                 `／$NT${element.unitPrice}`)}} </span>
                             <span v-show="element.description"> ({{element.description}}) </span>
                         </div>
-                        <Field type="hidden" v-bind:name="`selectedFreebie[${index}].productId`" v-bind:value="element.productId" />
-                        <Field type="hidden" v-bind:name="`selectedFreebie[${index}].name`" v-bind:value="element.name" />
+                        <Field type="hidden" v-bind:name="`selectedFreebie[${index}].productId`" v-bind:value="element.productId" :keep-value="true"  />
+                        <Field type="hidden" v-bind:name="`selectedFreebie[${index}].name`" v-bind:value="element.name" :keep-value="true" />
                         <div v-if="element.specs.length > 0" class="mb-3 mt-2">
                             <div v-if="element.specs.length == 1">
-                                <Field v-bind:name="`selectedFreebie[${index}].spec`" v-bind:label="element.name" class="form-control" title="請選擇規格" rules="required" as="select">
+                                <Field v-bind:name="`selectedFreebie[${index}].spec`" v-bind:label="element.name" class="form-control" title="請選擇規格" rules="required" as="select" 
+                                :selected="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].spec}` :''"
+                                :keep-value="true">
                                     <option value="" disabled hidden selected> -- 請選擇 -- </option>
                                     <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
-                                        v-bind:value="`${option.title || option.name}`"
-                                        v-bind:selected="freebieChecked(element.productId,(option.title || option.name))">
+                                        v-bind:value="`${option.title || option.name}`">
                                         {{ option.name || option.title }} {{ option.disabled ? "已售完" : "" }}
                                     </option>
                                 </Field>
                             </div>
                             <div v-else>
-                                <Field v-bind:name="`selectedFreebie[${index}].spec`" v-bind:label="element.name" class="form-control" title="請選擇規格" rules="required" as="select">
+                                <Field v-bind:name="`selectedFreebie[${index}].spec`" v-bind:label="element.name" class="form-control" title="請選擇規格" rules="required" as="select" 
+                                :selected="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].spec}` :''"
+                                :keep-value="true">
                                     <option value="" disabled hidden selected> -- 請選擇 -- </option>
                                     <optgroup v-for="options in element.specs" v-bind:label="options.key == '' ? '' : options.key">
                                         <option v-for="item in options.list" v-bind:disabled="item.disabled"
                                             v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${item.title}${item.name}`"
-                                            v-bind:selected="freebieChecked(element.productId,(item.title + '-' + item.name))">
-                                            {{ item.name || item.title }} {{ item.disabled ? "已售完" : "" }}
+                                            v-bind:label="`${item.name || item.title} ${item.disabled ? '已售完' : ''}`">
                                         </option>
                                     </optgroup>
                                 </Field>
@@ -271,16 +275,10 @@
                         <ul class="list-group">
                             <li v-for="(item,index) in formValues.selectedAddons"
                                 class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ item.name + (item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
+                                {{ item.name + (item.spec == null || item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
                                 <button type="button" class="close" aria-label="Close" v-on:click="removeCart(item)">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                    
-                                <!-- <input type="hidden" name="selectedAddons.Index" v-bind:value="'A'+index" />
-                                <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].productId'" v-bind:value="item.productId">
-                                <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].name'" v-bind:value="item.name">
-                                <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].spec'" v-bind:value="item.spec">
-                                <input type="hidden" v-bind:name="'selectedAddons[A' + index + '].qty'" v-bind:value="item.qty"> -->
                             </li>
                         </ul>
                     </div>
@@ -366,27 +364,20 @@
                     <div class="py-2">Next Step: Select payment and shipping</div>
                 </button>
             </div>
-            <div v-else-if="this.$route.name === 'EditPersonal'">
+            <div v-else>
                 <div class="row">
                     <div class="col-6">
-                        <a class="btn btn-lighter-secondary btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
-                            <div class="pt-2">不儲存，回上一頁</div>
-                            <div class="py-2">No Save，Redirect To Previous Page </div>
-                        </a>
-                    </div>
-                    <div class="col-6"></div>
-                </div>
-            </div>
-            <div v-else-if="this.$route.name === 'AddMember'">
-                <div class="row">
-                    <div class="col-6">
-                        <a class="btn btn-lighter-secondary btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                        <a @click.prevent="$router.go(-1)" class="btn btn-lighter-secondary btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                             <div class="pt-2">不儲存，回上一頁</div>
                             <div class="py-2">No Save，Redirect To Previous Page </div>
                         </a>
                     </div>
                     <div class="col-6">
-                        <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                        <button v-if="this.$route.name === 'EditPersonal'" type="submit" class="btn btn-lighter-success btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                            <div class="pt-2">確定修改資料</div>
+                            <div class="py-2">Modify the data</div>
+                        </button>
+                        <button v-if="this.$route.name === 'AddMember'" type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                             <div class="pt-2">加入「 {{settings.contact.groupName}} 」隊伍</div>
                             <div class="py-2">Join in「 {{settings.contact.groupName}} 」</div>
                         </button>
@@ -425,42 +416,10 @@ import Swal from 'sweetalert2';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
-// Object.keys(AllRules).forEach(rule => {
-//   defineRule(rule, AllRules[rule]);
-// });
-
-// configure({
-//   generateMessage: localize({ zh_TW: zhTW }),
-//   validateOnInput: true
-// })
-// setLocale('zh_TW')
-
-// const schema = yup.object({
-//     nation: yup.string().required("國籍 是必填欄"),
-//     rocid: yup.string().required("身分證或護照 是必填欄").min(6,`身分證或護照 至少 6 位數`).max(10,`身分證或護照 至多 10 位數`),
-//     name:yup.string().required("姓名 為必填欄").max(50,"姓名 最多可輸入 50 字"),
-//     gender:yup.string().required("法定性別 為必填欄位"),
-//     birthdate:yup.string().required("出生年月日 為必填欄位"),
-//     email:yup.string().required("Email 為必填欄位").max(200,"Email 最多可輸入 200 字"),
-//     phoneNumber:yup.string().required("手機 為必填欄位").max(10,"手機號碼 最多可輸入 10 字"),
-//     tel:yup.string().max(20,"市話 最多可輸入 20 字"),
-//     emergName:yup.string().max(20,"緊急連絡人 最多可輸入 50 字"),
-//     emergPhone:yup.string().max(20,"緊急連絡人電話 最多可輸入 50 字"),
-//     //selectedGroup:yup.number().required("請選擇參賽組別")
-// });
-const schema = {
-    // nation: 'required',
-    // rocid:'required|min:6|max:10',
-    // name:'required|max:50',
-    // gender:'required',
-    // birthdate:'required',
-    // email:'required|max:200',
-    // phoneNumber:'required|max:10',
-    // tel:'required|max:20',
-    // emergName:'required|max:20',
-    // emergPhone:'required|max:20',
-    // selectedGroup:'integer|required',
-    // selectedFreebie:'required'
+const config = {
+    headers: {
+        'Content-Type': 'application/json'
+    }
 };
 
 export default {
@@ -480,16 +439,17 @@ export default {
                 },
                 selectedGroup:'',
                 selectedFreebie:[],
-                selectedAddons:[]
+                selectedAddons:[],
             },
             settings:{
                 contact:{},
                 actGroup:[],
                 freebie:[],
                 addons:[]
-            }
+            },
         }
     },
+    
     created() {
         let endpoints = [
             `/api/act/actgroup/${this.code}`,
@@ -523,6 +483,17 @@ export default {
                     Swal.fire("找不到資料").then(() => this.$router.push({ name: 'CreateGroup' }));
                 }
             })
+        };
+        if (this.$route.name === 'EditPersonal') {
+            axios.get(`/api/personal/${this.userId}`).then(({data})=>{
+                this.formValues.user = data;
+                this.formValues.selectedGroup = data.actGroupId;
+                this.formValues.selectedFreebie = data.freebie;
+                this.formValues.selectedAddons = data.addons;
+            })
+            .catch(() => {
+                this.$router.push({name:'NotFound'});
+            });
         }
     },
     computed: {
@@ -531,9 +502,7 @@ export default {
         },
         getfreebie() {
             if (this.formValues.selectedGroup == 0) return null;
-            let temp = this.settings.freebie.filter(x => x.actGroupId.includes(this.formValues.selectedGroup));
-            this.formValues.selectedFreebie = temp;
-            return temp;
+            return this.settings.freebie.filter(x => x.actGroupId.includes(this.formValues.selectedGroup));
         },
         getAddons() {
             if (this.formValues.selectedGroup != 0) {
@@ -544,6 +513,9 @@ export default {
         isAuthenticated(){
             return this.$store.state.isAuthenticated;
         },
+        userId(){
+            return this.$route.params.userId;
+        }
     },
     methods: {
         importUser(){
@@ -559,53 +531,106 @@ export default {
             this.formValues.user = {};
         },
         onSubmit(values) {
-            values.selectedAddons = this.formValues.selectedAddons;
             values.actCode = this.code;
+            values.selectedAddons = this.formValues.selectedAddons;
+            values.selectedFreebie = this.mapToselectedFreebie(values.selectedFreebie);
 
-            let url = '/api/personal';
-            let redirctToName = 'Checkout';
-            if (this.$route.name === 'AddMember') {
-                values.orderId = sessionStorage.getItem("orderId");
-                url = '/api/personal/Addmember';
-                redirctToName = 'Group';
+            const page = this.$route.name;
+            switch (page) {
+                case 'CreatePersonal':
+                    this.createPersonalOrder(values);
+                    break;
+                case 'EditPersonal':
+                    this.editPersonal(values);
+                    break;
+                case 'AddMember':
+                    this.addPersonal(values);
+                    break;
+                default:
+                    Swal.fire({icon:'error',title:'系統錯誤，請稍後再進行報名'});
             }
+        },
+        mapToselectedFreebie(values) {
+            let temp = [];
+            this.getfreebie.forEach(element => {
+                let find = values.find(x => x.productId == element.productId);
+                temp.push({
+                    productId: element.productId,
+                    name: element.name,
+                    spec: find?.spec ? find.spec : ''
+                });
+            });
+            return temp;
+        },
+        createPersonalOrder(values){
             const form = JSON.stringify(values, null,2);
 
-            axios.post(url, form, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (this.$route.name === 'CreatePersonal') {
+            axios.post('/api/personal', form, config)
+                .then(response => {
                     sessionStorage.setItem("orderId", response.data.orderId);
-                };
-                if (response.data.needUploads) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '報名成功',
-                        text: '報名組別需上傳相關文件，您是否要現在上傳文件!?',
-                        showCancelButton: true,
-                        confirmButtonText: '是，我要上傳文件',
-                        cancelButtonText: '否'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            this.$router.push({ name: 'UploadFile' });
-                        } else {
-                            this.$router.push({ name: redirctToName });
-                        }
-                    })
-                } else {
-                    this.$router.push({ name: redirctToName });
-                }
+                    this.responsedResult(response,'報名成功', 'Checkout');
+                }).catch(error => {
+                    if (error.response.status === 404) {
+                        this.$router.push({ name: 'NotFound' });
+                    };
+                    if (error.response.status === 400) {
+                        Swal.fire({ icon: 'error', title: error.response.data });
+                    }
+                });
+        },
+        editPersonal(values) {
+            values.userInfoId = this.userId;
+            const form = JSON.stringify(values, null, 2);
+            axios.patch(`/api/personal/${this.userId}`, form, config)
+            .then(response => {
+                this.responsedResult(response,'修改成功', '');
             }).catch(error => {
                 if (error.response.status === 404) {
                     this.$router.push({ name: 'NotFound' });
                 };
                 if (error.response.status === 400) {
-                    Swal.fire(error.response.data);
+                    Swal.fire({ icon: 'error', title: error.response.data });
                 }
-            });
+            })
+        },
+        addPersonal(values){
+            values.orderId = sessionStorage.getItem("orderId");
+            const form = JSON.stringify(values, null,2);
+            axios.post('/api/personal/Addmember', form, config)
+                .then(response => {
+                    this.responsedResult(response,'報名成功', 'Group');
+                }).catch(error => {
+                    if (error.response.status === 404) {
+                        this.$router.push({ name: 'NotFound' });
+                    };
+                    if (error.response.status === 400) {
+                        Swal.fire({ icon: 'error', title: error.response.data });
+                    }
+                });
+        },
+        responsedResult(response,title,redirctToName) {
+            if (response.data.needUploads) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: '報名組別需上傳相關文件，您是否要現在上傳文件!?',
+                    showCancelButton: true,
+                    confirmButtonText: '是，我要上傳文件',
+                    cancelButtonText: '否'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'UploadFile' });
+                    } else {
+                        if (redirctToName == '') this.$router.go(-1);
+                        this.$router.push({ name: redirctToName });
+                    }
+                })
+            } else {
+                Swal.fire({icon:'success',title:title}).then(()=>{
+                    if (redirctToName == '') this.$router.go(-1);
+                    this.$router.push({ name: redirctToName });
+                });
+            }
         },
         isBirthdateValue() {
             if (this.formValues.user.birthdate && this.formValues.user.birthdate.trim()) {
@@ -626,7 +651,7 @@ export default {
             if (group.maxBirthday != null && birthdate != null && group.maxBirthday <= birthdate) {
                 this.formValues.selectedGroup = 0;
             };
-            if (group.genderLimit != "不拘" && group.genderLimit != this.formValues.gender) {
+            if (group.genderLimit != "不拘" && group.genderLimit != this.formValues.user.gender) {
                 this.formValues.selectedGroup = 0;
             }
         },
@@ -639,7 +664,7 @@ export default {
                 (item.maxBirthday != null && birthdate != null && item.maxBirthday <= birthdate)) {
                 return "年齡不符";
             };
-            if (item.genderLimit != "不拘" && item.genderLimit != this.formValues.gender) {
+            if (item.genderLimit != "不拘" && item.genderLimit != this.formValues.user.gender) {
                 return "性別不符";
             }
             return "";
@@ -662,8 +687,7 @@ export default {
             }
         },
         freebieChecked: function (productId, spec) {
-            if (productId == '' || spec == '') return false;
-            if (this.formValues.selectedFreebie > 0) return false;
+            if (productId == '' || spec == '') return;
             return this.formValues.selectedFreebie.find(x => x.productId == productId && x.spec?.includes(spec)) != undefined;
         },
         resetQty(productId) {

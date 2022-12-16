@@ -167,7 +167,7 @@ export default {
         this.date = [startDate, endDate];
 
         //TODO Test
-        sessionStorage.setItem("orderId","3ec65b33-dc1c-49d0-2ffb-08dadcb05da7")
+        //sessionStorage.setItem("orderId","3ec65b33-dc1c-49d0-2ffb-08dadcb05da7")
     },
     computed:{
         isAuthenticated(){
