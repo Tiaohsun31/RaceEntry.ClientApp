@@ -251,7 +251,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="form-check">
-                                    <input id="isShare" v-model="isShare" type="checkbox" class="form-check-input" data-toggle="collapse"
+                                    <input id="isShare" v-model="formValues.contact.isShare" type="checkbox" class="form-check-input" data-toggle="collapse"
                                         data-target="#multiCollapseRange" aria-expanded="false" aria-controls="multiCollapseRange">
                                     <label class="form-check-label" for="isShare">是否產生分享連結</label>
                                 </div>
@@ -356,14 +356,14 @@ export default {
         return {
             formValues: {
                 contact: {
-                    groupName: 'Test',
+                    groupName: '',
                     isShare: true,
                 },
                 addons: [],
                 members: [],
             },
             addons: [],
-            isShare: false,
+            addonIsModify:false,
             date: [],
         }
     },
@@ -414,11 +414,12 @@ export default {
         },
         EditBase(values) {
             values.contact.actCode = this.code;
-            values.contact.isShare = this.isShare;
             values.contact.startTime = this.date[0];
             values.contact.endTime = this.date[1];
 
-            axios.patch(`/api/order/${this.orderId}`, JSON.stringify(values.contact, null, 2), {
+            const form = JSON.stringify(values.contact, null , 2);
+
+            axios.patch(`/api/order/${this.orderId}`, form, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -428,13 +429,16 @@ export default {
                     $('#editContactModal').modal('hide');
                 }
             }).catch(error => {
-                console.log(error);
                 if (error.response.status === 400) {
                     Swal.fire(error.response.data);
                 }
             });
         },
         addAddons() {
+            if (!this.addonIsModify) {
+                this.$router.push({name:'Checkout'});
+                return;
+            };
             let addons = {
                 orderId: this.orderId,
                 selectedAddons: this.formValues.addons
@@ -443,11 +447,8 @@ export default {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(response => {
-                if (response.status === 204) {
-                    this.getGroup();
-
-                }
+            }).then(() => {
+                this.$router.push({name:'Checkout'});
             }).catch(error => {
                 if (error.response.status === 400 || error.response.status === 404) {
                     Swal.fire("尚未開放報名或報名已截止");
@@ -494,6 +495,7 @@ export default {
             };
 
             let findCart = this.findCart(addons.productId, addons.spec);
+            this.addonIsModify = true;
             if (findCart == -1) {
                 if (selectedQty > 0) this.formValues.addons.push(addons);
             } else {
@@ -513,6 +515,7 @@ export default {
         removeCart: function (element) {
             let findCart = this.findCart(element.productId, element.spec);
             if (findCart != -1) {
+                this.addonIsModify = true;
                 this.formValues.addons.splice(findCart, 1);
             };
         },
