@@ -24,8 +24,8 @@
                     </td>
                     <td> {{ element.actGroupName }} </td>
                     <td class="d-none d-sm-table-cell"> {{ element.phoneNumber }} </td>
-                    <td class="text-secondary-d3"> NT$ {{ element.total }} </td>
-                    <td class="d-none d-sm-table-cell"> {{ element.updateAt }} </td>
+                    <td class="text-secondary-d3"> NT$ {{ amountFormat(element.total) }} </td>
+                    <td class="d-none d-sm-table-cell"> {{ dateFormat(element.updateAt) }} </td>
                     <td>
                         <div class="d-none d-lg-flex float-right">
                             <a href="#" data-toggle="collapse" :data-target="`#table-detail-${index}`"
@@ -60,11 +60,11 @@
                                         <div class="dropdown-header text-100 text-secondary-d1 border-b-1 brc-secondary-l2 text-600 mb-2">
                                             {{ element.name }}
                                         </div>
-                                        <a href="#" onclick="shownEdit(item.teamId)" class="dropdown-item">
+                                        <RouterLink :to="{ name: 'EditPersonal', params: { userId: `${element.userInfoId}` } }" class="dropdown-item">
                                             <i class="fa fa-pencil-alt text-orange mr-1 p-2 w-4"></i>
                                             編輯
-                                        </a>
-                                        <a href="#" @click="cancel(item.userInfoId)" class="dropdown-item">
+                                        </RouterLink>
+                                        <a href="#" v-if="members.length > 1" @click="cancel(item.userInfoId)" class="dropdown-item">
                                             <i class="fa fa-trash-alt text-danger-m1 mr-1 p-2 w-4"></i>
                                             刪除
                                         </a>
@@ -88,7 +88,7 @@
                                             <dt class="col-sm-4 mb-2">法定性別</dt>
                                             <dd class="col-sm-8 mb-2 "> {{ element.gender }} </dd>
                                             <dt class="col-sm-4 mb-2">出生年月日</dt>
-                                            <dd class="col-sm-8 mb-2 "> {{ element.birthdate }} </dd>
+                                            <dd class="col-sm-8 mb-2 "> {{ dateFormat(element.birthdate) }} </dd>
                                             <dt class="col-sm-4 mb-2">Email</dt>
                                             <dd class="col-sm-8 mb-2 "> {{ element.email }} </dd>
                                             <dt class="col-sm-4 mb-2">市話</dt>
@@ -132,13 +132,13 @@
                                                                 {{ item.productSpec }} 
                                                             </td>
                                                             <td class="text-secondary-d3 text-95 d-none d-sm-table-cell">
-                                                                {{ new Intl.NumberFormat('en').format(item.unitPrice) }}
+                                                                {{  amountFormat(item.unitPrice) }}
                                                             </td>
                                                             <td class="text-secondary-d3 text-95 d-none d-sm-table-cell">
-                                                                {{ new Intl.NumberFormat('en').format(item.qty) }}
+                                                                {{  amountFormat(item.qty) }}
                                                             </td>
                                                             <td class="text-secondary-d3 text-95 d-none d-sm-table-cell">
-                                                                {{ new Intl.NumberFormat('en').format(item.subTotal) }}
+                                                                {{  amountFormat(item.subTotal) }}
                                                             </td>
                                                         </tr>
                                                         <tr
@@ -153,9 +153,9 @@
                                                             <td colspan="3">金額</td>
                                                         </tr>
                                                         <tr class="d-table-row d-sm-none text-secondary-d3">
-                                                            <td colspan="2">{{ new Intl.NumberFormat('en').format(item.unitPrice) }}</td>
-                                                            <td colspan="2">{{ new Intl.NumberFormat('en').format(item.qty) }}</td>
-                                                            <td colspan="3" title="金額"> {{ new Intl.NumberFormat('en').format(item.subTotal) }} </td>
+                                                            <td colspan="2">{{ amountFormat(item.unitPrice) }}</td>
+                                                            <td colspan="2">{{ amountFormat(item.qty) }}</td>
+                                                            <td colspan="3" title="金額"> {{ amountFormat(item.subTotal) }} </td>
                                                         </tr>
                                                     </template>
                                                 </tbody>
@@ -175,11 +175,18 @@
 
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
     name: 'Members',
     props: ['members','isReadOnly'],
     methods:{
+        dateFormat(value){
+            return moment(value).format('YYYY-MM-DD');
+        },
+        amountFormat(value){
+            return new Intl.NumberFormat('en').format(value);
+        },
         cancel(id) {
             let user = this.members.findIndex(x => x.userInfoId === id);
             if (user === -1) {

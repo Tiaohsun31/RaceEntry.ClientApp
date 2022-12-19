@@ -373,23 +373,15 @@ export default {
         }
     },
     mounted() {
-        this.getGroup();
+        this.getOrder();
 
-        let endpoints = [
-            `/api/act/groupaddons/${this.code}`,
-            `/api/Group/GetMembers/${this.orderId}`,
-        ];
-
-        Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
-            .then(([{ data: addons }, { data: members }]) => {
-                this.addons = addons;
-                this.formValues.members = members;
-
-            }).catch(error => {
-                if (error.response.status === 404) {
-                    this.$router.push({ name: 'CreateGroup' });
-                }
-            });
+        axios.get(`/api/groupaddons/${this.code}`).then(({data}) => {
+            this.addons = data;
+        }).catch(error => {
+            if (error.response.status === 404) {
+                this.$router.push({ name: 'CreateGroup' });
+            }
+        });
     },
     computed: {
         orderId() {
@@ -400,13 +392,14 @@ export default {
         }
     },
     methods: {
-        getGroup() {
-            axios.get(`/api/group/info/${this.orderId}`)
+        getOrder() {
+            axios.get(`/api/order/${this.orderId}`)
                 .then(({ data }) => {
                     this.formValues.contact = data;
                     if (this.formValues.contact.addons) {
                         this.formValues.addons = data.addons;
                     };
+                    this.formValues.members = data.members;
                     this.date = [data.startTime, data.endTime];
                 }).catch(error => {
                     if (error.response.status === 400) {
@@ -425,16 +418,17 @@ export default {
             values.contact.startTime = this.date[0];
             values.contact.endTime = this.date[1];
 
-            axios.patch(`/api/group/${this.orderId}`, JSON.stringify(values.contact, null, 2), {
+            axios.patch(`/api/order/${this.orderId}`, JSON.stringify(values.contact, null, 2), {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }).then(response => {
                 if (response.status === 204) {
-                    this.getGroup();
+                    this.getOrder();
                     $('#editContactModal').modal('hide');
                 }
             }).catch(error => {
+                console.log(error);
                 if (error.response.status === 400) {
                     Swal.fire(error.response.data);
                 }
@@ -445,7 +439,7 @@ export default {
                 orderId: this.orderId,
                 selectedAddons: this.formValues.addons
             };
-            axios.post('/api/group/groupAddons', JSON.stringify(addons, null, 2), {
+            axios.post('/api/groupAddons', JSON.stringify(addons, null, 2), {
                 headers: {
                     'Content-Type': 'application/json'
                 }
