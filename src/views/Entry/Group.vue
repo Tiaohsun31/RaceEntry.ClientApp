@@ -65,6 +65,9 @@
                 </div>
 
             </div>
+            <div class="card-body">
+                <Uploads :pendingApproval="formValues.pendingApproval"></Uploads>
+            </div>
         </div>
         <!-- 團體加購品 -->
         <div class="card border-0 my-5">
@@ -343,7 +346,8 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import Members from '../Entry/Members.vue';
+import Members from './components/Members.vue';
+import Uploads from './components/uploads.vue';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -351,7 +355,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 export default {
     name: 'Group',
     props: ['act'],
-    components: { Field, Form, ErrorMessage, Datepicker, Members },
+    components: { Field, Form, ErrorMessage, Datepicker, Members, Uploads },
     data() {
         return {
             formValues: {
@@ -361,6 +365,7 @@ export default {
                 },
                 addons: [],
                 members: [],
+                pendingApproval:[]
             },
             addons: [],
             addonIsModify:false,
@@ -370,11 +375,9 @@ export default {
     created() {
         if (this.orderId == '') {
             this.$router.push({ name: 'CreateGroup' });
-        }
-    },
-    mounted() {
+            return;
+        };
         this.getOrder();
-
         axios.get(`/api/groupaddons/${this.code}`).then(({data}) => {
             this.addons = data;
         }).catch(error => {
@@ -400,6 +403,11 @@ export default {
                         this.formValues.addons = data.addons;
                     };
                     this.formValues.members = data.members;
+                    data.members.forEach(x => {
+                        if (x.pendingApproval.length > 0) {
+                            this.formValues.pendingApproval = [...x.pendingApproval];
+                        }
+                    });
                     this.date = [data.startTime, data.endTime];
                 }).catch(error => {
                     if (error.response.status === 400) {

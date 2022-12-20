@@ -471,7 +471,7 @@ export default {
             if (orderId === '') {
                 this.$router.push({ name: 'CreateGroup' });
             };
-            axios.get(`/api/group/info/${orderId}`).then(({ data }) => {
+            axios.get(`/api/order/${orderId}`).then(({ data }) => {
                 this.settings.contact = data;
             }).catch(error => axiosResponseStatus(error))
         };

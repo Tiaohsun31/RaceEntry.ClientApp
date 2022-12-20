@@ -78,7 +78,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default {
-    name: "UploadFile",
+    name: "Uploads",
     props: ['pendingApproval'],
     data() {
         return {
