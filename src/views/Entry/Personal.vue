@@ -45,9 +45,9 @@
                 </div> -->
             </div>
         </div>
-
         <!-- End 快速報名 -->
-        <Form v-on:submit="onSubmit" :initial-values="formValues" >
+        <VeeForm v-slot="{ handleSubmit }" :initial-values="formValues" as="div" ref='form'>
+            <form @submit="handleSubmit($event, onSubmit)">
             <!-- 個人資料 -->
             <div class="card border-0">
                 <div class="card-header bgc-secondary-l4 brc-green-m1 border-0 border-l-4 radius-0 text-dark-tp2 mb-1">
@@ -108,7 +108,7 @@
                             <ErrorMessage name="user.name" class="text-danger" as="div" />
                         </div>
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">                           
-                            <Field name="user.gender" label="法定性別" rules="required" class="form-control text-dark-l5" v-model="formValues.user.gender" v-on:change="changeSelectedGroup" as="select">
+                            <Field name="user.gender" label="法定性別" rules="required" class="form-control text-dark-l5" v-model="formValues.user.gender" as="select">
                                 <option hidden value=""> -- 法定性別 -- </option>
                                 <option value="男"> 男 </option>
                                 <option value="女"> 女 </option>
@@ -118,12 +118,8 @@
                     </div>
                     <div class="form-row">
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
-                            <Field name="user.birthdate" label="出生年月日" :rules="isBirthdateValue" v-slot="{ birthdate,errorMessage }">
-                                <Datepicker v-bind:name="birthdate" locale="zh" placeholder="出生年月日" format="yyyy/MM/dd" showNowButton nowButtonLabel="目前日期" textInput
-                                    autoApply v-model="formValues.user.birthdate" input-class="form-control text-dark-l5 pr-4 shadow-none"
-                                    v-on:change="changeSelectedGroup"
-                                    :enableTimePicker="false" utc>
-                                </Datepicker>
+                            <Field name="user.birthdate" label="出生年月日" rules="required" v-slot="{field,errorMessage}" as="div">
+                                <Datepicker v-bind="field" placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD"></Datepicker>
                                 <div class="text-danger">{{ errorMessage }}</div>
                             </Field>
                         </div>
@@ -213,7 +209,7 @@
                     </div>
                 </div>
                 <div class="card-body pt-0 mb-4">
-                    <template v-for="(element,index) in getfreebie" v-bind:key="element.productId">
+                    <template v-for="(element,index) in getfreebie">
                         <div class="py-2">
                             <a v-if="element.images" href="#" class="text-blue mr-1" v-on:click.prevent="showImages(element.productId)">
                                 {{ i=index+1 + '、'+ element.name + (element.unitPrice == 0 || element.unitPrice == null ? "" :
@@ -226,34 +222,29 @@
                         </div>
                         <div v-if="element.specs.length > 0" class="mb-3 mt-2">
                             <div v-if="element.specs.length == 1">
-                                <Field :name="`selectedFreebie[${index}].spec`" :label="element.name" rules="required" as="div"
-                                    :value="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].productId},${formValues.selectedFreebie[index].spec}` :''" :keep-value="true"
-                                    v-slot="{field,value}">
-                                    <select v-bind="field" :value="value" class="form-control" title="請選擇規格">
-                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                        <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
-                                            v-bind:value="`${element.productId},${option.title || option.name}`">
-                                            {{ option.name || option.title }} {{ option.disabled ? "已售完" : "" }}
-                                        </option>
-                                    </select>
-                                </Field>
+                                <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格">
+                                    <option value="" disabled hidden selected> -- 請選擇 -- </option>
+                                    <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
+                                        v-bind:value="`${option.title || option.name}`"
+                                        v-bind:selected="freebieChecked(element.productId,(option.title || option.name))">
+                                        {{ option.name || option.title }} {{ option.disabled ? "已售完" : "" }}
+                                    </option>
+                                </select> 
                             </div>
                             <div v-else>
-                                <Field :name="`selectedFreebie[${index}].spec`" :label="element.name" rules="required" as="div"
-                                    :value="formValues.selectedFreebie.length > 0 ? `${formValues.selectedFreebie[index].productId},${formValues.selectedFreebie[index].spec}` :''" :keep-value="true"
-                                    v-slot="{field,value}">
-                                    <select v-bind="field" :value="value" class="form-control" title="請選擇規格">
-                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                        <optgroup v-for="options in element.specs" v-bind:label="options.key == '' ? '' : options.key">
-                                            <option v-for="item in options.list" v-bind:disabled="item.disabled"
-                                                v-bind:value="item.title != '' && item.name != '' ? `${element.productId},${item.title}-${item.name}` : `${element.productId},${item.title}${item.name}`"
-                                                v-bind:label="`${item.name || item.title} ${item.disabled ? '已售完' : ''}`">
-                                            </option>
-                                        </optgroup>
-                                    </select>
-                                </Field>
+                                <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格">
+                                    <option value="" disabled hidden selected> -- 請選擇 -- </option>
+                                    <optgroup v-for="options in element.specs" v-bind:label="options.key == '' ? '' : options.key">
+                                        <option v-for="item in options.list" 
+                                            v-bind:disabled="item.disabled"
+                                            v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${element.productId},${item.title}${item.name}`"
+                                            v-bind:label="`${item.name || item.title} ${item.disabled ? '已售完' : ''}`"
+                                            v-bind:selected="freebieChecked(element.productId,(item.title + '-' + item.name))">
+                                        </option>
+                                    </optgroup>
+                                </select>
                             </div>
-                            <ErrorMessage v-bind:name="`selectedFreebie[${index}].spec`" class="text-danger" as="div" />
+                            <ErrorMessage v-bind:name="`selectedFreebie[${element.productId}].spec`" class="text-danger" as="div" />
                         </div>
                     </template>
                 </div>
@@ -268,99 +259,12 @@
                         <small class="text-uppercase"> Personal Add-ons </small>
                     </div>
                 </div>
-                <div v-if="selectedAddons.length > 0" class="card-body pt-3">
-                    <div class="my-3">
-                        <h5 class="text-120 text-grey-d3">
-                            <i class="fa fa-star mr-1 text-orange text-90"></i>
-                            加購明細
-                        </h5>
-                        <ul class="list-group">
-                            <li v-for="item in selectedAddons" :key="item.productId"
-                                class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ item.name + (item.spec == null || item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
-                                <button type="button" class="close" aria-label="Close" v-on:click="removeCart(item)">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div v-if="getAddons != null && getAddons.length > 0" class="card-body pt-3">
-                    <div class="row text-600 text-95 text-secondary-d3 bgc-grey-l4 py-25 border-y-2">
-                        <div class="d-none d-sm-block col-2"> </div>
-                        <div class="col-12 col-sm-4"> 商品名稱與描述 </div>
-                        <div class="col-sm-2 d-none d-sm-block"> 單價 </div>
-                        <div class="col-sm-2 d-none d-sm-block"> 規格 </div>
-                        <div class="col-sm-2 d-none d-sm-block"> 數量 </div>
-                    </div>
-                    <div class="text-95 text-dark-m3">
-                        <div class="row pb-2 mb-sm-0 py-sm-2 border-b-1 brc-secondary-l3 align-items-center" v-for="element in getAddons">
-                            <div class="d-none d-sm-block col-2">
-                                <img v-show="element.thumbnail" class="radius-1 mb-1 mb-sm-0 mr-3" v-bind:alt="element.name" style="width: 100px; height: 100px;" v-bind:src="element.thumbnail">
-                            </div>
-                    
-                            <div class="col-12 col-sm-4 px-0">
-                                <div class="d-block d-sm-none text-center py-25 bgc-blue-l3 border-b-1 brc-secondary-l3">
-                                    <span v-if="element.images" v-text="element.name"></span>
-                                    <a v-else href="#" class="btn-text-dark btn-h-text-primary"
-                                        v-on:click.prevent="showImages(element.productId)">
-                                        {{element.name}} <i class="far fa-image w-2"></i>
-                                    </a>
-                                    <span v-if="element.label" class="badge bgc-pink text-white text-xs ml-1" v-text="element.label"></span>
-                                </div>
-                                <div class="d-none d-sm-inline-block text-120">
-                                    <span v-if="element.images" v-text="element.name"></span>
-                                    <a v-else href="#" class="btn-text-dark btn-h-text-primary"
-                                        v-on:click.prevent="showImages(element.productId)">
-                                        {{element.name}} <i class="far fa-image w-2"></i>
-                                    </a>
-                                    <span v-if="element.label" class="badge bgc-pink text-white text-xs ml-2" v-text="element.label"></span>
-                                </div>
-                                <div class="mt-1 d-none d-sm-block" v-text="element.description"></div>
-                            </div>
-                    
-                            <div class="col-sm-2 col-4 mt-2" v-text="'NT$'+element.unitPrice"></div>
-                    
-                            <div class="col-sm-2 col-4 mt-2">
-                                <div v-if="element.specs.length">
-                                    <input type="hidden" v-bind:value="element.name">
-                                    <template v-if="element.specs.length == 1">
-                                        <select v-bind:id="'addonsSpecs'+element.productId" class="form-control" v-on:change="resetQty(element.ProductId)">
-                                            <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                            <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled" v-bind:value="(option.name || option.title)">
-                                                {{ option.name || option.title }}
-                                                {{ option.disabled ? "已售完" : "" }}
-                                            </option>
-                                        </select>
-                                    </template>
-                                    <template v-else>
-                                        <select v-bind:id="'addonsSpecs'+element.productId" class="form-control" v-on:change="resetQty(element.productId)">
-                                            <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                            <optgroup v-for="options in element.specs" v-bind:label="options.key == null ? '' : options.key">
-                                                <option v-for="item in options.list" v-bind:disabled="item.disabled"
-                                                    v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${item.title}${item.name}`">
-                                                    {{ item.name || item.title }}
-                                                    {{ item.disabled ? "已售完" : "" }}
-                                                </option>
-                                            </optgroup>
-                                        </select>
-                                    </template>
-                                </div>
-                            </div>
-                            <div class="col-sm-2 col-4 mt-2">
-                                <select class="form-control" v-bind:id="'addonsQty'+element.productId" v-on:change="addCart($event.target,element)">
-                                    <option value="0">0</option>
-                                    <option v-bind:value="n" v-for="n in element.limitQty" v-text="n"></option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Addons v-bind:addons="getAddons" :selectedAddons="selectedAddons" @changeCart="getAddonsResult"></Addons>
             </div>
             <!-- End 個人加購品 -->
             <!-- Submit -->
             <div v-if="this.$route.name === 'CreatePersonal'" class="mb-5">
-                <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                <button class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                     <div class="pt-2">下一步:選擇付款及寄送方式</div>
                     <div class="py-2">Next Step: Select payment and shipping</div>
                 </button>
@@ -368,25 +272,26 @@
             <div v-else>
                 <div class="row">
                     <div class="col-6">
-                        <a @click.prevent="$router.go(-1)" class="btn btn-lighter-secondary btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                        <a @click.prevent="this.$router.go(-1)" class="btn btn-lighter-secondary btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                             <div class="pt-2">不儲存，回上一頁</div>
                             <div class="py-2">No Save，Redirect To Previous Page </div>
                         </a>
                     </div>
                     <div class="col-6">
-                        <button v-if="this.$route.name === 'EditPersonal'" type="submit" class="btn btn-lighter-success btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                        <button v-if="this.$route.name === 'EditPersonal'" class="btn btn-lighter-success btn-bgc-tp shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                             <div class="pt-2">確定修改資料</div>
                             <div class="py-2">Modify the data</div>
                         </button>
-                        <button v-if="this.$route.name === 'AddMember'" type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
+                        <button v-if="this.$route.name === 'AddMember'"  class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-3">
                             <div class="pt-2">加入「 {{settings.contact.groupName}} 」隊伍</div>
                             <div class="py-2">Join in「 {{settings.contact.groupName}} 」</div>
                         </button>
                     </div>
                 </div>
             </div>
+        </form>
             <!-- End Submit -->
-        </Form>
+        </VeeForm>
         <!-- Product Modal -->
         <div class="modal modal-lg fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
@@ -412,11 +317,13 @@
 
 <script>
 import axios from 'axios';
-import { Field, Form, ErrorMessage } from 'vee-validate';
+import { Field, Form as VeeForm, ErrorMessage } from 'vee-validate';
 import Swal from 'sweetalert2';
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
-import {axiosResponseStatus} from '../axiosHandlingErrors';
+import Datepicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/zh-tw';
+import Addons from './components/Addons.vue';
+import { axiosResponseStatus } from '../axiosHandlingErrors';
 
 const config = {
     headers: {
@@ -428,20 +335,22 @@ export default {
     name: 'Personal',
     props: ['act','operate'],
     components: {
-        Field, Form, ErrorMessage,
-        Datepicker 
+        Field, VeeForm, ErrorMessage,
+        Datepicker,
+        //Addons
     },
     data() {
         return {
             formValues: {
                 user:{
-                    nationality: '台灣',
+                    nationality: '1台灣',
                     gender:'',
                     birthdate:'',
                 },
                 selectedGroup:'',
                 selectedFreebie:[],
             },
+            freebieIsExistError:false,
             selectedAddons:[],
             settings:{
                 contact:{},
@@ -451,7 +360,6 @@ export default {
             },
         }
     },
-    
     created() {
         let endpoints = [
             `/api/act/actgroup/${this.code}`,
@@ -466,33 +374,34 @@ export default {
                 this.settings.addons = addons;
             }).catch(error => axiosResponseStatus(error));
 
-        if (this.$route.name === 'AddMember') {
-            let orderId = sessionStorage.getItem("orderId");
-            if (orderId === '') {
-                this.$router.push({ name: 'CreateGroup' });
-            };
-            axios.get(`/api/order/${orderId}`).then(({ data }) => {
-                this.settings.contact = data;
-            }).catch(error => axiosResponseStatus(error))
-        };
-        if (this.$route.name === 'EditPersonal') {
-            axios.get(`/api/personal/${this.userId}`).then(({data})=>{
-                this.formValues.user = data;
-                this.formValues.selectedGroup = data.actGroupId;
-                this.formValues.selectedFreebie = data.freebie;
-                this.selectedAddons = data.addons;
-            }).catch(error => axiosResponseStatus(error));
-        }
+        // if (this.$route.name === 'AddMember') {
+        //     let orderId = sessionStorage.getItem("orderId");
+        //     if (orderId === '') {
+        //         this.$router.push({ name: 'CreateGroup' });
+        //     };
+        //     axios.get(`/api/order/${orderId}`).then(({ data }) => {
+        //         this.settings.contact = data;
+        //     }).catch(error => axiosResponseStatus(error))
+        // };
+        // if (this.$route.name === 'EditPersonal') {
+        //     axios.get(`/api/personal/${this.userId}`).then(({data})=>{
+        //         this.formValues.user = data;
+        //         this.formValues.selectedGroup = data.actGroupId;
+        //         this.formValues.selectedFreebie = data.freebie;
+        //         this.selectedAddons = data.addons;
+        //     }).catch(error => axiosResponseStatus(error));
+        // }
     },
     computed: {
         code(){
             return this.$route.params.code;
         },
         getfreebie() {
-            if (this.formValues.selectedGroup == 0) return null;
-            return this.settings.freebie.filter(x => x.actGroupId.includes(this.formValues.selectedGroup));
+           if (this.settings.freebie.length == 0 || this.formValues.selectedGroup == 0) return null;
+           return this.settings.freebie.filter(x => x.actGroupId.includes(this.formValues.selectedGroup));
         },
         getAddons() {
+            if (this.settings.addons.length == 0) return;
             if (this.formValues.selectedGroup != 0) {
                 return this.settings.addons.filter(x => x.actGroupId == null || x.actGroupId?.includes(this.formValues.selectedGroup));
             }
@@ -505,7 +414,34 @@ export default {
             return this.$route.params.userId;
         }
     },
+    watch:{
+        "formValues.user.birthdate":function(){
+            if (this.formValues.selectedGroup == 0) return;
+
+            let group = this.settings.actGroup.find(x => x.actGroupId == this.formValues.selectedGroup);
+            let birthdate = this.formValues.user.birthdate;
+
+            if (group.minBirthday != null && birthdate != null && group.minBirthday >= birthdate) {
+                this.formValues.selectedGroup = 0;
+            };
+            if (group.maxBirthday != null && birthdate != null && group.maxBirthday <= birthdate) {
+                this.formValues.selectedGroup = 0;
+            };
+        },
+        "formValues.user.gender":function(){
+            if (this.formValues.selectedGroup == 0) return;
+
+            let group = this.settings.actGroup.find(x => x.actGroupId == this.formValues.selectedGroup);
+
+            if (group.genderLimit != "不拘" && group.genderLimit != this.formValues.user.gender) {
+                this.formValues.selectedGroup = 0;
+            }
+        }
+    },
     methods: {
+        getAddonsResult(result){
+           this.selectedAddons = result;
+        },
         importUser(){
             axios.get('/api/account/user').then(({data}) => {
                 this.formValues.user = data;
@@ -514,39 +450,49 @@ export default {
         clearUser(){
             this.formValues.user = {};
         },
-        onSubmit(values) {
+        onSubmit(values,actions) {
+
             values.actCode = this.code;
             values.selectedAddons = this.selectedAddons;
-            values.selectedFreebie = this.mapToselectedFreebie(values.selectedFreebie);
+            values.selectedFreebie = this.mapToselectedFreebie(actions);
 
-            const page = this.$route.name;
-            switch (page) {
-                case 'CreatePersonal':
-                    this.createPersonalOrder(values);
-                    break;
-                case 'EditPersonal':
-                    this.editPersonal(values);
-                    break;
-                case 'AddMember':
-                    this.addPersonal(values);
-                    break;
-                default:
-                    Swal.fire({icon:'error',title:'系統錯誤，請稍後再進行報名'});
+            if (!this.freebieIsExistError) {
+                const page = this.$route.name;
+                switch (page) {
+                    case 'CreatePersonal':
+                        this.createPersonalOrder(values);
+                        break;
+                    case 'EditPersonal':
+                        this.editPersonal(values);
+                        break;
+                    case 'AddMember':
+                        this.addPersonal(values);
+                        break;
+                    default:
+                        Swal.fire({ icon: 'error', title: '系統錯誤，請稍後再進行報名' });
+                }
             }
         },
-        mapToselectedFreebie(values) {
+        mapToselectedFreebie(actions) {
             let temp = [];
             this.getfreebie.forEach(element => {
-                let find = values.find(x => {
-                    if (x) {
-                        return x.spec?.split(',')[0] == element.productId
-                    }
-                });
-                temp.push({
+                let addon = {
                     productId: element.productId,
                     name: element.name,
-                    spec: find ? find.spec?.split(',')[1] : ''
-                });
+                    spec:''
+                };
+                if (element.specs.length > 0) {
+                    let selected = document.getElementById(`selectedFreebie[${element.productId}].spec`);
+                    if (selected && selected.value == "") {
+                        console.log("A");
+                        actions.setFieldError(`selectedFreebie[${element.productId}].spec`,`請先選擇 ${element.name} 規格`);
+                        this.freebieIsExistError = true;
+                        return;
+                    } else {
+                        addon.spec = selected.value;
+                    }
+                };
+                temp.push(addon);
             });
             return temp;
         },
@@ -610,25 +556,11 @@ export default {
         inputMask:function(event) {
             this.formValues.rocid = event.target.value;
         },
-        changeSelectedGroup() {
-            let birthdate = this.formValues.birthdate;
-            if (this.formValues.selectedGroup == 0) return;
-            let group = this.settings.actGroup.find(x => x.actGroupId == this.formValues.selectedGroup);
-            if (group.minBirthday != null && birthdate != null && group.minBirthday >= birthdate) {
-                this.formValues.selectedGroup = 0;
-            };
-            if (group.maxBirthday != null && birthdate != null && group.maxBirthday <= birthdate) {
-                this.formValues.selectedGroup = 0;
-            };
-            if (group.genderLimit != "不拘" && group.genderLimit != this.formValues.user.gender) {
-                this.formValues.selectedGroup = 0;
-            }
-        },
         allowEntry: function (item) {
             if (!item.canSignUp) return "報名截止";
             if (item.full) return "已額滿";
 
-            let birthdate = this.formValues.birthdate;
+            let birthdate = this.formValues.user.birthdate;
             if ((item.minBirthday != null && birthdate != null && item.minBirthday >= birthdate) ||
                 (item.maxBirthday != null && birthdate != null && item.maxBirthday <= birthdate)) {
                 return "年齡不符";
@@ -637,6 +569,11 @@ export default {
                 return "性別不符";
             }
             return "";
+        },
+        freebieChecked: function (productId, spec) {
+            if (productId == '' || spec == '') return false;
+            if (this.formValues.selectedFreebie == "") return false;
+            return this.formValues.selectedFreebie.find(x => x.productId == productId && x.spec.includes(spec)) != undefined;
         },
         showImages: function (productId) {
             let product = this.settings.freebie.find(x => x.productId == productId) || this.settings.addons.find(x => x.productId == productId);
@@ -654,56 +591,6 @@ export default {
                     );
                 });
             }
-        },
-        freebieChecked: function (productId, spec) {
-            if (productId == '' || spec == '') return;
-            return this.formValues.selectedFreebie.find(x => x.productId == productId && x.spec?.includes(spec)) != undefined;
-        },
-        resetQty(productId) {
-            $('#addonsQty' + productId).val(0);
-        },
-        addCart: function (target, element) {
-            let selectedQty = $('#' + target.id + " :selected").val();
-            let addons = {
-                productId: element.productId,
-                name: element.name,
-                qty: selectedQty,
-                spec: ""
-            };
-
-            if (element.specs.length > 0) {
-                let selectedSpec = $('#addonsSpecs' + element.productId + " :selected").val();
-                if (selectedSpec == "") {
-                    $('#' + target.id).val(0);
-                    Swal.fire({ icon: 'warning', text: `請先選擇 ${element.name} 規格` });
-                    return;
-                } else {
-                    addons.spec = selectedSpec;
-                }
-            };
-            
-            let findCart = this.findCart(addons.productId, addons.spec);
-            if (findCart == -1) {
-                if (selectedQty > 0) this.selectedAddons.push(addons);
-            } else {
-                if (selectedQty == 0) {
-                    this.removeCart(addons);
-                } else {
-                    this.selectedAddons[findCart].qty = selectedQty;
-                }
-            }
-        },
-        findCart: function (productId, spec) {
-            if (spec != "") {
-                return this.selectedAddons.findIndex(x => x.productId == productId && x.spec == spec);
-            }
-            return this.selectedAddons.findIndex(x => x.productId == productId);
-        },
-        removeCart: function (element) {
-            let findCart = this.findCart(element.productId, element.spec);
-            if (findCart != -1) {
-                this.selectedAddons.splice(findCart, 1);
-            };
         },
     }
 }

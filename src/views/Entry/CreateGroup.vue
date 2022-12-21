@@ -109,8 +109,7 @@
                                 <label class="mb-3"> 連結有效時間 </label>
                                 <div class="row">
                                     <div class="col-sm-8 col-md-7">
-                                        <Datepicker v-model="date" range multi-calendars locale="zh" format="yyyy/MM/dd" 
-                                        textInput autoApply :enableTimePicker="false" utc :clearable="false" />
+                                        <Datepicker v-model:value="date" range value-type="format" format="YYYY-MM-DD"></Datepicker>
                                     </div>
                                 </div>
 
@@ -147,8 +146,9 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import { Field,Form,ErrorMessage } from 'vee-validate';
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+import Datepicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/zh-tw';
 
 export default {
     name:'CreateGroup',

@@ -77,104 +77,7 @@
                     <small class="text-uppercase"> Group Add-ons </small>
                 </div>
             </div>
-            <!-- 已加購清單 -->
-            <div v-if="formValues.addons.length > 0" class="card-body pt-3">
-                <div class="my-3">
-                    <h5 class="text-120 text-grey-d3">
-                        <i class="fa fa-star mr-1 text-orange text-90"></i>
-                        加購明細
-                    </h5>
-                    <ul class="list-group">
-                        <li v-for="item in formValues.addons" class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ item.name + (item.spec == null || item.spec == "" ? "" : `／${item.spec}`) + ' * ' + item.qty }}
-                            <button type="button" class="close" aria-label="Close" v-on:click="removeCart(item)">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div v-if="addons.length > 0" class="card-body pt-3">
-                <div class="row text-600 text-95 text-secondary-d3 bgc-grey-l4 py-25 border-y-2">
-                    <div class="d-none d-sm-block col-2"> </div>
-                    <div class="col-12 col-sm-4"> 商品名稱與描述 </div>
-                    <div class="col-sm-2 d-none d-sm-block"> 單價 </div>
-                    <div class="col-sm-2 d-none d-sm-block"> 規格 </div>
-                    <div class="col-sm-2 d-none d-sm-block"> 數量 </div>
-                </div>
-                <div class="text-95 text-dark-m3">
-        
-                    <div v-for="element in addons" class="row pb-2 mb-sm-0 py-sm-2 border-b-1 brc-secondary-l3 align-items-center">
-                        <div class="d-none d-sm-block col-2">
-                            <img class="radius-1 mb-1 mb-sm-0 mr-3" v-bind:alt="element.name"
-                                style="width: 100px; height: 100px;" v-bind:src="element.thumbnail">
-                        </div>
-        
-                        <div class="col-12 col-sm-4 px-0">
-                            <div class="d-block d-sm-none text-center py-25 bgc-blue-l3 border-b-1 brc-secondary-l3">
-                                <span v-if="element.images" v-text="element.name"></span>
-                                <a v-else href="#" class="btn-text-dark btn-h-text-primary"
-                                    v-on:click.prevent="showImages(element.productId)">
-                                    {{element.name}} <i class="far fa-image w-2"></i>
-                                </a>
-                                <span v-if="element.label" class="badge bgc-pink text-white text-xs ml-1"
-                                    v-text="element.label"></span>
-                            </div>
-                            <div class="d-none d-sm-inline-block text-130">
-                                <span v-if="element.images" v-text="element.name"></span>
-                                <a v-else href="#" class="btn-text-dark btn-h-text-primary"
-                                    v-on:click.prevent="showImages(element.productId)">
-                                    {{element.name}} <i class="far fa-image w-2"></i>
-                                </a>
-                                <span v-if="element.label" class="badge bgc-pink text-white text-xs ml-2"
-                                    v-text="element.label">
-                                </span>
-                            </div>
-                            <div class="mt-1 d-none d-sm-block" v-text="element.description"></div>
-                        </div>
-        
-                        <div class="col-sm-2 col-4 mt-2" v-text="'NT$'+element.unitPrice"></div>
-        
-                        <div class="col-sm-2 col-4 mt-2">
-                            <div v-if="element.specs.length > 0">
-                                <template v-if="element.specs.length == 1">
-                                    <select v-bind:id="'addonsSpecs'+element.productId" class="form-control"
-                                        v-on:change="resetQty(element.productId)">
-                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                        <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
-                                            v-bind:value="(option.name || option.title)">
-                                            {{ option.name || option.title }}
-                                            {{ option.disabled ? "已售完" : "" }}
-                                        </option>
-                                    </select>
-                                </template>
-        
-                                <template v-else>
-                                    <select v-bind:id="'addonsSpecs'+element.productId" class="form-control" v-on:change="resetQty(element.productId)">
-                                        <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                        <optgroup v-for="options in element.specs" v-bind:label="options.key == null ? '' : options.key">
-                                            <option v-for="item in options.list" v-bind:disabled="item.disabled"
-                                                v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${item.title}${item.name}`">
-                                                {{ item.name || item.title }}
-                                                {{ item.disabled ? "已售完" : "" }}
-                                            </option>
-                                        </optgroup>
-                                    </select>
-                                </template>
-                            </div>
-                        </div>
-        
-                        <div class="col-sm-2 col-4 mt-2">
-                            <select class="form-control" v-bind:id="'addonsQty'+element.productId"
-                                v-on:change="addCart($event.target,element)">
-                                <option value="0">0</option>
-                                <option v-bind:value="n" v-for="n in element.limitQty" v-text="n"></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-        
-            </div>
+            <Addons :addons="addons" :selectedAddons="formValues.addons" @changeCart="getAddonsResult"></Addons>
         </div>
         <!-- End 團體加購品 -->
         <div class="my-4">
@@ -259,15 +162,10 @@
                                     <label class="form-check-label" for="isShare">是否產生分享連結</label>
                                 </div>
                             </div>
-                            <div id="multiCollapseRange" class="collapse">
+                            <div id="multiCollapseRange" class="collapse" :class="{'show':formValues.contact.isShare}">
                                 <div class="form-group">
-                                    <label class="mb-3"> 連結有效時間 </label>
-                                    <div class="row">
-                                        <div class="col-sm-8 col-md-7">
-                                            <Datepicker v-model="date" range multi-calendars locale="zh" format="yyyy/MM/dd" textInput autoApply
-                                                :enableTimePicker="false" utc :clearable="false" />
-                                        </div>
-                                    </div>
+                                    <label class="mb-2"> 連結有效時間 </label>
+                                    <Datepicker v-model:value="date" range value-type="format" format="YYYY-MM-DD"></Datepicker>
                                     <small class="form-text text-muted">可修改分享連結有效時間，時間過期與確認訂單後，將自動關閉分享連結</small>
                                 </div>
                             </div>
@@ -348,14 +246,19 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import Members from './components/Members.vue';
 import Uploads from './components/uploads.vue';
+import Addons from './components/Addons.vue';
 import { Field, Form, ErrorMessage } from 'vee-validate';
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+import Datepicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/zh-tw';
 
 export default {
     name: 'Group',
     props: ['act'],
-    components: { Field, Form, ErrorMessage, Datepicker, Members, Uploads },
+    components: { 
+        Field, Form, ErrorMessage, Datepicker,
+        Members, Uploads, Addons 
+    },
     data() {
         return {
             formValues: {
@@ -395,6 +298,10 @@ export default {
         }
     },
     methods: {
+        getAddonsResult(result,modify){
+            this.addonIsModify = modify;
+            this.formValues.addons = result;
+        },
         getOrder() {
             axios.get(`/api/order/${this.orderId}`)
                 .then(({ data }) => {
@@ -462,70 +369,6 @@ export default {
                     Swal.fire("尚未開放報名或報名已截止");
                 }
             });
-        },
-        showImages: function (productId) {
-            let product = this.addons.find(x => x.productId == productId);
-
-            if (product && product.images) {
-                let modal = $('#productModal');
-                modal.modal('show');
-                modal.find('.modal-title').text(product.name);
-                modal.find('.modal-body').empty();
-
-                $.each(product.images?.split(','), function (i, item) {
-                    $('#productModal').find('.modal-body').append(
-                        $('<img>', { src: item, alt: product.name, class: "img-fluid" })
-                    );
-                });
-            }
-        },
-        resetQty(productId) {
-            $('#addonsQty' + productId).val(0);
-        },
-        addCart: function (target, element) {
-            let selectedQty = $('#' + target.id + " :selected").val();
-            let addons = {
-                productId: element.productId,
-                name: element.name,
-                qty: selectedQty,
-                spec: ""
-            };
-
-            if (element.specs.length > 0) {
-                let selectedSpec = $('#addonsSpecs' + element.productId + " :selected").val();
-                if (selectedSpec == "") {
-                    Swal.fire({ icon: 'warning', text: `請先選擇 ${element.name} 規格` });
-                    $('#' + target.id).val(0);
-                    return;
-                } else {
-                    addons.spec = selectedSpec;
-                }
-            };
-
-            let findCart = this.findCart(addons.productId, addons.spec);
-            this.addonIsModify = true;
-            if (findCart == -1) {
-                if (selectedQty > 0) this.formValues.addons.push(addons);
-            } else {
-                if (selectedQty == 0) {
-                    this.removeCart(addons);
-                } else {
-                    this.formValues.addons[findCart].qty = selectedQty;
-                }
-            }
-        },
-        findCart: function (productId, spec) {
-            if (spec != "") {
-                return this.formValues.addons.findIndex(x => x.productId == productId && x.spec == spec);
-            }
-            return this.formValues.addons.findIndex(x => x.productId == productId);
-        },
-        removeCart: function (element) {
-            let findCart = this.findCart(element.productId, element.spec);
-            if (findCart != -1) {
-                this.addonIsModify = true;
-                this.formValues.addons.splice(findCart, 1);
-            };
         },
         copy() {
             navigator.clipboard.writeText(this.formValues.contact.shareUri);
