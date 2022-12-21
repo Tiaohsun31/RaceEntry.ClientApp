@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
-import { router } from '../router/index';
+import { useRouter } from 'vue-router';
+
 
 function axiosResponseStatus(error) {
     if (error.response) {
@@ -7,6 +8,7 @@ function axiosResponseStatus(error) {
             Swal.fire({ icon: 'error', title: error.response.data });
         }
         if (error.response.status === 404) {
+            const router = useRouter();
             router.push({ name: 'NotFound' });
         }
     } 

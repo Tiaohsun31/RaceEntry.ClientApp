@@ -46,7 +46,7 @@
             </div>
         </div>
         <!-- End 快速報名 -->
-        <VeeForm v-slot="{ handleSubmit }" :initial-values="formValues" as="div" ref='form'>
+        <VeeForm v-slot="{ handleSubmit,setFieldValue }" :initial-values="formValues" as="div" ref='form'>
             <form @submit="handleSubmit($event, onSubmit)">
             <!-- 個人資料 -->
             <div class="card border-0">
@@ -118,10 +118,9 @@
                     </div>
                     <div class="form-row">
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
-                            <Field name="user.birthdate" label="出生年月日" rules="required" v-slot="{field,errorMessage}" as="div">
-                                <Datepicker v-bind="field" placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD"></Datepicker>
-                                <div class="text-danger">{{ errorMessage }}</div>
-                            </Field>
+                            <Datepicker placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD" @change="setFieldValue('user.birthdate', formValues.user.birthdate)"></Datepicker>
+                            <Field name="user.birthdate" label="出生年月日" rules="required" type="hidden"></Field>
+                            <ErrorMessage name="user.birthdate" class="text-danger" as="div" />
                         </div>
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
                             <div class="d-flex align-items-center input-floating-label text-blue-m1 brc-blue-m2">
@@ -312,7 +311,6 @@
         </div>
         <!-- End Product Modal -->
     </div>
-
 </template>
 
 <script>
@@ -337,13 +335,13 @@ export default {
     components: {
         Field, VeeForm, ErrorMessage,
         Datepicker,
-        //Addons
+        Addons
     },
     data() {
         return {
             formValues: {
                 user:{
-                    nationality: '1台灣',
+                    nationality: '台灣',
                     gender:'',
                     birthdate:'',
                 },
@@ -374,23 +372,23 @@ export default {
                 this.settings.addons = addons;
             }).catch(error => axiosResponseStatus(error));
 
-        // if (this.$route.name === 'AddMember') {
-        //     let orderId = sessionStorage.getItem("orderId");
-        //     if (orderId === '') {
-        //         this.$router.push({ name: 'CreateGroup' });
-        //     };
-        //     axios.get(`/api/order/${orderId}`).then(({ data }) => {
-        //         this.settings.contact = data;
-        //     }).catch(error => axiosResponseStatus(error))
-        // };
-        // if (this.$route.name === 'EditPersonal') {
-        //     axios.get(`/api/personal/${this.userId}`).then(({data})=>{
-        //         this.formValues.user = data;
-        //         this.formValues.selectedGroup = data.actGroupId;
-        //         this.formValues.selectedFreebie = data.freebie;
-        //         this.selectedAddons = data.addons;
-        //     }).catch(error => axiosResponseStatus(error));
-        // }
+        if (this.$route.name === 'AddMember') {
+            let orderId = sessionStorage.getItem("orderId");
+            if (orderId === '') {
+                this.$router.push({ name: 'CreateGroup' });
+            };
+            axios.get(`/api/order/${orderId}`).then(({ data }) => {
+                this.settings.contact = data;
+            }).catch(error => axiosResponseStatus(error))
+        };
+        if (this.$route.name === 'EditPersonal') {
+            axios.get(`/api/personal/${this.userId}`).then(({data})=>{
+                this.formValues.user = data;
+                this.formValues.selectedGroup = data.actGroupId;
+                this.formValues.selectedFreebie = data.freebie;
+                this.selectedAddons = data.addons;
+            }).catch(error => axiosResponseStatus(error));
+        }
     },
     computed: {
         code(){
@@ -546,15 +544,6 @@ export default {
                     this.$router.push({ name: redirctToName });
                 });
             }
-        },
-        isBirthdateValue() {
-            if (this.formValues.user.birthdate && this.formValues.user.birthdate.trim()) {
-                return true;
-            }
-            return '出生年月日 為必填';
-        },
-        inputMask:function(event) {
-            this.formValues.rocid = event.target.value;
         },
         allowEntry: function (item) {
             if (!item.canSignUp) return "報名截止";
