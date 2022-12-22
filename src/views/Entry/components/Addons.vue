@@ -99,7 +99,7 @@
 </template>
 
 <script>
-
+import Swal from 'sweetalert2';
 export default {
     name: 'Addons',
     props: {

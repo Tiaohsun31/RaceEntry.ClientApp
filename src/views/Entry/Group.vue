@@ -214,7 +214,7 @@
                         <div class="form-group mt-2 mb-3">
                             <label for="shareLink"> 連結分享 </label>
                             <div class="input-group">
-                                <input type="text" v-bind:value="formValues.contact.shareUri" class="form-control" aria-label="Join code" readonly>
+                                <input type="text" v-model="formValues.contact.shareUri" class="form-control" aria-label="Join code" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" @click="copy">複製
                                     </button>
@@ -329,6 +329,7 @@ export default {
         },
         EditBase(values) {
             values.contact.actCode = this.code;
+            values.contact.isShare = this.formValues.contact.isShare;
             values.contact.startTime = this.date[0];
             values.contact.endTime = this.date[1];
 

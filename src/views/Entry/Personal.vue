@@ -119,7 +119,7 @@
                     <div class="form-row">
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
                             <Datepicker placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD" @change="setFieldValue('user.birthdate', formValues.user.birthdate)"></Datepicker>
-                            <Field name="user.birthdate" label="出生年月日" rules="required" type="hidden"></Field>
+                            <Field name="user.birthdate" label="出生年月日" rules="required" type="text" hidden></Field>
                             <ErrorMessage name="user.birthdate" class="text-danger" as="div" />
                         </div>
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
@@ -221,7 +221,7 @@
                         </div>
                         <div v-if="element.specs.length > 0" class="mb-3 mt-2">
                             <div v-if="element.specs.length == 1">
-                                <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格">
+                                <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格" required>
                                     <option value="" disabled hidden selected> -- 請選擇 -- </option>
                                     <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
                                         v-bind:value="`${option.title || option.name}`"
@@ -231,7 +231,7 @@
                                 </select> 
                             </div>
                             <div v-else>
-                                <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格">
+                                <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格" required>
                                     <option value="" disabled hidden selected> -- 請選擇 -- </option>
                                     <optgroup v-for="options in element.specs" v-bind:label="options.key == '' ? '' : options.key">
                                         <option v-for="item in options.list" 
@@ -417,6 +417,7 @@ export default {
             if (this.formValues.selectedGroup == 0) return;
 
             let group = this.settings.actGroup.find(x => x.actGroupId == this.formValues.selectedGroup);
+            if (!group) return;
             let birthdate = this.formValues.user.birthdate;
 
             if (group.minBirthday != null && birthdate != null && group.minBirthday >= birthdate) {
@@ -430,7 +431,7 @@ export default {
             if (this.formValues.selectedGroup == 0) return;
 
             let group = this.settings.actGroup.find(x => x.actGroupId == this.formValues.selectedGroup);
-
+            if (!group) return;
             if (group.genderLimit != "不拘" && group.genderLimit != this.formValues.user.gender) {
                 this.formValues.selectedGroup = 0;
             }
@@ -449,7 +450,7 @@ export default {
             this.formValues.user = {};
         },
         onSubmit(values,actions) {
-
+            this.freebieIsExistError = false;
             values.actCode = this.code;
             values.selectedAddons = this.selectedAddons;
             values.selectedFreebie = this.mapToselectedFreebie(actions);
@@ -482,7 +483,6 @@ export default {
                 if (element.specs.length > 0) {
                     let selected = document.getElementById(`selectedFreebie[${element.productId}].spec`);
                     if (selected && selected.value == "") {
-                        console.log("A");
                         actions.setFieldError(`selectedFreebie[${element.productId}].spec`,`請先選擇 ${element.name} 規格`);
                         this.freebieIsExistError = true;
                         return;
