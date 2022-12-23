@@ -24,7 +24,7 @@
                     </td>
                     <td> {{ element.actGroupName }} </td>
                     <td class="d-none d-sm-table-cell"> {{ element.phoneNumber }} </td>
-                    <td class="text-secondary-d3"> NT$ {{ amountFormat(element.total) }} </td>
+                    <td class="text-secondary-d3"> NT$ {{ numberFormat(element.total) }} </td>
                     <td class="d-none d-sm-table-cell"> {{ dateFormat(element.updateAt) }} </td>
                     <td>
                         <div class="d-none d-lg-flex float-right">
@@ -132,13 +132,13 @@
                                                                 {{ item.productSpec }} 
                                                             </td>
                                                             <td class="text-secondary-d3 text-95 d-none d-sm-table-cell">
-                                                                {{  amountFormat(item.unitPrice) }}
+                                                                {{  numberFormat(item.unitPrice) }}
                                                             </td>
                                                             <td class="text-secondary-d3 text-95 d-none d-sm-table-cell">
-                                                                {{  amountFormat(item.qty) }}
+                                                                {{  numberFormat(item.qty) }}
                                                             </td>
                                                             <td class="text-secondary-d3 text-95 d-none d-sm-table-cell">
-                                                                {{  amountFormat(item.subTotal) }}
+                                                                {{  numberFormat(item.subTotal) }}
                                                             </td>
                                                         </tr>
                                                         <tr
@@ -153,9 +153,9 @@
                                                             <td colspan="3">金額</td>
                                                         </tr>
                                                         <tr class="d-table-row d-sm-none text-secondary-d3">
-                                                            <td colspan="2">{{ amountFormat(item.unitPrice) }}</td>
-                                                            <td colspan="2">{{ amountFormat(item.qty) }}</td>
-                                                            <td colspan="3" title="金額"> {{ amountFormat(item.subTotal) }} </td>
+                                                            <td colspan="2">{{ numberFormat(item.unitPrice) }}</td>
+                                                            <td colspan="2">{{ numberFormat(item.qty) }}</td>
+                                                            <td colspan="3" title="金額"> {{ numberFormat(item.subTotal) }} </td>
                                                         </tr>
                                                     </template>
                                                 </tbody>
@@ -175,17 +175,17 @@
 
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import moment from 'moment';
+import { dateFormat,numberFormat } from '../format';
 
 export default {
     name: 'Members',
     props: ['members','isReadOnly'],
     methods:{
         dateFormat(value){
-            return moment(value).format('YYYY-MM-DD');
+            return dateFormat(value);
         },
-        amountFormat(value){
-            return new Intl.NumberFormat('en').format(value);
+        numberFormat(value){
+            return numberFormat(value);
         },
         cancel(id) {
             let user = this.members.findIndex(x => x.userInfoId === id);

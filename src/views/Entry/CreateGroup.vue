@@ -141,7 +141,7 @@
     </div>
 </template>
 
-<script>
+<script lang="js">
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import moment from 'moment';
@@ -167,7 +167,7 @@ export default {
         this.date = [startDate, endDate];
 
         //TODO Test
-        //sessionStorage.setItem("orderId","7fd3febb-2030-412c-a4e3-08dadf10a5ed")
+        sessionStorage.setItem("orderId","4bc8ff05-0450-4451-beb7-08dae3c31310")
     },
     computed:{
         isAuthenticated(){

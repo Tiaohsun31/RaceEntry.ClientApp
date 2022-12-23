@@ -313,7 +313,7 @@
     </div>
 </template>
 
-<script>
+<script lang="js">
 import axios from 'axios';
 import { Field, Form as VeeForm, ErrorMessage } from 'vee-validate';
 import Swal from 'sweetalert2';

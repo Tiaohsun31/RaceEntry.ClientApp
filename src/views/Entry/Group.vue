@@ -65,7 +65,7 @@
                 </div>
 
             </div>
-            <div class="card-body">
+            <div v-if="formValues.pendingApproval.length > 0" class="card-body">
                 <Uploads :pendingApproval="formValues.pendingApproval"></Uploads>
             </div>
         </div>
