@@ -226,7 +226,7 @@
                             <div class="form-group">
                                 <label for="note" class="text-info-d2">備註 [選填]</label>
                                 <Field name="note" label="備註" v-slot="{field,value}">
-                                    <textarea v-bind="field" rows="3" id="note" class="form-control">
+                                    <textarea v-bind="field" rows="4" id="note" class="form-control">
                                         {{ value }}
                                     </textarea>
                                 </Field>
@@ -246,49 +246,146 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div v-if="act.paymentTypes" class="form-group">
+                            <!-- 配送方式 -->
+                            <div v-if="act.sendTypes" class="form-group">
                                 <label for="sendType" class="text-info-d2">請選擇配送方式</label>
-                                <Field id="sendType" name="sendType" label="配送方式" rules="required" class="form-control" as="select">
-                                    <option value="" disabled selected hidden> 請選擇配送方式 </option>
-                                    <option v-for="item in act.paymentTypes.split(',')" :value="item" :label="item"></option>
+                                <Field id="sendType" name="sendType" label="配送方式" rules="required" v-model="formValues.contact.sendType" class="form-control" as="select" @change="getShipping()">
+                                    <option value="" disabled selected hidden> -- 請選擇 -- </option>
+                                    <option v-for="item in act.sendTypes.split(',')" :value="item" :label="item"></option>
                                 </Field>
                                 <ErrorMessage name="sendType" class="text-danger" as="div"></ErrorMessage>
                             </div>
-                            <select class="form-control col-6" v-model="formValues.contact.receiveCity">
-                                <option value="" selected> -- 請選擇縣市 -- </option>
-                                <option v-for="item in cities" :value="item" :label="item"></option>
-                            </select>
-                            <select class="form-control col-6" v-model="formValues.contact.receiveRegion">
-                                <option value="" selected> -- 請選擇鄉鎮 -- </option>
-                                <option v-for="item in county" :value="item.name" :label="item.name"></option>
-                            </select>
-                            <section v-if="formValues.contact.sendType != '宅配到府' || formValues.contact.sendType != '郵件寄送'">
+                            <section v-if="formValues.contact.sendType == '7-ElEVEN門市取貨' || formValues.contact.sendType == '全家門市取貨'">
+                                <a href="#" v-show="formValues.contact.sendType == '7-ElEVEN門市取貨'" class="btn btn-info my-1" @click.prevent="getEmap('711B2C')"  :disabled='act.isReadOnly'>選擇 7-11 取貨門市</a>
+                                <a href="#" v-show="formValues.contact.sendType == '全家門市取貨'" class="btn btn-success my-1" @click.prevent="getEmap('FAMIC2C')" :disabled='act.isReadOnly'>選擇 全家 取貨門市</a>
                                 
+                                <table class="table table-sm table-bordered mt-2">
+                                    <tbody>
+                                        <tr>
+                                            <th class="bgc-light text-dark-l1 w-25" scope="row">店號</th>
+                                            <td class="text-left"> 
+                                                {{ formValues.contact.storeNumber }} 
+                                                <Field name="storeNumber" label="店號" rules="required" v-model="formValues.contact.storeNumber" type="hidden"></Field>
+                                                <ErrorMessage name="storeNumber" class="text-danger" as="div"></ErrorMessage>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bgc-light text-dark-l1" scope="row">取貨門市</th>
+                                            <td class="text-left"> 
+                                                {{ formValues.contact.storeName }} 
+                                                <Field name="storeName" label="取貨門市" rules="required" v-model="formValues.contact.storeName" type="hidden"></Field>
+                                                <ErrorMessage name="storeName" class="text-danger" as="div"></ErrorMessage>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bgc-light text-dark-l1" scope="row">門市地址</th>
+                                            <td class="text-left"> 
+                                                {{ formValues.contact.storeAddress }} 
+                                                <Field name="storeAddress" label="門市地址" rules="required" v-model="formValues.contact.storeAddress" type="hidden"></Field>
+                                                <ErrorMessage name="storeAddress" class="text-danger" as="div"></ErrorMessage>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </section>
-                            <section v-else>
-                                <div class="form-row">
-
-                                    <!-- <div id="city-selector-set" class="row mx-0 my-1">
-                                        <input class="zipcode" type="hidden" size="3" name="Form.ReceivePostalCode" id="Form_ReceivePostalCode">
-                                        <select class="county form-control col-6" id="Form_ReceiveCounty" disabled='@(Model.IsReadOnly)'></select>
-                                        <select class="district form-control col-6" id="Form_ReceiveRegion" disabled='@(Model.IsReadOnly)'></select>
-                                    </div> -->
+                            <section v-if="formValues.contact.sendType == '宅配到府' || formValues.contact.sendType == '郵件寄送'">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <Field name="receivePostalCode" v-model="formValues.contact.receivePostalCode" type="hidden"></Field>
+                                        <Field name="receiveCity" label="縣市" class="form-control" rules="required" v-model="formValues.contact.receiveCity" as="select">
+                                            <option value="" selected> -- 請選擇縣市 -- </option>
+                                            <option v-for="item in cities" :value="item" :label="item"></option>
+                                        </Field>
+                                        <ErrorMessage name="receiveCity" class="text-danger" as="div"></ErrorMessage>
+                                    </div>
+                                    <div class="col-6">
+                                        <Field name="receiveRegion" label="鄉鎮" class="form-control" rules="required" v-model="formValues.contact.receiveRegion" as="select" @change="changeZipCode()">
+                                            <option value="" selected> -- 請選擇鄉鎮 -- </option>
+                                            <option v-for="item in county" :value="item.name" :label="item.name"></option>
+                                        </Field>
+                                        <ErrorMessage name="receiveRegion" class="text-danger" as="div"></ErrorMessage>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <div class="form-group">
+                                            <Field class="form-control" name="receiveAddress" label="收件地址" placeholder="請輸入您的收件地址" rules="required"></Field>
+                                            <ErrorMessage name="receiveAddress" class="text-danger" as="div"></ErrorMessage>
+                                        </div>
+                                    </div>
                                 </div>
-                                <!-- <div class="form-group">
-                                    <input type="text" class="form-control" asp-for="Form.ReceiveAddress" placeholder="請輸入您的收件地址" data-val="true"
-                                        data-val-required="地址 為必填欄位" disabled="@(Model.IsReadOnly)">
-                                    <span class="text-danger" asp-validation-for="Form.ReceiveAddress"></span>
-                                </div> -->
                             </section>
+                            <!-- End 配送方式 -->
+                            <!-- 付款方式 -->
+                            <div v-if="act.paymentTypes" class="form-group">
+                                <label for="payment" class="text-info-d2">請選擇付款方式</label>
+                                <Field id="payment" name="paymentType" label="付款方式" rules="required" v-model="formValues.contact.paymentType" class="form-control" as="select">
+                                    <option value="" disabled selected hidden> -- 請選擇 -- </option>
+                                    <option v-for="item in act.paymentTypes.split(',')" :value="item" :label="item"></option>
+                                </Field>
+                                <ErrorMessage name="paymentType" class="text-danger" as="div"></ErrorMessage>
+                            </div>
+                            <!-- End 付款方式 -->
+                        </div>  
+                    </div>
+                    <div class="card acard">
+                        <div class="card-title">
+                            <div class="h4 text-dark pt-3"> 訂單小計 </div>
+                            <div class="pos-rel">
+                                <div class="text-90 py-1 px-4 pos-rel text-white d-inline-block text-uppercase bgc-warning" style="z-index: 2;">BILLING INFORMATION</div>
+                                <div class="bar pos-abs w-100 bgc-warning" style="z-index: 1;"></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-bordered mt-2 ">
+                                <caption class="pb-0">金額新台幣計算</caption>
+                                <tbody>
+                                    <tr>
+                                        <th class="bgc-light text-dark-l1 w-25" scope="row">訂單總額</th>
+                                        <td class="text-110 text-secondary-d3 text-right"> {{ numberFormat(formValues.contact.orderTotal) }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="bgc-light text-dark-l1 w-25" scope="row">運費</th>
+                                        <td class="text-110 text-secondary-d3 text-right"> {{ numberFormat(shipping) }} </td>
+                                    </tr>
+
+                                    <tr v-if="formValues.accounts.length > 0">
+                                        <th class="bgc-light text-dark-l1 w-25" scope="row">已繳金額</th>
+                                        <td class="text-110 text-danger text-right">{{ numberFormat(formValues.contact.paidTotal*(-1)) }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th class="bgc-light text-dark-l1 w-25" scope="row">應繳金額</th>
+                                        <td class="text-110 text-success text-right">NT$ {{ total }} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body mt-0">
+                            <div v-if="!act.isReadOnly">
+                                <div v-if="formValues.accounts.length > 0" class="row">
+                                    <div class="col-12 col-sm-6">
+                                        <button type="submit" class="btn btn-info text-600 letter-spacing-1 btn-block btn-lg shadow-sm">
+                                            修改訂單 Change Order
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <button type="submit" asp-action="Edit" asp-route-repay="true"
+                                            class="btn btn-primary text-600 letter-spacing-1 btn-block btn-lg shadow-sm">
+                                            重新取單 Pay again
+                                        </button>
+                                    </div>
+                                </div>
+                                <div v-else>
+                                    <button type="submit" asp-action="Edit" asp-route-repay="true"
+                                        class="btn btn-red text-600 letter-spacing-1 btn-block btn-lg shadow-sm">
+                                        確認訂單 Checkout
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-red py-2 text-600 letter-spacing-1 btn-block my-3 btn-lg shadow-sm">
-                        確認訂單 Checkout
-                    </button>
                 </div>
             </section>
         </Form>
-        <button @click="test">test</button>
         <!-- End 訂單表單 -->
     </div>
 </template>
@@ -315,14 +412,12 @@ import Members from './components/Members.vue';
 import Uploads from './components/Uploads.vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+
 import { Field, Form, ErrorMessage } from 'vee-validate';
-//import zipcode from '../Entry/zipcodes';
-//  import Zipcode from 'twzipcode-vue/zipcode'
-// // import ZipcodeGroupby from 'twzipcode-vue/zipcode-groupby'
-//  import County from 'twzipcode-vue/county'
 
 import { axiosResponseStatus } from '../axiosHandlingErrors';
 import { dateFormat,numberFormat,dateTimeFormat } from '../Entry/format';
+import { removeCookie, getCookie } from '../Entry/jscookie';
 
 export default {
     name: 'Checkout',
@@ -334,7 +429,9 @@ export default {
     data() {
         return {
             formValues: {
-                contact: {},
+                contact: {
+                    sendType:''
+                },
                 members:[],
                 pendingApproval:[],
                 addons:[],
@@ -344,6 +441,7 @@ export default {
             needUniform:false,
             allZipCode:[],
             cities:[],
+            shipping:0
         }
     },
     created(){
@@ -357,6 +455,10 @@ export default {
             if (this.formValues.contact.receiveCity == '') return;
             this.formValues.contact.receiveRegion = '';
             return this.allZipCode.filter(x => x.city_name == this.formValues.contact.receiveCity);
+        },
+        total(){
+            let result = this.formValues.contact.orderTotal + this.shipping - this.formValues.contact.paidTotal;
+            return numberFormat(result);
         }
     },
     mounted() {
@@ -398,15 +500,60 @@ export default {
                 }
             })
         },
+        changeZipCode(){
+            if(this.formValues.contact.receiveRegion === '') {
+                this.formValues.contact.receivePostalCode = '';
+                return;
+            };
+            this.formValues.contact.receivePostalCode = this.allZipCode.find(x => x.name === this.formValues.contact.receiveRegion)?.zipcode;
+        },
         refund(){
 
         },
         onSubmit(values){
-            let aa = this.allZipCode.find(x => x.city_name == this.formValues.contact.receiveCity && x.name == this.formValues.contact.receiveRegion)?.zipcode;
-            console.log(aa);
             const form = JSON.stringify(values,null,2);
-            
+        
             console.log(form);
+        },
+        getEmap(type){
+            removeCookie('emapJson');
+           
+            let url = this.emapUri(type);
+
+            let popup = window.open(url,'Emap', 'width = 1000 , height = 800');
+            let vue = this;
+
+            let popupTick = setInterval(function () {
+                let emapJson = getCookie('emapJson');
+                if (emapJson && popup.close) {
+                    popup.close();
+                    clearInterval(popupTick);
+                    var jsonFormat = JSON.parse(emapJson);
+                    vue.formValues.contact.storeNumber = jsonFormat.storeId;
+                    vue.formValues.contact.storeName = jsonFormat.storeName;
+                    vue.formValues.contact.storeAddress = jsonFormat.storeAddress;
+                }
+            }, 1000);
+        },
+        emapUri(type) {
+            let whatSystem = navigator.userAgent;
+            let isAndroid = whatSystem.match(/android/i);
+            let isiOS = whatSystem.match(/(iphone|ipad|ipod);?/i);
+            const requestUrls = encodeURIComponent(`https://localhost:7256/Api/Emap`);
+            //const requestUrls = encodeURIComponent(`${window.location.origin}/Api/Emap/Index`);
+            let typesInterface = (isiOS || isAndroid) ? "MOBILE" : "WEB";
+            let url = "https://ssl.smse.com.tw/api/LogisticsEmap.asp?TypesInterface=" + typesInterface + "&TypesServer=" + type + "&url=" + requestUrls;
+            return url;
+        },
+        getShipping() {
+            let number = this.formValues.members.length;
+            if (number === 0 || this.formValues.contact.sendType == '') return;
+            axios.get(`/api/act/shipping/${this.act.actCode}`, {
+                params: {
+                    sendType: this.formValues.contact.sendType,
+                    number:number
+                }
+            }).then(({data}) => this.shipping = data);
         },
         statusStyle(value){
             switch (value) {
