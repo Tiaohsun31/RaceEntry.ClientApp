@@ -13,7 +13,7 @@
                     整筆訂單取消
                 </button>
                 
-                <button v-if="formValues.contact.paidTotal > 0 && formValues.contact.canRefund" class="btn btn-light-red btn-h-red btn-a-red border-0 py-2 text-600" @click="refund">
+                <button v-if="formValues.contact.paidTotal > 0 && act.canRefund" class="btn btn-light-red btn-h-red btn-a-red border-0 py-2 text-600" @click="refund">
                     退費申請
                 </button>
             </div>
@@ -169,7 +169,22 @@
         </section>
         <!-- End 付款明細 -->
         <!-- 訂單表單 -->
-        <Form @submit="onSubmit" :initial-values="formValues.contact">
+        <div v-if="act.isReadOnly" class="mt-5 mb-3">
+            <div role="alert" class="alert alert-warning bgc-warning-l4 brc-warning-m3 border-2 d-flex align-items-center">
+                <i class="fas fa-exclamation-circle mr-3 fa-2x text-orange"></i>
+                <div class="text-dark-tp2">
+                    感謝您對 {{act.actName}} 的支持，該活動已完全結束報名。
+                    若您對訂單內容尚有疑問，請洽客服電話
+                    <a href="tel:05-6226456" class="alert-link text-orange-d2">
+                        05-6226456
+                    </a>。或LINE搜尋
+                    <a href="https://lin.ee/gT3EWca" target="_blank" data-toggle="tooltip" title="LINE ID:@focusline"
+                        data-original-title="LINE ID:@focusline" class="alert-link text-orange-d2">@focusline
+                    </a>由小編為您服務。
+                </div>
+            </div>
+        </div>
+        <Form @submit="onSubmit" :initial-values="formValues.contact" v-slot="{ setFieldValue }">
             <section class="row py-md-4 py-3 ">
                 <div class="col-md-6 col-12">
                     <div class="card acard">
@@ -179,24 +194,24 @@
                             <div class="bar pos-abs w-100" style="background-color: #e95419;z-index: 1;"></div>
                         </div>
                         <div class="card-body">
-                            <div v-if="formValues.members.length != 1" class="form-group">
+                            <div v-show="formValues.members.length == 1" class="form-group">
                                 <label for="groupName" class="text-info-d2">團隊名稱</label>
-                                <Field id="groupName" name="groupName" label="團隊名稱" class="form-control" rules="required|max:15"></Field>
+                                <Field id="groupName" name="groupName" label="團隊名稱" class="form-control" rules="required|max:15" :disabled="act.isReadOnly"></Field>
                                 <ErrorMessage name="groupName" class="text-danger" as="div"></ErrorMessage>
                             </div>
                             <div class="form-group">
                                 <label for="name" class="text-info-d2">收件人姓名</label>
-                                <Field id="name" name="name" label="收件人名稱" class="form-control" rules="required|max:50"></Field>
+                                <Field id="name" name="name" label="收件人名稱" class="form-control" rules="required|max:50" :disabled="act.isReadOnly"></Field>
                                 <ErrorMessage name="name" class="text-danger" as="div"></ErrorMessage>
                             </div>
                             <div class="form-group">
                                 <label for="phoneNumber" class="text-info-d2">收件人電話</label>
-                                <Field id="phoneNumber" name="phoneNumber" label="收件人電話" rules="required|max:10" class="form-control"></Field>
+                                <Field id="phoneNumber" name="phoneNumber" label="收件人電話" rules="required|max:10" class="form-control" :disabled="act.isReadOnly"></Field>
                                 <ErrorMessage name="phoneNumber" class="text-danger" as="div"></ErrorMessage>
                             </div>
                             <div class="form-group">
                                 <label for="email" class="text-info-d2">Email</label>
-                                <Field id="email" name="email" rules="required|email|max:200" type="email" class="form-control"></Field>
+                                <Field id="email" name="email" rules="required|email|max:200" type="email" class="form-control" :disabled="act.isReadOnly"></Field>
                                 <ErrorMessage name="email" class="text-danger" as="div"></ErrorMessage>
                             </div>
                             <!-- 發票資訊 -->
@@ -211,13 +226,13 @@
                                     <div id="needUniformArea" v-show="needUniform">
                                         <div class="form-group">
                                             <label class="text-info-d2" for="uniformNumber">統一編號</label>
-                                            <Field id="uniformNumber" name="uniformNumber" label="統一編號" :rules="{ required: needUniform, digits: 8 }" class="form-control"></Field>
+                                            <Field id="uniformNumber" name="uniformNumber" label="統一編號" :rules="{ required: needUniform, digits: 8 }" class="form-control" :disabled="act.isReadOnly"></Field>
                                             <ErrorMessage name="uniformNumber" class="text-danger" as="div"></ErrorMessage>
                                         </div>
                                         
                                         <div class="form-group">
                                             <label class="text-info-d2" for="companyName">公司抬頭</label>
-                                            <Field id="companyName" name="companyName" label="公司抬頭" :rules="{ required: needUniform, max: 50 }" class="form-control"></Field>
+                                            <Field id="companyName" name="companyName" label="公司抬頭" :rules="{ required: needUniform, max: 50 }" class="form-control" :disabled="act.isReadOnly"></Field>
                                             <ErrorMessage name="companyName" class="text-danger" as="div"></ErrorMessage>
                                         </div>
                                     </div>
@@ -225,8 +240,8 @@
                             </section>
                             <div class="form-group">
                                 <label for="note" class="text-info-d2">備註 [選填]</label>
-                                <Field name="note" label="備註" v-slot="{field,value}">
-                                    <textarea v-bind="field" rows="4" id="note" class="form-control">
+                                <Field name="note" label="備註" rules="max:500" v-slot="{field,value}">
+                                    <textarea v-bind="field" rows="4" id="note" class="form-control" :disabled="act.isReadOnly">
                                         {{ value }}
                                     </textarea>
                                 </Field>
@@ -249,7 +264,7 @@
                             <!-- 配送方式 -->
                             <div v-if="act.sendTypes" class="form-group">
                                 <label for="sendType" class="text-info-d2">請選擇配送方式</label>
-                                <Field id="sendType" name="sendType" label="配送方式" rules="required" v-model="formValues.contact.sendType" class="form-control" as="select" @change="getShipping()">
+                                <Field id="sendType" name="sendType" label="配送方式" rules="required" v-model="formValues.contact.sendType" class="form-control" as="select" @change="getShipping()" :disabled="act.isReadOnly">
                                     <option value="" disabled selected hidden> -- 請選擇 -- </option>
                                     <option v-for="item in act.sendTypes.split(',')" :value="item" :label="item"></option>
                                 </Field>
@@ -292,14 +307,14 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <Field name="receivePostalCode" v-model="formValues.contact.receivePostalCode" type="hidden"></Field>
-                                        <Field name="receiveCity" label="縣市" class="form-control" rules="required" v-model="formValues.contact.receiveCity" as="select">
+                                        <Field name="receiveCity" label="縣市" class="form-control" rules="required" v-model="formValues.contact.receiveCity" as="select" :disabled="act.isReadOnly">
                                             <option value="" selected> -- 請選擇縣市 -- </option>
                                             <option v-for="item in cities" :value="item" :label="item"></option>
                                         </Field>
                                         <ErrorMessage name="receiveCity" class="text-danger" as="div"></ErrorMessage>
                                     </div>
                                     <div class="col-6">
-                                        <Field name="receiveRegion" label="鄉鎮" class="form-control" rules="required" v-model="formValues.contact.receiveRegion" as="select" @change="changeZipCode()">
+                                        <Field name="receiveRegion" label="鄉鎮" class="form-control" rules="required" v-model="formValues.contact.receiveRegion" as="select" @change="changeZipCode()" :disabled="act.isReadOnly">
                                             <option value="" selected> -- 請選擇鄉鎮 -- </option>
                                             <option v-for="item in county" :value="item.name" :label="item.name"></option>
                                         </Field>
@@ -307,7 +322,7 @@
                                     </div>
                                     <div class="col-12 mt-3">
                                         <div class="form-group">
-                                            <Field class="form-control" name="receiveAddress" label="收件地址" placeholder="請輸入您的收件地址" rules="required"></Field>
+                                            <Field class="form-control" name="receiveAddress" label="收件地址" placeholder="請輸入您的收件地址" rules="required|max:300" :disabled="act.isReadOnly"></Field>
                                             <ErrorMessage name="receiveAddress" class="text-danger" as="div"></ErrorMessage>
                                         </div>
                                     </div>
@@ -317,11 +332,11 @@
                             <!-- 付款方式 -->
                             <div v-if="act.paymentTypes" class="form-group">
                                 <label for="payment" class="text-info-d2">請選擇付款方式</label>
-                                <Field id="payment" name="paymentType" label="付款方式" rules="required" v-model="formValues.contact.paymentType" class="form-control" as="select">
+                                <Field id="payment" name="payment" label="付款方式" rules="required" v-model="formValues.contact.payment" class="form-control" as="select" :disabled="act.isReadOnly">
                                     <option value="" disabled selected hidden> -- 請選擇 -- </option>
                                     <option v-for="item in act.paymentTypes.split(',')" :value="item" :label="item"></option>
                                 </Field>
-                                <ErrorMessage name="paymentType" class="text-danger" as="div"></ErrorMessage>
+                                <ErrorMessage name="payment" class="text-danger" as="div"></ErrorMessage>
                             </div>
                             <!-- End 付款方式 -->
                         </div>  
@@ -336,7 +351,11 @@
                         </div>
                         <div class="card-body">
                             <table class="table table-sm table-bordered mt-2 ">
-                                <caption class="pb-0">金額新台幣計算</caption>
+                                <caption class="pb-0 text-90 text-danger">
+                                    <div>*金額新台幣計算</div>
+                                    <div v-if="formValues.contact.isShare">*確認訂單、重新取單，將自動關閉分享連結</div>
+                                </caption>
+
                                 <tbody>
                                     <tr>
                                         <th class="bgc-light text-dark-l1 w-25" scope="row">訂單總額</th>
@@ -363,20 +382,18 @@
                             <div v-if="!act.isReadOnly">
                                 <div v-if="formValues.accounts.length > 0" class="row">
                                     <div class="col-12 col-sm-6">
-                                        <button type="submit" class="btn btn-info text-600 letter-spacing-1 btn-block btn-lg shadow-sm">
+                                        <button type="submit" @click="setFieldValue('repay', false)" class="btn btn-info text-600 letter-spacing-1 btn-block btn-lg shadow-sm" :disabled="act.isReadOnly">
                                             修改訂單 Change Order
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <button type="submit" asp-action="Edit" asp-route-repay="true"
-                                            class="btn btn-primary text-600 letter-spacing-1 btn-block btn-lg shadow-sm">
+                                        <button type="submit" @click="setFieldValue('repay', true)" class="btn btn-primary text-600 letter-spacing-1 btn-block btn-lg shadow-sm" :disabled="act.isReadOnly">
                                             重新取單 Pay again
                                         </button>
                                     </div>
                                 </div>
                                 <div v-else>
-                                    <button type="submit" asp-action="Edit" asp-route-repay="true"
-                                        class="btn btn-red text-600 letter-spacing-1 btn-block btn-lg shadow-sm">
+                                    <button type="submit" @click="setFieldValue('repay', true)" class="btn btn-red text-600 letter-spacing-1 btn-block btn-lg shadow-sm" :disabled="act.isReadOnly">
                                         確認訂單 Checkout
                                     </button>
                                 </div>
@@ -437,7 +454,6 @@ export default {
                 addons:[],
                 accounts:[],
             },
-            paymentTypes:[],
             needUniform:false,
             allZipCode:[],
             cities:[],
@@ -453,7 +469,6 @@ export default {
         },
         county(){
             if (this.formValues.contact.receiveCity == '') return;
-            this.formValues.contact.receiveRegion = '';
             return this.allZipCode.filter(x => x.city_name == this.formValues.contact.receiveCity);
         },
         total(){
@@ -511,34 +526,69 @@ export default {
 
         },
         onSubmit(values){
+            values.id = this.orderId;
             const form = JSON.stringify(values,null,2);
-        
-            console.log(form);
+
+            if (!this.act.isReadOnly) {
+                axios.post(`/api/checkout/${this.orderId}`, form, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(({data}) => {
+                    if (!values.repay) {
+                        Swal.fire({ icon: 'success', title: '已完成修改' });
+                    } else if (values.repay && values.payment !== '信用卡繳費') {
+                        Swal.fire({ icon: 'success', title: '已取單，繳費代碼將透過簡訊寄送' });
+                    } else if (values.repay && values.payment === '信用卡繳費' && data != '') {
+                        Swal.fire({
+                            title: '是否要立即繳費?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            cancelButtonText: '否!',
+                            confirmButtonText: '是!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.open(data, 'credit card');
+                            }
+                        });
+                    } else {
+                        Swal.fire({ icon: 'error', title: '繳費失敗，請查看付款明細' });
+                    }
+                }).catch(error => {
+                    if (error.response.status === 400 || error.response.status === 404) {
+                        Swal.fire("尚未開放報名或報名已截止");
+                    }
+                }).finally(() => {
+                    this.get();
+                });
+            }
         },
         getEmap(type){
             removeCookie('emapJson');
            
             let url = this.emapUri(type);
 
-            let popup = window.open(url,'Emap', 'width = 1000 , height = 800');
+            let popup = window.open(url, 'Emap', 'width = 1000 , height = 800');
             let vue = this;
 
             let popupTick = setInterval(function () {
                 let emapJson = getCookie('emapJson');
-                if (emapJson && popup.close) {
+                if (emapJson || popup.closed) {
                     popup.close();
                     clearInterval(popupTick);
-                    var jsonFormat = JSON.parse(emapJson);
+                    var jsonFormat = emapJson ? JSON.parse(emapJson) : '';
                     vue.formValues.contact.storeNumber = jsonFormat.storeId;
                     vue.formValues.contact.storeName = jsonFormat.storeName;
                     vue.formValues.contact.storeAddress = jsonFormat.storeAddress;
                 }
             }, 1000);
+            return false;
         },
         emapUri(type) {
             let whatSystem = navigator.userAgent;
             let isAndroid = whatSystem.match(/android/i);
             let isiOS = whatSystem.match(/(iphone|ipad|ipod);?/i);
+            //TODO:修改正式機回傳網址
             const requestUrls = encodeURIComponent(`https://localhost:7256/Api/Emap`);
             //const requestUrls = encodeURIComponent(`${window.location.origin}/Api/Emap/Index`);
             let typesInterface = (isiOS || isAndroid) ? "MOBILE" : "WEB";
@@ -568,12 +618,14 @@ export default {
             }
         },
         dateFormat(value){
+            if (value) return '';
             return dateFormat(value);
         },
         numberFormat(value){
             return numberFormat(value);
         },
         dateTimeFormat(value){
+            if (value == null || value == '') return;
             return dateTimeFormat(value);
         }
     }

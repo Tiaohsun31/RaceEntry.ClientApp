@@ -328,6 +328,7 @@ export default {
                 })
         },
         EditBase(values) {
+            values.contact.id = this.orderId;
             values.contact.actCode = this.code;
             values.contact.isShare = this.formValues.contact.isShare;
             values.contact.startTime = this.date[0];
