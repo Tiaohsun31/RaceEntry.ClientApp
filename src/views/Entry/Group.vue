@@ -276,9 +276,13 @@ export default {
         }
     },
     created() {
+        if (this.act.isReadOnly) {
+            Swal.fire({ icon: 'error', title: '報名已截止，資料無法修改' }).then(() => {
+                this.$router.push({ name: 'HomePage' });
+            });
+        }
         if (this.orderId == '') {
             this.$router.push({ name: 'CreateGroup' });
-            return;
         };
         this.getOrder();
         axios.get(`/api/groupaddons/${this.code}`).then(({data}) => {

@@ -149,11 +149,18 @@ export default {
             banners:[],
         }
     },
-    mounted() {
-        axios.get('/api/configs/marquee').then(({data}) => this.marquee = data);
-        axios.get('/api/configs/banners').then(({data}) => this.banners = data);
-        axios.get('/api/configs/recommendActs?number=12').then(({data}) => this.recommendActs = data);
-
+    created(){
+        let endpoints = [
+            `/api/configs/marquee`,
+            `/api/configs/banners`,
+            `/api/configs/recommendActs?number=12`,
+        ];
+        Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
+            .then(([{ data: marquee }, { data: banners }, { data:recommendActs }]) => {
+                this.marquee = marquee;
+                this.banners = banners;
+                this.recommendActs = recommendActs;
+            });
     },
     methods: {
         actDate: function (value) {

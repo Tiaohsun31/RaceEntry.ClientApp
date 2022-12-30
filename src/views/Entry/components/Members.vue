@@ -175,7 +175,7 @@
 
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { dateFormat,numberFormat } from '../format';
+import { dateFormat,numberFormat } from '../js/format';
 
 export default {
     name: 'Members',

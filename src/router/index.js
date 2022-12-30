@@ -11,6 +11,7 @@ import CreateGroup from '../views/Entry/CreateGroup.vue';
 import Group from '../views/Entry/Group.vue';
 import UploadFile from '../views/Entry/uploadFile.vue';
 import Checkout from '../views/Entry/Checkout.vue';
+import Refund from '../views/Entry/Refund.vue';
 
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
@@ -33,7 +34,8 @@ const routes = [
             { name: 'Group', path: '/:code/group', component: Group },
             { name: 'AddMember', path: '/:code/addMember', component: Personal, props: { operate: 'create' } },
             { name: 'UploadFile', path: '/:code/uploadFile', component: UploadFile },
-            { name: 'Checkout', path: '/:code/checkout', component: Checkout }
+            { name: 'Checkout', path: '/:code/checkout', component: Checkout },
+            { name: 'Refund', path: '/:code/refund', component:Refund}
         ]
     },
     { name: 'ChangePassword', path: '/changePassword', component: ChangePassword },

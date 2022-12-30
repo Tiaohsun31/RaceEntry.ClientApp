@@ -359,12 +359,19 @@ export default {
         }
     },
     created() {
+        this.checkActStatus();
+
+        if (!this.act.canSignUp && this.$route.name === 'CreatePersonal') {
+            Swal.fire({ icon: 'error', title: '該場活動已結束報名' }).then(() => {
+                this.$router.push({name:'HomePage'});
+            })
+        }
+
         let endpoints = [
             `/api/act/actgroup/${this.code}`,
             `/api/act/freebie/${this.code}`,
             `/api/act/addons/${this.code}`,
         ];
-
         Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
             .then(([{ data: actGroup }, { data: freebit }, { data:addons }]) => {
                 this.settings.actGroup = actGroup;
@@ -401,15 +408,18 @@ export default {
         getAddons() {
             if (this.settings.addons.length == 0) return;
             if (this.formValues.selectedGroup != 0) {
-                return this.settings.addons.filter(x => x.actGroupId == null || x.actGroupId?.includes(this.formValues.selectedGroup));
+                return this.settings.addons.filter(x => x.actGroupId == "" || x.actGroupId?.includes(this.formValues.selectedGroup));
             }
-            return this.settings.addons.filter(x => x.actGroupId == null);
+            return this.settings.addons.filter(x => x.actGroupId == "");
         },
         isAuthenticated(){
             return this.$store.state.isAuthenticated;
         },
         userId(){
             return this.$route.params.userId;
+        },
+        canSignUp(){
+            return this.act.canSignUp;
         }
     },
     watch:{
@@ -420,10 +430,10 @@ export default {
             if (!group) return;
             let birthdate = this.formValues.user.birthdate;
 
-            if (group.minBirthday != null && birthdate != null && group.minBirthday >= birthdate) {
+            if (group.minBirthday != "" && birthdate != "" && group.minBirthday >= birthdate) {
                 this.formValues.selectedGroup = 0;
             };
-            if (group.maxBirthday != null && birthdate != null && group.maxBirthday <= birthdate) {
+            if (group.maxBirthday != "" && birthdate != "" && group.maxBirthday <= birthdate) {
                 this.formValues.selectedGroup = 0;
             };
         },
@@ -438,6 +448,18 @@ export default {
         }
     },
     methods: {
+        checkActStatus(){
+            if (!this.act.canSignUp && this.$route.name === 'CreatePersonal') {
+                Swal.fire({icon:'error',title:'該活動已結束報名'}).then(() => {
+                    this.$router.push({name:'HomePage'})
+                })
+            }
+            if (this.act.isReadOnly && (this.$route.name === 'EditPersonal' || this.$route.name === 'AddMember')) {
+                Swal.fire({icon:'error',title:'報名已截止，資料無法修改'}).then(() => {
+                    this.$router.push({name:'HomePage'});
+                })
+            }
+        },
         getAddonsResult(result){
            this.selectedAddons = result;
         },
@@ -550,8 +572,8 @@ export default {
             if (item.full) return "已額滿";
 
             let birthdate = this.formValues.user.birthdate;
-            if ((item.minBirthday != null && birthdate != null && item.minBirthday >= birthdate) ||
-                (item.maxBirthday != null && birthdate != null && item.maxBirthday <= birthdate)) {
+            if ((item.minBirthday != "" && birthdate != "" && item.minBirthday >= birthdate) ||
+                (item.maxBirthday != "" && birthdate != "" && item.maxBirthday <= birthdate)) {
                 return "年齡不符";
             };
             if (item.genderLimit != "不拘" && item.genderLimit != this.formValues.user.gender) {

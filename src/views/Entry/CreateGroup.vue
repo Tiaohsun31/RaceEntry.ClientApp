@@ -160,6 +160,13 @@ export default {
             date:[],
         }
     },
+    created(){
+        if (!this.act.canSignUp) {
+            Swal.fire({icon:'error', title:'該活動已結束報名'}).then(() => {
+                this.$router.push({name:'HomePage'});
+            })
+        }
+    },
     mounted(){
         const startDate = new Date();
         moment(startDate).format('YYYY-MM-DD')

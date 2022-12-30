@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="mt-3">
-                <RouterLink v-bind:to="`/${this.code}#signup`" class="btn btn-block btn-outline-primary">
+                <RouterLink v-bind:to="`/${this.code}#signup`" class="btn btn-block btn-outline-primary" :class="{'disabled' : !act.canSignUp || act.isReadOnly}">
                     立即報名
                 </RouterLink>
             </div>

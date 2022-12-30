@@ -1,5 +1,5 @@
 <template>
-    <div class="container my-4">
+    <div v-if="!loading" class="container my-4">
         <div class="page-header pb-3">
             <h1 class="page-title text-primary-d2 text-150 d-none d-sm-block">
                 {{ act.actName }}
@@ -12,10 +12,9 @@
                 <button v-if="formValues.contact.paidTotal == 0" type="button" class="btn btn-light-red btn-h-red btn-a-red border-0 py-2 text-600" @click="cancel">
                     整筆訂單取消
                 </button>
-                
-                <button v-if="formValues.contact.paidTotal > 0 && act.canRefund" class="btn btn-light-red btn-h-red btn-a-red border-0 py-2 text-600" @click="refund">
+                <RouterLink :to="{name:'Refund'}" v-if="formValues.contact.paidTotal > 0 && act.canRefund" class="btn btn-light-red btn-h-red btn-a-red border-0 py-2 text-600">
                     退費申請
-                </button>
+                </RouterLink>
             </div>
         </div>
         <hr>
@@ -148,9 +147,8 @@
                                 </td>
                                 <td class="text-dark-m2 d-none d-sm-table-cell">
                                     <a v-if="element.paymentType == '信用卡繳費' && element.label == '繳費中'" target="_blank" class="btn-h-text-pink no-underline" :href="element.paidAccount"> {{ element.paidAccount }}</a>
-                                    <div v-else>
-                                        {{ element.paidAccount }}
-                                    </div>
+                                    <span v-else-if="element.paymentType == '信用卡繳費' && element.label == '已逾期'"></span>
+                                    <span v-else> {{ element.paidAccount }} </span>
                                 </td>
                                 <td class="text-dark-m2 d-none d-sm-table-cell">
                                     {{ dateTimeFormat(element.expiryDate) }}
@@ -222,7 +220,7 @@
                                         本活動開立雲端發票，如需統編與公司抬頭 [選填]
                                     </a>
                                 </div>
-                                <Transition name="fade">
+                                <Transition name="load">
                                     <div id="needUniformArea" v-show="needUniform">
                                         <div class="form-group">
                                             <label class="text-info-d2" for="uniformNumber">統一編號</label>
@@ -405,6 +403,13 @@
         </Form>
         <!-- End 訂單表單 -->
     </div>
+    <div v-else class="vh-100">
+        <Transition name="load">
+            <div class="loading">
+                <span class="fa fa-spinner fa-spin"></span> <span>Loading</span> 
+            </div>
+        </Transition>
+    </div>
 </template>
 
 <style>
@@ -422,8 +427,30 @@
 .fade-leave-from {
   opacity: 1;
 }
-</style>
 
+.loading {
+    text-align: center;
+    position: absolute;
+    color: #fff;
+    z-index: 9;
+    background: #5c4084;
+    padding: 8px 18px;
+    border-radius: 5px;
+    left: calc(50% - 45px);
+    top: calc(50% - 18px);
+}
+
+.load-enter-active,
+.load-leave-active {
+    transition: opacity 0.5s;
+}
+
+.load-enter-from,
+.load-leave-to {
+    opacity: 0;
+}
+</style>
+    
 <script lang="js">
 import Members from './components/Members.vue';
 import Uploads from './components/Uploads.vue';
@@ -433,8 +460,8 @@ import Swal from 'sweetalert2';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 
 import { axiosResponseStatus } from '../axiosHandlingErrors';
-import { dateFormat,numberFormat,dateTimeFormat } from '../Entry/format';
-import { removeCookie, getCookie } from '../Entry/jscookie';
+import { dateFormat,numberFormat,dateTimeFormat } from '../Entry/js/format';
+import { removeCookie, getCookie } from '../Entry/js/jscookie';
 
 export default {
     name: 'Checkout',
@@ -457,7 +484,8 @@ export default {
             needUniform:false,
             allZipCode:[],
             cities:[],
-            shipping:0
+            shipping:0,
+            loading:false,
         }
     },
     created(){
@@ -484,6 +512,7 @@ export default {
     },
     methods:{
         get() {
+            this.loading = true;
             axios.get(`/api/order/${this.orderId}`)
                 .then(({ data }) => {
                     this.formValues.contact = data;
@@ -498,7 +527,8 @@ export default {
                             this.formValues.pendingApproval = [...x.pendingApproval];
                         }
                     });
-                }).catch(error => axiosResponseStatus(error))
+                }).catch(error => axiosResponseStatus(error));
+           this.loading = false;
         },
         cancel(){
             Swal.fire({
@@ -522,14 +552,11 @@ export default {
             };
             this.formValues.contact.receivePostalCode = this.allZipCode.find(x => x.name === this.formValues.contact.receiveRegion)?.zipcode;
         },
-        refund(){
-
-        },
         onSubmit(values){
             values.id = this.orderId;
             const form = JSON.stringify(values,null,2);
-
             if (!this.act.isReadOnly) {
+                this.loading = true;
                 axios.post(`/api/checkout/${this.orderId}`, form, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -560,6 +587,7 @@ export default {
                     }
                 }).finally(() => {
                     this.get();
+                    this.loading = false;
                 });
             }
         },

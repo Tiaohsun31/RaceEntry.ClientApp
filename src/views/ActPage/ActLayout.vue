@@ -15,11 +15,10 @@ TODO:設定新Style風格
                 <main role="main" class="page-content container-plus m-0 p-0">
                     <div id="content" v-bind:class="style.BannerWidth" v-bind:style="bgStyleObject">
                         <div class="banner">
-                            <img v-if="act.banner" v-bind:src="act.banner" class="img-fluid d-none d-sm-block" v-bind:alt="act.title" />
-                            <img v-if="act.square" :src="act.square" class="img-fluid d-block d-sm-none" :alt="act.title" />
+                            <img v-if="act.banner" v-bind:src="act.banner" class="img-fluid d-none d-sm-block" v-bind:alt="act.actName" />
+                            <img v-if="act.square" :src="act.square" class="img-fluid d-block d-sm-none" :alt="act.actName" />
                         </div>
-
-                        <router-view v-bind:act="act" v-bind:style="style"></router-view>
+                        <router-view v-if="act" :act="act" :style="style"></router-view>
                     </div>
                 </main>
                 <footer class="footer h-auto mt-0 d-none d-sm-block ">
@@ -73,7 +72,7 @@ export default {
     
     data() {
         return {
-            act: {},
+            act: '',
             menubars: [],
             adImg: {},
             style:{},
@@ -108,7 +107,7 @@ export default {
         axios.get(`/api/menubar/${this.code}`).then(({ data }) => this.menubars = data);
         axios.get(`/api/act/${this.code}`).then(({ data }) => {
             this.act = data;
-            this.style = JSON.parse(data.style);
+            this.style = data.style;
             this.setSEO(data.seoTitle,data.seoDesc);
             if (Date.now() <= new Date(this.act.regSTime).getTime()) {
                 this.$router.push({ name: 'ComingSoon' });

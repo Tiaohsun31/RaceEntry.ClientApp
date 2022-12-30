@@ -118,13 +118,13 @@
 
         <div id="signup" class="row pt-md-5 pt-3 pb-5">
             <div class="col-md-4 offset-md-2 col-6">
-                <RouterLink class="btn btn-block btn-lg btn-primary" v-bind:to="{name:'CreatePersonal'}">
+                <RouterLink class="btn btn-block btn-lg btn-primary" v-bind:to="{name:'CreatePersonal'}" :class="{'disabled' : !act.canSignUp || act.isReadOnly}">
                     <i class="fas fa-user-alt mr-1"></i>
                     個人報名
                 </RouterLink>
             </div>
             <div class="col-md-4 col-6">
-                <RouterLink v-bind:to="{name:'CreateGroup'}" class="btn btn-block btn-lg btn-primary">
+                <RouterLink v-bind:to="{name:'CreateGroup'}" class="btn btn-block btn-lg btn-primary" :class="{'disabled' : !act.canSignUp || act.isReadOnly}">
                     <i class="fas fa-users mr-1"></i>
                     團體報名
                 </RouterLink>
