@@ -113,15 +113,15 @@
 
                                         <div class="row">
                                             <div class="col-12 text-center">
-                                                <a asp-area="" asp-controller="Login" asp-action="ExternalLogin"
-                                                    asp-route-provider="Facebook" data-toggle="tooltip"
+                                                <a :href="`/api/externalLogin?provider=Facebook&returnUrl=${this.returnUrl}`"
+                                                    data-toggle="tooltip"
                                                     data-placement="top" title="Facebook 登入"
                                                     class="btn btn-bgc-white btn-lighter-blue btn-h-blue btn-a-blue border-2 radius-round btn-lg mx-1">
                                                     <i class="fab fa-facebook-f text-110"></i>
                                                 </a>
 
-                                                <a asp-area="" asp-controller="Login" asp-action="ExternalLogin"
-                                                    asp-route-provider="LINE" data-toggle="tooltip" data-placement="top"
+                                                <a :href="`/api/externalLogin?provider=LINE&returnUrl=${this.returnUrl}`"
+                                                    data-toggle="tooltip" data-placement="top"
                                                     title="LINE 登入"
                                                     class="btn btn-bgc-white btn-lighter-green btn-h-green btn-a-green border-2 radius-round btn-lg px-25 mx-1">
                                                     <i class="fab fa-line text-110"></i>
@@ -366,6 +366,9 @@ export default {
     computed:{
         isAuthenticated(){
             return this.$store.state.isAuthenticated;
+        },
+        returnUrl(){
+            return window.location.href;
         }
     },
     created(){
