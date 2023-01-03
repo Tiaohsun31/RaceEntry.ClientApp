@@ -17,6 +17,8 @@ import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
 
 import ChangePassword from '../views/Login/ChangePassword.vue';
+import BindExternalLogin from '../views/Login/BindExternalLogin.vue';
+import Register from '../views/Login/Register.vue';
 
 import NotFound from '../components/Layout/NotFound.vue';
 import HelloWorld from '../components/HelloWorld.vue';
@@ -39,6 +41,8 @@ const routes = [
         ]
     },
     { name: 'ChangePassword', path: '/changePassword', component: ChangePassword },
+    { name: 'BindExternalLogin' ,path: '/BindExternalLogin', component: BindExternalLogin },
+    { name: 'Register', path: '/Register', component: Register },
     {
         path: '/:code',
         component: ActLayout,

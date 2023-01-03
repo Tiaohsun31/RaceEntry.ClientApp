@@ -368,7 +368,7 @@ export default {
             return this.$store.state.isAuthenticated;
         },
         returnUrl(){
-            return window.location.href;
+            return encodeURI(window.location.pathname);
         }
     },
     created(){
@@ -398,8 +398,7 @@ export default {
                         }).then((result) => {
                             this.isLogined();
                             if (result.isConfirmed) {
-                                //TODO push to register
-                                console.log('push to register');
+                                this.$router.push({name:'Register'});
                             }
                         })
                     }

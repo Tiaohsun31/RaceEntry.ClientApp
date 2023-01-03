@@ -12,4 +12,4 @@ function getCookie(name){
     return Cookies.get(name);
 }
 
-export { setCookie, removeCookie,getCookie }
+export { setCookie, removeCookie, getCookie }
