@@ -319,7 +319,8 @@ import { Field, Form as VeeForm, ErrorMessage } from 'vee-validate';
 import Swal from 'sweetalert2';
 import Datepicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import 'vue-datepicker-next/locale/zh-tw';
+import { storeToRefs } from 'pinia';
+import { useStore } from '../../store';
 import Addons from './components/Addons.vue';
 import { axiosResponseStatus } from '../axiosHandlingErrors';
 
@@ -336,6 +337,15 @@ export default {
         Field, VeeForm, ErrorMessage,
         Datepicker,
         Addons
+    },
+    setup() {
+        const store = useStore();
+
+        const { isAuthenticated } = storeToRefs(store);
+
+        return {
+            isAuthenticated
+        };
     },
     data() {
         return {
@@ -411,9 +421,6 @@ export default {
                 return this.settings.addons.filter(x => x.actGroupId == "" || x.actGroupId?.includes(this.formValues.selectedGroup));
             }
             return this.settings.addons.filter(x => x.actGroupId == "");
-        },
-        isAuthenticated(){
-            return this.$store.state.isAuthenticated;
         },
         userId(){
             return this.$route.params.userId;

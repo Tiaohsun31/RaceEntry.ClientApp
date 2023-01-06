@@ -248,7 +248,7 @@ import axios from 'axios';
 import 'bootstrap-select/dist/css/bootstrap-select.min.css';
 import 'bootstrap-select';
 import moment from 'moment';
-import { store } from '../../store/store.js'
+import { store } from '../../store/actFilter.js'
 
 export default {
     name: 'SearchFilter',

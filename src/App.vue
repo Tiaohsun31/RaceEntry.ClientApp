@@ -2,7 +2,21 @@
   <router-view />
 </template>
 <script>
-
+  import { storeToRefs } from 'pinia'
+  import { useStore } from './store/index'
+  export default {
+    name:'App',
+    setup() {
+        const store = useStore();
+        const { setAuthenticate } = store;
+        return {
+            setAuthenticate
+        };
+    },
+    created(){
+      this.setAuthenticate();
+    }
+  }
 </script>
 
 <style>

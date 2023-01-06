@@ -33,8 +33,8 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text"> <i class="fas fa-users "></i> </div>
                                 </div>
-                                <Field id="GroupName" name="groupName" label="團隊名稱" rules="required|max:15" type="text" 
-                                    class="form-control col-sm-8 col-md-6" placeholder="Group Name">
+                                <Field id="GroupName" name="groupName" label="團隊名稱" rules="required|max:15" type="text"
+                                       class="form-control col-sm-8 col-md-6" placeholder="Group Name">
                                 </Field>
                             </div>
                             <ErrorMessage name="groupName" class="text-danger pt-1" as="div"></ErrorMessage>
@@ -50,8 +50,8 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text"> <i class="fas fa-user"></i> </div>
                                 </div>
-                                <Field id="Name" name="name" label="姓名" rules="required|max:50" type="text" 
-                                    class="form-control col-sm-8 col-md-6" placeholder="Leader Name (領隊預設為收件人)" aria-describedby="nameHelp">
+                                <Field id="Name" name="name" label="姓名" rules="required|max:50" type="text"
+                                       class="form-control col-sm-8 col-md-6" placeholder="Leader Name (領隊預設為收件人)" aria-describedby="nameHelp">
                                 </Field>
                             </div>
                             <ErrorMessage name="name" class="text-danger pt-1" as="div"></ErrorMessage>
@@ -68,7 +68,7 @@
                                     <div class="input-group-text"> <i class="fas fa-envelope"></i> </div>
                                 </div>
                                 <Field id="Email" name="email" label="Email" rules="required|email"
-                                    class="form-control col-sm-8 col-md-6" placeholder="Leader Email">
+                                       class="form-control col-sm-8 col-md-6" placeholder="Leader Email">
                                 </Field>
                             </div>
                             <ErrorMessage name="email" class="text-danger pt-1" as="div"></ErrorMessage>
@@ -85,7 +85,7 @@
                                     <div class="input-group-text"> <i class="fas fa-mobile px-1"></i> </div>
                                 </div>
                                 <Field id="PhoneNumber" name="phoneNumber" label="手機號碼" rules="required|max:10"
-                                    class="form-control col-sm-8 col-md-6" placeholder="Leader Phone Number">
+                                       class="form-control col-sm-8 col-md-6" placeholder="Leader Phone Number">
                                 </Field>
                             </div>
                             <ErrorMessage name="phoneNumber" class="text-danger pt-1" as="div"></ErrorMessage>
@@ -133,82 +133,88 @@
                     <button type="submit" class="btn btn-lighter-success shadow-sm text-600 letter-spacing px-4 mb-1 btn-block btn-lg my-5">
                         <div class="pt-2">下一步:新增團員</div>
                         <div class="py-2">Next Step: Add Team Members</div>
-                    </button> 
+                    </button>
                 </Form>
             </div>
         </div>
-        
     </div>
 </template>
 
 <script lang="js">
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import moment from 'moment';
-import { Field,Form,ErrorMessage } from 'vee-validate';
-import Datepicker from 'vue-datepicker-next';
-import 'vue-datepicker-next/index.css';
-import 'vue-datepicker-next/locale/zh-tw';
+    import axios from 'axios';
+    import Swal from 'sweetalert2';
+    import moment from 'moment';
+    import { storeToRefs } from 'pinia'
+    import { useStore } from '../../store';
+    import { Field, Form, ErrorMessage } from 'vee-validate';
+    import Datepicker from 'vue-datepicker-next';
+    import 'vue-datepicker-next/index.css';
 
-export default {
-    name:'CreateGroup',
-    props:['act'],
-    components: { Field, Form, ErrorMessage, Datepicker },
-    data(){
-        return {
-            isShare:false,
-            date:[],
-        }
-    },
-    created(){
-        if (!this.act.canSignUp) {
-            Swal.fire({icon:'error', title:'該活動已結束報名'}).then(() => {
-                this.$router.push({name:'HomePage'});
-            })
-        }
-    },
-    mounted(){
-        const startDate = new Date();
-        moment(startDate).format('YYYY-MM-DD')
-        const endDate = new Date(new Date().setDate(startDate.getDate() + 3));
-        this.date = [startDate, endDate];
+    export default {
+        name: 'CreateGroup',
+        props: ['act'],
+        components: { Field, Form, ErrorMessage, Datepicker },
+        setup() {
+            const store = useStore();
 
-        //TODO Test
-        sessionStorage.setItem("orderId","4bc8ff05-0450-4451-beb7-08dae3c31310")
-    },
-    computed:{
-        isAuthenticated(){
-            return this.$store.state.isAuthenticated;
+            const { isAuthenticated } = storeToRefs(store);
+
+            return {
+                isAuthenticated
+            };
         },
-        code(){
-            return this.$route.params.code;
+        data() {
+            return {
+                isShare: false,
+                date: [],
+            }
         },
-        orderId(){
-            return this.$store.state.orderId;
+        created() {
+            if (!this.act.canSignUp) {
+                Swal.fire({ icon: 'error', title: '該活動已結束報名' }).then(() => {
+                    this.$router.push({ name: 'HomePage' });
+                })
+            }
+        },
+        mounted() {
+            const startDate = new Date();
+            moment(startDate).format('YYYY-MM-DD')
+            const endDate = new Date(new Date().setDate(startDate.getDate() + 3));
+            this.date = [startDate, endDate];
+
+            //TODO Test
+            sessionStorage.setItem("orderId", "4bc8ff05-0450-4451-beb7-08dae3c31310")
+        },
+        computed: {
+            code() {
+                return this.$route.params.code;
+            },
+            orderId() {
+                return this.$store.state.orderId;
+            }
+        },
+        methods: {
+            onSubmit(values) {
+                values.actCode = this.code;
+                values.isShare = this.isShare;
+                values.startTime = this.date[0];
+                values.endTime = this.date[1];
+                axios.post('/api/order', JSON.stringify(values, null, 2), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.status === 200 && response.data != '') {
+                        sessionStorage.setItem("orderId", response.data);
+                        this.$router.push({ name: 'Group' });
+                    }
+                })
+                    .catch(error => {
+                        if (error.response.ststus === 400) {
+                            Swal.fire(error.response.data);
+                        }
+                    })
+            },
         }
-    },
-    methods:{
-        onSubmit(values){
-            values.actCode = this.code;
-            values.isShare = this.isShare;
-            values.startTime = this.date[0];
-            values.endTime = this.date[1];
-            axios.post('/api/order',JSON.stringify(values,null,2),{
-                headers:{
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.status === 200 && response.data != '') {
-                    sessionStorage.setItem("orderId", response.data);
-                    this.$router.push({ name: 'Group' });
-                }
-            })
-            .catch(error => {
-                if (error.response.ststus === 400) {
-                    Swal.fire(error.response.data);
-                }
-            })
-        },
     }
-}
 </script>

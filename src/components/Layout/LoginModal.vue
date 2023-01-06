@@ -13,11 +13,10 @@
             <ul class="nav">
                 <template v-if="isAuthenticated">
                     <li class="d-none d-lg-block nav-item">
-                        <a class="btn btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2 font-bold text-110"
-                            asp-area="" asp-controller="Member" asp-action="Index" data-toggle="tooltip"
-                            data-placement="bottom" title="會員專區 Member">
+                        <RouterLink :to="{name:'MemberIndex'}"
+                            class="btn btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2 font-bold text-110">
                             <i class="fas fa-user mr-1"></i>會員專區
-                        </a>
+                        </RouterLink>
                     </li>
 
                     <li class="d-none d-lg-block nav-item">
@@ -27,10 +26,9 @@
                     </li>
 
                     <li class="d-lg-none nav-item mx-1">
-                        <a class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2  "
-                            asp-area="" asp-controller="Member" asp-action="Index">
+                        <RouterLink :to="{name:'MemberIndex'}" class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2">
                             <i class="fas fa-user mr-1"></i> 會員專區 Member
-                        </a>
+                        </RouterLink>
                     </li>
                     <li class="d-lg-none nav-item mx-1">
                         <a href="#" v-on:click.prevent="logout" class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2 ">
@@ -334,6 +332,9 @@
 <script>
 
 import { Field, Form, ErrorMessage } from 'vee-validate';
+import { storeToRefs } from 'pinia'
+import { useStore } from '../../store/index'
+
 
 const config = {
     headers: {
@@ -348,6 +349,17 @@ export default {
     name: 'LoginModal',
     components:{
         Form,Field,ErrorMessage
+    },
+    setup() {
+        const store = useStore();
+
+        const { isAuthenticated } = storeToRefs(store);
+        const { setAuthenticate } = store;
+
+        return {
+            isAuthenticated,
+            setAuthenticate
+        };
     },
     data() {
         return {
@@ -364,15 +376,9 @@ export default {
         });
     },
     computed:{
-        isAuthenticated(){
-            return this.$store.state.isAuthenticated;
-        },
         returnUrl(){
             return encodeURI(window.location.pathname);
         }
-    },
-    created(){
-        this.isLogined();
     },
     methods:{
         onSubmitLogin(values) {
@@ -427,12 +433,18 @@ export default {
                 })
         },
         isLogined(){
-            axios.get('/api/Account').then((response) => {
-                this.$store.commit('changeAuthenticated', { isAuthenticated: response.status === 200 && response.data })
-            });
+            this.setAuthenticate();
+            //this.setAuthenticate;
+            //this.$store.dispatch('initState');
+            // axios.get('/api/Account').then((response) => {
+            //     this.$store.commit('changeAuthenticated', { isAuthenticated: response.status === 200 && response.data })
+            // });
         },
         logout(){
-            axios.post('/api/account/logout').then(() => this.isLogined());
+            axios.post('/api/account/logout').then(() => {
+                this.isLogined();
+                window.location.reload();
+            });
         }
     }
 }

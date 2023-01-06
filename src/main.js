@@ -1,11 +1,10 @@
 import { createApp } from 'vue'
 import { router } from './router'
-import { store }  from './store/main.js'
+import { createPinia } from 'pinia'
 import { createHead } from "@vueuse/head"
 
 import App from './App.vue'
 import Layout from './components/Layout/Layout.vue'
-
 // vee-validate
 import {  defineRule ,configure  } from 'vee-validate';
 import AllRules from '@vee-validate/rules';
@@ -24,9 +23,10 @@ setLocale('zh_TW');
 import 'bootstrap'
 import './ace'
 
+const pinia = createPinia();
 const app = createApp(App);
 
 app.component('Layout', Layout);
-app.use(store).use(router).use(createHead());
+app.use(pinia).use(router).use(createHead());
 
 router.isReady().then(() => app.mount('#app'));

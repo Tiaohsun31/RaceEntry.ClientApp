@@ -35,7 +35,14 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false,
             },
-        }
+        },
+        // proxy: {
+        //     '/api': {
+        //         target: 'https://web.focusline.com.tw',
+        //         changeOrigin: true,
+        //         secure: false,
+        //     },
+        // }
     }
 
 })

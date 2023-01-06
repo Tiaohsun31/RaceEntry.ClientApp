@@ -1,6 +1,6 @@
 <template>
     <Layout>
-        <div class="main-content minh-100 justify-content-center">
+        <div class="main-content minh-100 justify-content-center container">
             <div class="row">
                 <div class="col-12 col-xl-6 offset-xl-3 radius-1 overflow-hidden">
                     <div class="card">

@@ -70,21 +70,17 @@
                                     </strong>
                                     <h3 class="text-white pt-2"> {{ item.name }} </h3>
                                     <svg class=" border-bottom-0 border-left-0 border-right-0" version="1.1"
-                                        preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="70px"
-                                        viewBox="0 0 300 70">
-                                        <path
-                                            d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729 c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z"
-                                            opacity="0.6" fill="#ffffff"></path>
-                                        <path
-                                            d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729 c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z"
-                                            opacity="0.6" fill="#ffffff"></path>
-                                        <path
-                                            d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716 H42.401L43.415,98.342z"
-                                            opacity="0.7" fill="#ffffff"></path>
-                                        <path
-                                            d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428 c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z"
-                                            fill="#ffffff"></path>
+                                         preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
+                                         xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="70px"
+                                         viewBox="0 0 300 70">
+                                        <path d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729 c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z"
+                                              opacity="0.6" fill="#ffffff"></path>
+                                        <path d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729 c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z"
+                                              opacity="0.6" fill="#ffffff"></path>
+                                        <path d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716 H42.401L43.415,98.342z"
+                                              opacity="0.7" fill="#ffffff"></path>
+                                        <path d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428 c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z"
+                                              fill="#ffffff"></path>
                                     </svg>
                                 </header>
 
@@ -93,18 +89,15 @@
 
                                         <li class="mb-2" v-for="element in item.freebies">
                                             <i class="fa text-125 mr-1 mt-1"
-                                                v-bind:class='element.status ? "fa-check text-success-m2" : "fa-times text-danger-m3 ml-1"'></i>
+                                               v-bind:class='element.status ? "fa-check text-success-m2" : "fa-times text-danger-m3 ml-1"'></i>
                                             <span class="text-125 font-bolder">
                                                 {{ element.name }}
                                             </span>
                                         </li>
-
                                     </ul>
                                 </div>
-
                             </article>
                         </div>
-
                     </div>
                 </section>
             </div>
@@ -134,73 +127,73 @@
 </template>
 
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/dist/locale/zh-tw';
-import countdown from '../ActPage/Countdown.js';
+    import axios from 'axios';
+    import moment from 'moment';
+    import 'moment/dist/locale/zh-tw';
+    import countdown from '../ActPage/Countdown.js';
 
-export default {
-    name: "HomePage",
-    props: ['act','style'],
-    data() {
-        return {
-            pageContent: ''
-        }
-    },
-    computed: {
-        code() {
-            return this.$route.params.code;
-        }
-    },
-    updated() {
-        const diff = moment.duration(new Date(this.act.regETime).getTime() - Date.now());
-        countdown(diff);
+    export default {
+        name: "HomePage",
+        props: ['act', 'style'],
+        data() {
+            return {
+                pageContent: ''
+            }
+        },
+        computed: {
+            code() {
+                return this.$route.params.code;
+            }
+        },
+        updated() {
+            const diff = moment.duration(new Date(this.act.regETime).getTime() - Date.now());
+            countdown(diff);
 
-        var section = this.$router.currentRoute.value.hash.replace("#", "");
-        if (section){
-            this.$nextTick(() => window.document.getElementById(section).scrollIntoView());
-        } 
-    },
-    mounted() {
-        axios.get(`/api/content/homePage/${this.code}`)
-            .then(({ data }) => this.pageContent = data)
-            .catch(error => {
-                if (error.response.status === 404) {
-                    this.$router.push({ name: 'NotFound' });
-                }
-            });
-    },
-    methods: {
-        signUpRange() {
-            return `${moment(this.act.regSTime).format('LLdddd')}至${moment(this.act.regETime).format('LLdddd')}`;
+            var section = this.$router.currentRoute.value.hash.replace("#", "");
+            if (section) {
+                this.$nextTick(() => window.document.getElementById(section).scrollIntoView());
+            }
+        },
+        mounted() {
+            axios.get(`/api/content/homePage/${this.code}`)
+                .then(({ data }) => this.pageContent = data)
+                .catch(error => {
+                    if (error.response.status === 404) {
+                        this.$router.push({ name: 'NotFound' });
+                    }
+                });
+        },
+        methods: {
+            signUpRange() {
+                return `${moment(this.act.regSTime).format('LLdddd')}至${moment(this.act.regETime).format('LLdddd')}`;
+            }
         }
     }
-}
 </script>
 
 <style scoped>
-@media (max-width: 700px) {
-    .body-container {
-        background-size: cover;
+    @media (max-width: 700px) {
+        .body-container {
+            background-size: cover;
+        }
     }
-}
 
-@media (max-width: 998px) {
-    .countdown-items {
-        font-size: 0.8em;
+    @media (max-width: 998px) {
+        .countdown-items {
+            font-size: 0.8em;
+        }
     }
-}
 
-@media (max-width: 400px) {
-    .countdown-items {
-        font-size: 0.75em;
+    @media (max-width: 400px) {
+        .countdown-items {
+            font-size: 0.75em;
+        }
     }
-}
 
-.countdown-item {
-    display: inline-block;
-    width: 12.5em;
-    height: 12.5em;
-    margin: 0.5em;
-}
+    .countdown-item {
+        display: inline-block;
+        width: 12.5em;
+        height: 12.5em;
+        margin: 0.5em;
+    }
 </style>

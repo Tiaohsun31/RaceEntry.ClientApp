@@ -127,7 +127,7 @@
     import moment from 'moment';
     import 'moment/dist/locale/zh-tw';
 
-    import { store } from '../store/store.js'
+    import { store } from '../store/actFilter.js'
 
     export default {
         components: {

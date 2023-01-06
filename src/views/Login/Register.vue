@@ -219,7 +219,6 @@
     import { Field,Form,ErrorMessage } from 'vee-validate';
     import Datepicker from 'vue-datepicker-next';
     import 'vue-datepicker-next/index.css';
-    import 'vue-datepicker-next/locale/zh-tw';
     export default {
         name:'Register',
         components:{

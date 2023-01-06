@@ -9,7 +9,7 @@ import * as bootstrap from 'bootstrap';
 window.$ = window.jQuery = jQuery;
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('jquery'), require('bootstrap')) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(jQuery, bootstrap) :
   typeof define === 'function' && define.amd ? define(['jquery', 'bootstrap'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.AceApp = factory(global.jQuery, global.bootstrap));
 }(this, (function ($$a, bootstrap$1) { 'use strict';
