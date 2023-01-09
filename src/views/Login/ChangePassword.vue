@@ -6,7 +6,7 @@
                     <div class="row" id="row-1">
                         <div class="col-12 col-xl-10 offset-xl-1 bgc-white radius-1 overflow-hidden">
 
-                            <div v-if="email" class="alert bgc-red-l4 border-none border-l-4 brc-red-tp1 radius-0 text-dark-tp2 mb-md-5 mb-3">
+                            <div v-if="email && !isAuthenticated" class="alert bgc-red-l4 border-none border-l-4 brc-red-tp1 radius-0 text-dark-tp2 mb-md-5 mb-3">
                                 臨時密碼已寄送至註冊信箱
                             </div>
 
@@ -19,10 +19,10 @@
                                         <div class="form-group col-12">
                                             <div class="d-flex align-items-center input-floating-label text-blue brc-blue-m2">
                                                 <Field name="email" label="Email" rules="required|email" v-model="email"
-                                                    placeholder="Email" type="email" class="form-control form-control-lg pr-4 shadow-none">
+                                                    placeholder="帳號/Email" type="email" class="form-control form-control-lg pr-4 shadow-none">
                                                 </Field>
                                                 <i class="fa fa-user text-grey-m2 ml-n4"></i>
-                                                <label class="floating-label text-grey-l1 ml-n3"> Email </label>
+                                                <label class="floating-label text-grey-l1 ml-n3"> 帳號/Email </label>
                                             </div>
                                             <ErrorMessage name="email" class="text-danger pt-1" as="div"></ErrorMessage>
                                         </div>
@@ -81,16 +81,37 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Field, Form, ErrorMessage } from 'vee-validate';
+import { storeToRefs } from 'pinia'
+import { useStore } from '../../store/index'
 
 export default {
     name: 'ChangePassword',
     components:{
         Form,Field,ErrorMessage
     },
+    setup() {
+        const store = useStore();
+
+        const { isAuthenticated } = storeToRefs(store);
+
+        return {
+            isAuthenticated,
+        };
+    },
+    data(){
+        return {
+            userEmail:''
+        }
+    },
+    created(){
+        axios.get('/api/account/user').then(({data}) => {
+            this.userEmail = data.email;
+        })
+    },
     computed:{
         email(){
             let email = this.$route.query.email;
-            return email ? decodeURIComponent(email) : '';
+            return email ? decodeURIComponent(email) : this.userEmail;
         }
     },
     methods:{
