@@ -109,7 +109,7 @@
                                 <label class="mb-3"> 連結有效時間 </label>
                                 <div class="row">
                                     <div class="col-sm-8 col-md-7">
-                                        <Datepicker v-model:value="date" range value-type="format" format="YYYY-MM-DD"></Datepicker>
+                                        <Datepicker :lang="datepickerLangs.zh" v-model:value="date" range value-type="format" format="YYYY-MM-DD"></Datepicker>
                                     </div>
                                 </div>
 
@@ -149,6 +149,7 @@
     import { Field, Form, ErrorMessage } from 'vee-validate';
     import Datepicker from 'vue-datepicker-next';
     import 'vue-datepicker-next/index.css';
+    import { datepickerLangs } from './js/datepickerLang';
 
     export default {
         name: 'CreateGroup',
@@ -160,7 +161,7 @@
             const { isAuthenticated } = storeToRefs(store);
 
             return {
-                isAuthenticated
+                isAuthenticated,datepickerLangs
             };
         },
         data() {

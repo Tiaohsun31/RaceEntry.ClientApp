@@ -162,7 +162,7 @@
                             <div id="multiCollapseRange" class="collapse" :class="{'show':formValues.contact.isShare}">
                                 <div class="form-group">
                                     <label class="mb-2"> 連結有效時間 </label>
-                                    <Datepicker v-model:value="date" range value-type="format" format="YYYY-MM-DD"></Datepicker>
+                                    <Datepicker :lang="datepickerLangs.zh" v-model:value="date" range value-type="format" format="YYYY-MM-DD"></Datepicker>
                                     <small class="form-text text-muted">可修改分享連結有效時間，時間過期與確認訂單後，將自動關閉分享連結</small>
                                 </div>
                             </div>
@@ -247,6 +247,7 @@
     import { Field, Form, ErrorMessage } from 'vee-validate';
     import Datepicker from 'vue-datepicker-next';
     import 'vue-datepicker-next/index.css';
+    import { datepickerLangs } from './js/datepickerLang';
 
     export default {
         name: 'Group',
@@ -254,6 +255,9 @@
         components: {
             Field, Form, ErrorMessage, Datepicker,
             Members, Uploads, Addons
+        },
+        setup(){
+            return { datepickerLangs }
         },
         data() {
             return {

@@ -94,7 +94,7 @@
                                 <label for="inputBirthday" class="text-secondary">
                                     出生年月日／Birth Date
                                 </label>
-                                <Datepicker placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD"></Datepicker>
+                                <Datepicker :lang="datepickerLangs.zh" placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD"></Datepicker>
                                 <Field name="user.birthdate" label="出生年月日" type="text" hidden></Field>
                                 <ErrorMessage name="user.birthdate" class="text-danger" as="div" />
                             </div>
@@ -219,11 +219,15 @@
     import { Field,Form,ErrorMessage } from 'vee-validate';
     import Datepicker from 'vue-datepicker-next';
     import 'vue-datepicker-next/index.css';
+    import { datepickerLangs } from '../Entry/js/datepickerLang';
     export default {
         name:'Register',
         components:{
             Field,Form,ErrorMessage,
             Datepicker
+        },
+        setup(){
+            return { datepickerLangs }
         },
         data(){
             return {

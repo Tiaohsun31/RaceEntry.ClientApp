@@ -118,7 +118,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-12 col-md-6 mb-lg-4 mb-3">
-                            <Datepicker placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD" @change="setFieldValue('user.birthdate', formValues.user.birthdate)"></Datepicker>
+                            <DatePicker :lang="datepickerLangs.zh" placeholder="YYYY-MM-DD Ex:1900-01-01" v-model:value="formValues.user.birthdate" value-type="format" input-class="form-control pr-4 shadow-none" format="YYYY-MM-DD" @change="setFieldValue('user.birthdate', formValues.user.birthdate)"></DatePicker>
                             <Field name="user.birthdate" label="出生年月日" rules="required" type="text" hidden></Field>
                             <ErrorMessage name="user.birthdate" class="text-danger" as="div" />
                         </div>
@@ -317,8 +317,10 @@
 import axios from 'axios';
 import { Field, Form as VeeForm, ErrorMessage } from 'vee-validate';
 import Swal from 'sweetalert2';
-import Datepicker from 'vue-datepicker-next';
+import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
+import { datepickerLangs } from './js/datepickerLang';
+
 import { storeToRefs } from 'pinia';
 import { useStore } from '../../store';
 import Addons from './components/Addons.vue';
@@ -335,7 +337,7 @@ export default {
     props: ['act','operate'],
     components: {
         Field, VeeForm, ErrorMessage,
-        Datepicker,
+        DatePicker,
         Addons
     },
     setup() {
@@ -344,7 +346,8 @@ export default {
         const { isAuthenticated } = storeToRefs(store);
 
         return {
-            isAuthenticated
+            isAuthenticated,
+            datepickerLangs
         };
     },
     data() {
@@ -366,11 +369,11 @@ export default {
                 freebie:[],
                 addons:[]
             },
+            //datepickerZh:datepickerLangs.zh
         }
     },
     created() {
         this.checkActStatus();
-
         if (!this.act.canSignUp && this.$route.name === 'CreatePersonal') {
             Swal.fire({ icon: 'error', title: '該場活動已結束報名' }).then(() => {
                 this.$router.push({name:'HomePage'});
@@ -455,6 +458,10 @@ export default {
         }
     },
     methods: {
+        datepickerLangs(){
+            datepickerLangs["zh"];
+            //return datepickerLangs["zh"];
+        },
         checkActStatus(){
             if (!this.act.canSignUp && this.$route.name === 'CreatePersonal') {
                 Swal.fire({icon:'error',title:'該活動已結束報名'}).then(() => {

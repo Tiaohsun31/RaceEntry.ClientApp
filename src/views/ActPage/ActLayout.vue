@@ -13,7 +13,7 @@
 
             <div class="main-content">
                 <main role="main" class="page-content container-plus m-0 p-0">
-                    <div id="content" v-bind:class="style.BannerWidth" v-bind:style="bgStyleObject">
+                    <div id="content" v-bind:class="style.bannerWidth" v-bind:style="bgStyleObject">
                         <div class="banner">
                             <img v-if="act.banner" v-bind:src="act.banner" class="img-fluid d-none d-sm-block" v-bind:alt="act.actName" />
                             <img v-if="act.square" :src="act.square" class="img-fluid d-block d-sm-none" :alt="act.actName" />
@@ -95,11 +95,11 @@ export default {
             return this.$route.params.id;
         },
         bgStyleObject() {
-            return this.style.Bgimg ? {
+            return this.style.bgimg ? {
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundAttachment: 'fixed',
-                backgroundImage: `url(${this.style.Bgimg})`,
+                backgroundImage: `url(${this.style.bgimg})`,
             }:''
         }
     },

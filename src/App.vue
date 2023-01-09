@@ -2,7 +2,6 @@
   <router-view />
 </template>
 <script>
-  import { storeToRefs } from 'pinia'
   import { useStore } from './store/index'
   export default {
     name:'App',
@@ -27,6 +26,7 @@
 @import 'fontawesome-free/css/fontawesome.css';
 
 @import './styles/ace.css';
+@import './styles/ace-themes.css';
 @import './styles/sizes.css';
 @import './styles/site.css';
 </style>

@@ -1,6 +1,6 @@
 <template>
     
-    <div v-if="pageContent" class="mt-2" v-bind:class="{'p-lg-5 p-1' : style.BannerWidth === ''}">
+    <div v-if="pageContent" class="mt-2" v-bind:class="{'p-lg-5 p-1' : style.bannerWidth === ''}">
         <div v-html="pageContent.content"></div>
     </div>
     <aside class="card text-center pos-fixed d-none d-sm-block aside-time">
