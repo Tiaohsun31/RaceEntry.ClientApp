@@ -21,10 +21,7 @@
                         </div>
                         <div class="card-body">
                             <RouterLink :to="{name:'EditMember'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">修改個人資料</RouterLink>
-                            <a asp-area="" asp-controller="Member" asp-action="BindOtherLogin"
-                                class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">
-                                綁定其他登入
-                            </a>
+                            <RouterLink :to="{name:'BindOtherLogin'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">綁定其他登入</RouterLink>
                             <a asp-area="" asp-controller="Member" asp-action="ChangePassword"
                                 class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">
                                 變更密碼

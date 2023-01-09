@@ -24,6 +24,7 @@ import Register from '../views/Login/Register.vue';
 import Member from '../views/Member/Index.vue';
 import History from '../views/History/Index.vue';
 import EditMember from '../views/Member/EditMember.vue';
+import BindOtherLogin from '../views/Member/BindOtherLogin.vue';
 
 import NotFound from '../components/Layout/NotFound.vue';
 
@@ -46,15 +47,16 @@ const routes = [
         ]
     },
     { name: 'ChangePassword', path: '/changePassword', component: ChangePassword, meta: { requiresAuth: false } },
-    { name: 'BindExternalLogin', path: '/BindExternalLogin', component: BindExternalLogin, meta: { requiresAuth: true } },
-    { name: 'Register', path: '/Register', component: Register, meta: { requiresAuth: false } },
+    { name: 'BindExternalLogin', path: '/bindExternalLogin', component: BindExternalLogin, meta: { requiresAuth: false } },
+    { name: 'Register', path: '/register', component: Register, meta: { requiresAuth: false } },
     {
         name: 'Member',
         path: '/member',
         meta: { requiresAuth: true },
         children: [
             { name: 'MemberIndex', path: '', component: Member },
-            { name: 'EditMember', path:'/member/edit', component: EditMember}
+            { name: 'EditMember', path:'/member/edit', component: EditMember },
+            { name: 'BindOtherLogin', path:'/member/bindOtherLogin', component: BindOtherLogin }
         ]
     },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },

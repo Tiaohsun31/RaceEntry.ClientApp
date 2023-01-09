@@ -50,10 +50,22 @@
 <script>
 import axios from 'axios';
 import { Field, Form, ErrorMessage } from 'vee-validate';
+import { useStore } from '../../store/index'
+import Swal from 'sweetalert2';
+
 export default {
     name: 'BindExteranlLogin',
     components: {
         Field, Form, ErrorMessage
+    },
+    setup() {
+        const store = useStore();
+
+        const { setAuthenticate } = store;
+
+        return { 
+            setAuthenticate 
+        };
     },
     data(){
         return {
@@ -74,11 +86,10 @@ export default {
                     'Content-Type': 'application/json'
                 }
             }).then(() => {
-                if (this.returnUrl) {
-                    window.location.href = this.returnUrl;
-                } else {
-                    this.$router.push({ name: 'Home' });
-                }
+                this.setAuthenticate();
+                Swal.fire({ icon: 'success', title: '已完成綁定'}).then(() => {
+                    this.$router.push({ path: `${this.returnUrl}`});
+                })
             }).catch(error => {
                 if (error.response.status === 404) {
                     this.$router.push({ name: 'Register' });

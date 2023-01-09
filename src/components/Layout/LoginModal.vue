@@ -1,6 +1,6 @@
 //TODO push to register
 <template>
-    <button type="button" class="d-style mr-4 px-4 navbar-toggler btn btn-burger static d-flex d-lg-none collapsed"
+    <button type="button" class="d-style mr-4 px-4 navbar-toggler btn btn-burger static d-flex d-lg-none collapsed "
         data-toggle="collapse" data-target="#navbarMenu2" aria-controls="navbarMenu2" aria-expanded="false"
         aria-label="Toggle navbar menu">
         <i class="fa fa-caret-down d-collapsed text-grey-m1 text-80"></i>
@@ -20,7 +20,7 @@
                     </li>
 
                     <li class="d-none d-lg-block nav-item">
-                        <a href="#" v-on:click.prevent="logout" class="btn bgc-h-primary-l4 btn-brc-tp btn-outline-secondary btn-h-lighter-secondary btn-a-outline-primary btn-a-bgc-tp font-bold text-110">
+                        <a href="#" @click.prevent="logout" class="btn bgc-h-primary-l4 btn-brc-tp btn-outline-secondary btn-h-lighter-secondary btn-a-outline-primary btn-a-bgc-tp font-bold text-110">
                             <i class="fas fa-sign-out-alt"></i> 登出
                         </a>
                     </li>
@@ -31,7 +31,7 @@
                         </RouterLink>
                     </li>
                     <li class="d-lg-none nav-item mx-1">
-                        <a href="#" v-on:click.prevent="logout" class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2 ">
+                        <a href="#" @click.prevent="logout" class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2 ">
                             <i class="fas fa-sign-out-alt mr-1"></i> 登出 Logout
                         </a>
                     </li>
