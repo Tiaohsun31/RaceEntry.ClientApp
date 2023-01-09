@@ -106,28 +106,26 @@
                                             </div>
                                         </Form>
                                    
-                                        <div class="bgc-white-tp2 text-secondary-d3 text-center text-90 mb-3"> -- OR --
+                                        <div class="bgc-white-tp2 text-secondary-d3 text-center text-90 mb-3"> -- OR -- </div>
+                                        <div class="px-3 text-center">
+                                            <a :href="`/api/externalLogin?provider=Facebook&returnUrl=${this.returnUrl}`" data-toggle="tooltip"
+                                                data-placement="top" title="Facebook 登入"
+                                                class="btn btn-blue btn-bold radius-1 d-inline-flex align-items-center pl-2px py-2px mb-2 btn-block">
+                                                <span class="bgc-white-tp9 shadow-sm radius-2px h-4 px-25 pt-1 mr-25">
+                                                    <i class="fab fa-facebook-f text-110 mt-3px"></i>
+                                                </span>
+                                                使用 Facebook 登入
+                                            </a>
+                                            <a :href="`/api/externalLogin?provider=LINE&returnUrl=${this.returnUrl}`" data-toggle="tooltip" data-placement="top"
+                                                title="LINE 登入"
+                                                class="btn btn-success btn-bold radius-1 d-inline-flex align-items-center pl-2px py-2px mb-2 btn-block">
+                                                <span class="bgc-white-tp9 shadow-sm radius-2px h-4 px-25 pt-1 mr-25">
+                                                    <i class="fab fa-line text-110 text-110 "></i>
+                                                </span>
+                                                使用 LINE 登入
+                                            </a>
                                         </div>
-
-                                        <div class="row">
-                                            <div class="col-12 text-center">
-                                                <a :href="`/api/externalLogin?provider=Facebook&returnUrl=${this.returnUrl}`"
-                                                    data-toggle="tooltip"
-                                                    data-placement="top" title="Facebook 登入"
-                                                    class="btn btn-bgc-white btn-lighter-blue btn-h-blue btn-a-blue border-2 radius-round btn-lg mx-1">
-                                                    <i class="fab fa-facebook-f text-110"></i>
-                                                </a>
-
-                                                <a :href="`/api/externalLogin?provider=LINE&returnUrl=${this.returnUrl}`"
-                                                    data-toggle="tooltip" data-placement="top"
-                                                    title="LINE 登入"
-                                                    class="btn btn-bgc-white btn-lighter-green btn-h-green btn-a-green border-2 radius-round btn-lg px-25 mx-1">
-                                                    <i class="fab fa-line text-110"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-
-                                        <div class="dropdown-footer text-center py-25 mt-4 bgc-default-l4 border-t-1 brc-default-l2 w-100 ">
+                                        <div class="dropdown-footer text-center py-25 mt-4 bgc-default-l4 border-t-1 brc-default-l2 position-bc w-100">
                                             <div class="my-2">
                                                 非會員?
                                                 <a class="text-success-m1 text-600 mx-1" data-toggle="tab"
@@ -145,13 +143,13 @@
                                         <div class="d-none d-lg-block col-12 mt-lg-4 px-0 px-3">
                                             <h4 class="text-dark-tp4 border-b-1 brc-grey-l1 pb-1 text-140 font-bold">
                                                 <i class="fa fa-user text-purple mr-1"></i>
-                                                新增帳號
+                                                快速註冊
                                             </h4>
                                         </div>
 
                                         <!-- show this in mobile device -->
                                         <div class="d-lg-none text-secondary-m1 my-4 text-center text-150 font-bold">
-                                            新增帳號
+                                            快速註冊
                                         </div>
 
                                         <Form v-on:submit="onSubmitSignUp" autocomplete="off" class="form-row mt-4 px-3">
@@ -222,6 +220,12 @@
                                                 </button>
                                             </div>
                                         </Form>
+                                        <div class="bgc-white-tp2 text-secondary-d3 text-center text-90 mb-3"> -- OR -- </div>
+
+                                        <div class=" px-3">
+                                            <RouterLink :to="{name:'Register'}" class="btn btn-purple btn-block px-4 btn-bold"> 完整註冊 </RouterLink>
+                                        </div>
+
                                         <div class="dropdown-footer text-center py-25 mt-1 bgc-default-l4 border-t-1 brc-default-l2 w-100">
                                             <div class="my-2">
                                                 已經是會員?
@@ -404,7 +408,7 @@ export default {
                         }).then((result) => {
                             this.isLogined();
                             if (result.isConfirmed) {
-                                this.$router.push({name:'Register'});
+                                this.$router.push({name:'EditMember'});
                             }
                         })
                     }

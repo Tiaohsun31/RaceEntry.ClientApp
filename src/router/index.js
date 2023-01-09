@@ -23,9 +23,9 @@ import Register from '../views/Login/Register.vue';
 
 import Member from '../views/Member/Index.vue';
 import History from '../views/History/Index.vue';
+import EditMember from '../views/Member/EditMember.vue';
 
 import NotFound from '../components/Layout/NotFound.vue';
-import HelloWorld from '../components/HelloWorld.vue';
 
 const routes = [
     { name: 'Home', path: '/', component: Home, meta: { requiresAuth: false } },
@@ -53,7 +53,8 @@ const routes = [
         path: '/member',
         meta: { requiresAuth: true },
         children: [
-            { name: 'MemberIndex', path: '', component: Member }
+            { name: 'MemberIndex', path: '', component: Member },
+            { name: 'EditMember', path:'/member/edit', component: EditMember}
         ]
     },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },
