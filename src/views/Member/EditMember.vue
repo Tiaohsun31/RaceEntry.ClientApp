@@ -6,7 +6,7 @@
                 回 會員專區
             </RouterLink>
             <Form :initial-values="formValues" @submit="onSubmit">
-                <div class="border-b-2 brc-yellow-d1 mb-3 pb-1 h4"> 個人資料 </div>
+                <div class="border-b-2 brc-yellow-d1 my-3 pb-1 h4"> 個人資料 </div>
                 <div class="row">
                     <UserInfo v-if="formValues.user" :user="formValues.user" @update="updateInfo"></UserInfo>
                     <div class="col-12 mt-4 text-right">

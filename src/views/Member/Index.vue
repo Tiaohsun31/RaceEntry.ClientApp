@@ -23,10 +23,7 @@
                             <RouterLink :to="{name:'EditMember'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">修改個人資料</RouterLink>
                             <RouterLink :to="{name:'BindOtherLogin'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">綁定其他登入</RouterLink>
                             <RouterLink :to="{name:'ChangePassword'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">變更密碼</RouterLink>
-                            <a asp-area="" asp-controller="Member" asp-action="RefundSetting"
-                                class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">
-                                退款帳戶設定
-                            </a>
+                            <RouterLink :to="{name:'RefundSetting'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">退款帳戶設定</RouterLink>
                         </div>
                     </div>
                 </div>

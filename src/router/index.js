@@ -25,6 +25,7 @@ import Member from '../views/Member/Index.vue';
 import History from '../views/History/Index.vue';
 import EditMember from '../views/Member/EditMember.vue';
 import BindOtherLogin from '../views/Member/BindOtherLogin.vue';
+import RefundSetting from '../views/Member/RefundSetting.vue';
 
 import NotFound from '../components/Layout/NotFound.vue';
 
@@ -56,7 +57,8 @@ const routes = [
         children: [
             { name: 'MemberIndex', path: '', component: Member },
             { name: 'EditMember', path:'/member/edit', component: EditMember },
-            { name: 'BindOtherLogin', path:'/member/bindOtherLogin', component: BindOtherLogin }
+            { name: 'BindOtherLogin', path:'/member/bindOtherLogin', component: BindOtherLogin },
+            { name: 'RefundSetting', path:'/member/refundSetting', component: RefundSetting }
         ]
     },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },
