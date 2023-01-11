@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { readFileSync } from 'fs'
-import { join } from 'path'
+import { join,resolve } from 'path'
 
 const baseFolder =
     process.env.APPDATA !== undefined && process.env.APPDATA !== ''
@@ -22,6 +22,11 @@ const keyFilePath = join(baseFolder, `${certificateName}.key`);
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [vue()],
+    resolve: {
+        alias: {
+            '@': resolve(__dirname, './src'),
+        },
+    },
     server:{
         https: {
             key: readFileSync(keyFilePath),

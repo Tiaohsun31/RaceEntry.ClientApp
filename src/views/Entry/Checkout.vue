@@ -459,9 +459,9 @@ import Swal from 'sweetalert2';
 
 import { Field, Form, ErrorMessage } from 'vee-validate';
 
-import { axiosResponseStatus } from '../axiosHandlingErrors';
-import { dateFormat,numberFormat,dateTimeFormat } from '../Entry/js/format';
-import { removeCookie, getCookie } from '../Entry/js/jscookie';
+import { axiosResponseStatus } from '@/views/axiosHandlingErrors.js';
+import { dateFormat,numberFormat,dateTimeFormat } from '@/js/format';
+import { removeCookie, getCookie } from '@/js/jscookie';
 
 export default {
     name: 'Checkout',

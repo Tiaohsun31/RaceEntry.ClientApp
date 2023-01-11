@@ -438,16 +438,12 @@ export default {
         },
         isLogined(){
             this.setAuthenticate();
-            //this.setAuthenticate;
-            //this.$store.dispatch('initState');
-            // axios.get('/api/Account').then((response) => {
-            //     this.$store.commit('changeAuthenticated', { isAuthenticated: response.status === 200 && response.data })
-            // });
         },
         logout(){
             axios.post('/api/account/logout').then(() => {
-                this.isLogined();
-                window.location.reload();
+                this.isAuthenticated = false;
+                localStorage.setItem('auth',false);
+                this.$router.go(0);
             });
         }
     }

@@ -21,7 +21,7 @@ configure({
 setLocale('zh_TW');
 
 import 'bootstrap'
-import './ace'
+import './js/ace'
 
 const pinia = createPinia();
 const app = createApp(App);

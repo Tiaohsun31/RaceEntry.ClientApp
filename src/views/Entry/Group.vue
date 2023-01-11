@@ -247,7 +247,7 @@
     import { Field, Form, ErrorMessage } from 'vee-validate';
     import Datepicker from 'vue-datepicker-next';
     import 'vue-datepicker-next/index.css';
-    import { datepickerLangs } from './js/datepickerLang';
+    import { datepickerLangs } from '@/js/datepickerLang';
 
     export default {
         name: 'Group',

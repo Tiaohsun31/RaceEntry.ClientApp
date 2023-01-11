@@ -27,6 +27,9 @@ import EditMember from '../views/Member/EditMember.vue';
 import BindOtherLogin from '../views/Member/BindOtherLogin.vue';
 import RefundSetting from '../views/Member/RefundSetting.vue';
 
+import Leader from '../views/Team/Leader.vue';
+import Teammate from '../views/Team/Teammate.vue';
+
 import NotFound from '../components/Layout/NotFound.vue';
 
 const routes = [
@@ -61,16 +64,25 @@ const routes = [
             { name: 'RefundSetting', path:'/member/refundSetting', component: RefundSetting }
         ]
     },
+    {
+        name: 'Team',
+        path: '/team',
+        meta: { requiresAuth: true },
+        children: [
+            { name: 'Leader', path: '', component: Leader },
+        ]
+    },
+    { name: 'Teammate', path:'/team/teammate', component: Teammate, parms:[] },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },
     {
         path: '/:code',
         component: ActLayout,
         children: [
-            { name: 'HomePage', path: '', component: HomePage },
+            { name: 'HomePage', path: '/:code', component: HomePage },
             { name: 'ActContent', path: ':id(\\d+)', component: ActContent },
         ]
     },
-
+    
     //{ name:'HomePage', path: '/Activities/:code', component:HomePage },
     // { name:'Activities', path: '/Activities/:code/:id', component: ActLayout },
     { name: 'ComingSoon', path: '/ComingSoon/:code', component: ComingSoon,  },
@@ -85,7 +97,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-    const store = useStore()
+    const store = useStore();
     if (to.meta.requiresAuth && !store.isAuthenticated) return '/'
 })
 

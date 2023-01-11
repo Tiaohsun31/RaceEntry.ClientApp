@@ -319,12 +319,12 @@ import { Field, Form as VeeForm, ErrorMessage } from 'vee-validate';
 import Swal from 'sweetalert2';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import { datepickerLangs } from './js/datepickerLang';
+import { datepickerLangs } from '@/js/datepickerLang';
 
 import { storeToRefs } from 'pinia';
-import { useStore } from '../../store';
+import { useStore } from '@/store';
 import Addons from './components/Addons.vue';
-import { axiosResponseStatus } from '../axiosHandlingErrors';
+import { axiosResponseStatus } from '@/views/axiosHandlingErrors';
 
 const config = {
     headers: {

@@ -145,11 +145,11 @@
     import Swal from 'sweetalert2';
     import moment from 'moment';
     import { storeToRefs } from 'pinia'
-    import { useStore } from '../../store';
+    import { useStore } from '@/store';
     import { Field, Form, ErrorMessage } from 'vee-validate';
     import Datepicker from 'vue-datepicker-next';
     import 'vue-datepicker-next/index.css';
-    import { datepickerLangs } from './js/datepickerLang';
+    import { datepickerLangs } from '@/js/datepickerLang';
 
     export default {
         name: 'CreateGroup',
