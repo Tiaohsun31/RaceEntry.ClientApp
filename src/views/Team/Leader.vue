@@ -57,11 +57,11 @@
                                 </td>
                                 <td class="text-right">
                                     <div class="d-none d-lg-inline">
-                                        <!-- <a v-bind:href="'/team/player/create?joincode='+item.joinCode+'&status=true'"
-                                            v-bind:class="item.status == 0 ? 'disabled' : ''"
-                                            class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-green btn-a-lighter-green">
+                                        <RouterLink :to="{ name: 'AddTeammate', params: { joinCode: item.joinCode }}"
+                                            class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-green btn-a-lighter-green"
+                                            :class="item.status === 0 ? 'disabled' : ''">
                                             <i class="fa fa-plus mr-1"></i> 新增隊員
-                                        </a> -->
+                                        </RouterLink>
                                         <!-- <button type="button" @click="shownShare(item.teamId)"
                                             class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-info btn-a-lighter-info"
                                             v-bind:class="item.status === 0 ? 'disabled' : ''">
@@ -90,11 +90,12 @@
                                                 <div class="dropdown-header text-100 text-secondary-d1 border-b-1 brc-secondary-l2 text-600 mb-2"
                                                     v-text="item.teamName">
                                                 </div>
-                                                <!-- <a v-bind:href="'/team/player/create?joincode='+item.joinCode+'&status=true'"
-                                                    class="dropdown-item" v-bind:class="item.status == 0 ? 'disabled' : ''">
+                                                <RouterLink :to="{ name: 'AddTeammate', params: { joinCode: item.joinCode }}"
+                                                    class="dropdown-item"
+                                                    :class="item.status === 0 ? 'disabled' : ''">
                                                     <i class="fa fa-plus text-success mr-1 p-2 w-4"></i> 新增隊員
-                                                </a>
-                                                <a href="#" v-on:click.prevent="shownShare(item.teamId)" class="dropdown-item"
+                                                </RouterLink>
+                                                <!-- <a href="#" v-on:click.prevent="shownShare(item.teamId)" class="dropdown-item"
                                                     v-bind:class="item.status == 0 ? 'disabled' : ''">
                                                     <i class="far fa-flag text-info-d1 mr-1 p-2 w-4"></i>
                                                     分享
@@ -116,7 +117,7 @@
                                 <td colspan="8" class="p-0 border-none brc-secondary-l2">
                                     <div class="table-detail collapse" v-bind:id="'table-detail-'+index">
                                         <div class="py-md-3 px-md-5 p-2">
-                                            <table v-if="item.teamPlayers.length > 0" class="table table-striped-secondary">
+                                            <table v-if="item.teammates.length > 0" class="table table-striped-secondary">
                                                 <thead class="border-0">
                                                     <tr class="border-0 bgc-orange-d1 text-white">
                                                         <th class="border-0 pl-md-4"> 姓名 </th>

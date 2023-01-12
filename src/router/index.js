@@ -59,9 +59,9 @@ const routes = [
         meta: { requiresAuth: true },
         children: [
             { name: 'MemberIndex', path: '', component: Member },
-            { name: 'EditMember', path:'/member/edit', component: EditMember },
-            { name: 'BindOtherLogin', path:'/member/bindOtherLogin', component: BindOtherLogin },
-            { name: 'RefundSetting', path:'/member/refundSetting', component: RefundSetting }
+            { name: 'EditMember', path:'edit', component: EditMember },
+            { name: 'BindOtherLogin', path:'bindOtherLogin', component: BindOtherLogin },
+            { name: 'RefundSetting', path:'refundSetting', component: RefundSetting }
         ]
     },
     {
@@ -70,8 +70,10 @@ const routes = [
         meta: { requiresAuth: true },
         children: [
             { name: 'Leader', path: '', component: Leader },
+            
         ]
     },
+    { name: 'AddTeammate', path: '/team/addTeammate/:joinCode?', component: Teammate, props:{ operate: 'addTeammate' } },
     { name: 'Teammate', path:'/team/teammate', component: Teammate, parms:[] },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },
     {
