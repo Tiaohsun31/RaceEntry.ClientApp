@@ -70,7 +70,7 @@ const routes = [
         meta: { requiresAuth: true },
         children: [
             { name: 'Leader', path: '', component: Leader },
-            
+            { name: 'EditTeammate', path: 'editTeammate', component: Teammate }
         ]
     },
     { name: 'AddTeammate', path: '/team/addTeammate/:joinCode?', component: Teammate, props:{ operate: 'addTeammate' } },
@@ -100,6 +100,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
     const store = useStore();
+    console.log(store.isAuthenticated);
     if (to.meta.requiresAuth && !store.isAuthenticated) return '/'
 })
 

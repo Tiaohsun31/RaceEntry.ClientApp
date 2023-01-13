@@ -7,7 +7,7 @@
                 回 上一頁
             </button>
             <Form :initial-values="formValues" @submit="onSubmit">
-                <div class="">
+                <div v-if="$route.name === 'AddTeammate'">
                     <div class="border-b-2 brc-yellow-d1 mb-3 pb-1 h4">
                         邀請碼
                     </div>
@@ -52,11 +52,12 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 import { storeToRefs } from 'pinia'
-import { useStore } from '@/store/index'
+import { useStore } from '@/store/index';
+import { useTeamStore } from '@/store/team';
 
 export default {
     name: 'Teammate',
-    props:['operate'],
+    props:['operate','user'],
     components: {
         Field, Form, ErrorMessage,
         UserInfo
@@ -64,7 +65,10 @@ export default {
     setup() {
         const store = useStore();
         const { isAuthenticated } = storeToRefs(store);
-        return { isAuthenticated };
+
+        const teamStore = useTeamStore();
+        const { teamId, userInfoId } = storeToRefs(teamStore);
+        return { isAuthenticated,teamId,userInfoId };
     },
     data() {
         return {
@@ -79,6 +83,20 @@ export default {
     created(){
         if (this.$route.name === 'AddTeammate' && this.isAuthenticated) {
             axios.get('/api/account/user').then(({data}) => this.formValues.user = data);
+        };
+        if (this.$route.name === 'EditTeammate') {
+            if (this.teamId == '' || this.userInfoId == '') {
+                this.$router.push({name:'AddTeammate'});
+            };
+            axios.get('/api/teammate', { params:{
+                teamId:this.teamId,
+                userInfoId:this.userInfoId
+            }}).then(({data}) => this.formValues.user = data)
+            .catch(error => {
+                if (error.response.status === 404) {
+                    this.$router.push({name:'AddTeammate'});
+                }
+            })
         }
     },
     computed:{
@@ -93,16 +111,32 @@ export default {
         onSubmit(values) {
             
             const form = JSON.stringify(values, null, 2);
-
-            axios.post('/api/teammate', form, {
+            let title = '已申請加入隊伍';
+            let config = {
+                url:'/api/teammate',
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(() => {
-                Swal.fire({ icon: 'success', title: '已申請加入隊伍' }).then(() => this.$route.push({ name: 'Home' }));
+            };
+            if (this.$route.name === 'AddTeammate') {
+                config.method = 'post';
+                config.data = form;
+            };
+            if (this.$route.name === 'EditTeammate') {
+                config.method = 'put';
+                let data = {
+                    teamId:this.teamId,
+                    userInfoId:this.userInfoId,
+                    user:values.user,
+                };
+                config.data = JSON.stringify(data);
+                title = '已完成修改';
+            }
+            axios(config).then(() => {
+                Swal.fire({ icon: 'success', title: title, text:'將導回首頁' }).then(() => this.hasHistory ? this.$router.go(-1) : this.$router.push('/'));
             }).catch(error => {
                 if (error.response.status === 400) {
-                    Swal.fire({ icon: 'error', title: `${error.response.data}` });
+                    Swal.fire({ icon: 'error', title: `${error.response.data || error.response.data.title}` });
                 }
                 if (error.response.status === 404) {
                     this.$router.push({ name: 'NotFound' });

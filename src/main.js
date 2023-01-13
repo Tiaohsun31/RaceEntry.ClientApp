@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { router } from './router'
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createHead } from "@vueuse/head"
 
 import App from './App.vue'
@@ -24,6 +25,7 @@ import 'bootstrap'
 import './js/ace'
 
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 const app = createApp(App);
 
 app.component('Layout', Layout);

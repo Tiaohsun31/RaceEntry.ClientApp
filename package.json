@@ -20,6 +20,7 @@
     "jquery": "^3.6.3",
     "moment": "^2.29.4",
     "pinia": "^2.0.28",
+    "pinia-plugin-persistedstate": "^3.0.2",
     "sweetalert2": "^11.6.9",
     "vee-validate": "^4.7.3",
     "vue": "^3.2.45",

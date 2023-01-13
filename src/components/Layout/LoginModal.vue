@@ -442,7 +442,6 @@ export default {
         logout(){
             axios.post('/api/account/logout').then(() => {
                 this.isAuthenticated = false;
-                localStorage.setItem('auth',false);
                 this.$router.go(0);
             });
         }

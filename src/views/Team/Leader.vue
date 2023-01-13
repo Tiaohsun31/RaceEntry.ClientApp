@@ -73,7 +73,7 @@
                                             <i class="fa fa-pencil-alt mr-1"></i>
                                             編輯
                                         </button>
-                                        <button type="button" @click="deleteTeam(item.teamId,item.teamName)"
+                                        <button type="button" @click="deleteTeam(item)"
                                             class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-danger btn-a-lighter-danger">
                                             <i class="fa fa-trash-alt mr-1"></i>
                                             刪除
@@ -100,11 +100,11 @@
                                                     <i class="far fa-flag text-info-d1 mr-1 p-2 w-4"></i>
                                                     分享
                                                 </a> -->
-                                                <a href="#" @click.prevent="editModal(item.teamId)" class="dropdown-item">
+                                                <a href="#" @click.prevent="editTeammate(item.teamId,element.userInfoId)" class="dropdown-item">
                                                     <i class="fa fa-pencil-alt text-orange mr-1 p-2 w-4"></i>
                                                     編輯
                                                 </a>
-                                                <a href="#" @click.prevent="deleteTeam(item.teamId)" class="dropdown-item">
+                                                <a href="#" @click.prevent="deleteTeammate(item.teamId,element)" class="dropdown-item">
                                                     <i class="fa fa-trash-alt text-danger-m1 mr-1 p-2 w-4"></i>
                                                     刪除
                                                 </a>
@@ -123,31 +123,28 @@
                                                         <th class="border-0 pl-md-4"> 姓名 </th>
                                                         <th class="border-0"> 電話 </th>
                                                         <th class="border-0 d-none d-sm-table-cell"> 加入日期 </th>
-                                                        <th class="border-0 d-none d-sm-table-cell"> 緊急連絡人 </th>
+                                                        <th class="border-0 d-none d-sm-table-cell"> 緊急聯絡人 </th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
                             
-                                                <tbody class="text-dark-tp3 opacity-1 text-95 text-600">
-                                                    <template v-for="element in item.teamPlayers">
+                                                <tbody class="text-dark-tp3 opacity-1">
+                                                    <template v-for="element in item.teammates" :key="element.userInfoId">
                                                         <tr class="bgc-h-warning-l4">
                                                             <td class="pl-md-4" v-text="element.userName"></td>
                                                             <td v-text="element.userPhoneNumber"></td>
-                                                            <td class="d-none d-sm-table-cell" v-text="shortDate(element.joinDate)"></td>
-                                                            <td class="d-none d-sm-table-cell"
-                                                                v-text="element.emergency != '' ? '緊急聯絡人:'+element.emergency : ''"></td>
+                                                            <td class="d-none d-sm-table-cell" v-text="dateFormat(element.joinDate)"></td>
+                                                            <td class="d-none d-sm-table-cell" v-text="element.emergency"></td>
                                                             <td>
-                                                                <form action="/team/player/edit" method="post" class="d-inline-block">
-                                                                    <input type="hidden" name="userInfoId" v-bind:value="element.userInfoId" />
-                                                                    <input type="hidden" name="teamId" v-bind:value="item.teamId" />
-                                                                    <button type="submit" title="編輯"
-                                                                        class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-warning btn-a-lighter-warning">
-                                                                        <i class="fa fa-pencil-alt mr-md-1"></i>
-                                                                        <span class="d-none d-sm-inline">編輯</span>
-                                                                    </button>
-                                                                </form>
+                                                                <button type="button" title="編輯" 
+                                                                    @click="editTeammate(item.teamId,element.userInfoId)"
+                                                                    class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-warning btn-a-lighter-warning">
+                                                                    <i class="fa fa-pencil-alt mr-md-1"></i>
+                                                                    <span class="d-none d-sm-inline">編輯</span>
+                                                                </button>
+
                                                                 <button type="button" title="刪除"
-                                                                    v-on:click="deletePlayer(item.teamId,element.userInfoId,element.userName)"
+                                                                    @click="deleteTeammate(item.teamId,element)"
                                                                     class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-danger btn-a-lighter-danger">
                                                                     <i class="fa fa-trash-alt mr-md-1"></i>
                                                                     <span class="d-none d-sm-inline">刪除</span>
@@ -305,12 +302,14 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import moment from 'moment';
+import { storeToRefs } from 'pinia';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 
 import Datepicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import { datepickerLangs } from '@/js/datepickerLang';
 
+import { useTeamStore } from '@/store/team';
 import { dateFormat } from '@/js/format';
 
 export default {
@@ -320,7 +319,9 @@ export default {
         Datepicker
     },
     setup(){
-        return { datepickerLangs,dateFormat }
+        const store = useTeamStore();
+        let { teamId, userInfoId } = storeToRefs(store);
+        return { datepickerLangs, dateFormat, store , teamId, userInfoId }
     },
     data() {
         return {
@@ -369,13 +370,13 @@ export default {
             teamModal.modal('show');
             teamModal.find('.modal-title').text('修改隊伍');
         },
-        deleteTeam(id) {
+        deleteTeam(item) {
 
-            let team = this.teams.find(x => x.teamId == id);
+            let team = this.teams.findIndex(x => x.teamId == item.teamId);
             if (team == null) return false;
 
             Swal.fire({
-                title: `是否刪除，隊伍:${team.teamName}?`,
+                title: `是否刪除，隊伍:${item.teamName}?`,
                 text: "刪除隊伍後，將無法取得該組隊員!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -384,7 +385,7 @@ export default {
                 cancelButtonText: '取消'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/api/team/${team.teamId}`)
+                    axios.delete(`/api/team/${item.teamId}`)
                         .then(() => {
                             Swal.fire({ icon: 'success', title: '已完成刪除' }).then(() => {
                                 this.teams.splice(team, 1)
@@ -477,7 +478,41 @@ export default {
             let endformat = end != null && end != "" ? `至${moment(end).format('YYYY-MM-DD HH:mm')}` : "";
             return `(${startformat}${endformat})`;
         },
-
+        editTeammate(teamId,userInfoId) {
+            this.store.teamId = teamId;
+            this.store.userInfoId = userInfoId;
+            this.$router.push({name:'EditTeammate'});
+        },
+        deleteTeammate(teamId,userInfo) {
+            let teammate = this.teams.find(x => x.teamId == teamId)?.teammates.findIndex(x => x.userInfoId == userInfo.userInfoId);
+            if (teammate == -1) return;
+            Swal.fire({
+                title: `是否刪除，${userInfo.userName}?`,
+                text: "刪除後，將無法取得該隊員!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d52727',
+                confirmButtonText: '是,刪除!',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete('/api/teammate', {
+                        params: { teamId: teamId, userInfoId: userInfo.userInfoId }
+                    }).then(() => {
+                        Swal.fire({icon:'success',title:'已完成刪除'}).then(() => {
+                            this.teams.find(x => x.teamId == teamId).teammates.splice(teammate,1);
+                        });
+                    }).catch(error => {
+                        if (error.response.status === 400) {
+                            Swal.fire({ icon: 'error', title: `${error.response.data || error.response.data.title}` });
+                        }
+                        if (error.response.status === 404) {
+                            this.$router.push({ name: 'NotFound' });
+                        }
+                    })
+                }
+            })
+        }
     }
 }
 </script>
