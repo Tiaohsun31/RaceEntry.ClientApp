@@ -28,7 +28,7 @@ import BindOtherLogin from '../views/Member/BindOtherLogin.vue';
 import RefundSetting from '../views/Member/RefundSetting.vue';
 
 import Leader from '../views/Team/Leader.vue';
-import Teammate from '../views/Team/Teammate.vue';
+import TeammateForm from '../views/Team/TeammateForm.vue';
 
 import NotFound from '../components/Layout/NotFound.vue';
 
@@ -70,11 +70,11 @@ const routes = [
         meta: { requiresAuth: true },
         children: [
             { name: 'Leader', path: '', component: Leader },
-            { name: 'EditTeammate', path: 'editTeammate', component: Teammate }
+            { name: 'EditTeammate', path: 'editTeammate', component: TeammateForm }
         ]
     },
-    { name: 'AddTeammate', path: '/team/addTeammate/:joinCode?', component: Teammate, props:{ operate: 'addTeammate' } },
-    { name: 'Teammate', path:'/team/teammate', component: Teammate, parms:[] },
+    { name: 'AddTeammate', path: '/team/addTeammate/:joinCode?', component: TeammateForm, props:{ operate: 'addTeammate' } },
+    //{ name: 'Teammate', path:'/team/teammate', component: Teammate, parms:[] },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },
     {
         path: '/:code',
@@ -100,7 +100,6 @@ const router = createRouter({
 
 router.beforeEach((to) => {
     const store = useStore();
-    console.log(store.isAuthenticated);
     if (to.meta.requiresAuth && !store.isAuthenticated) return '/'
 })
 

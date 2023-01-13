@@ -34,10 +34,9 @@
                             <h5 class="card-title"> 隊伍管理 </h5>
                         </div>
                         <div class="card-body">
-                            <a asp-area="TeamModules" asp-controller="Player" asp-action="Create"
-                                class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">
+                            <RouterLink :to="{name:'AddTeammate'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">
                                 我想加入其他隊伍
-                            </a>
+                            </RouterLink>
                             <RouterLink :to="{name:'Leader'}" class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">我是隊長</RouterLink>
                             <a asp-area="TeamModules" asp-controller="Player" asp-action="Index"
                                 class="p-2 d-flex align-items-center bgc-h-blue-l3 radius-1 no-underline">

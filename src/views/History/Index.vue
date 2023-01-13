@@ -1,6 +1,10 @@
 <template>
     <Layout>
-        <div class="container">
+        <div class="container my-5">
+            <RouterLink :to="{name:'MemberIndex'}" class="btn btn-bgc-white btn-outline-default px-35 btn-text-slide-x mb-3">
+                <i class="btn-text-2 fa fa-arrow-left text-110 align-text-bottom mr-2"></i>
+                回 會員專區
+            </RouterLink>
             <div v-if="acts.length > 0" class="my-3">
                 <div class="card acard" v-for="item in acts">
                     <div class="card-header border-0">

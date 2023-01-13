@@ -14,7 +14,6 @@
                 <Footer></Footer>
             </div>
         </div>
-
     </div>
     <Aside></Aside>
 </template>

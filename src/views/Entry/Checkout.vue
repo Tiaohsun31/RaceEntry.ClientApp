@@ -411,45 +411,6 @@
         </Transition>
     </div>
 </template>
-
-<style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-to,
-.fade-leave-from {
-  opacity: 1;
-}
-
-.loading {
-    text-align: center;
-    position: absolute;
-    color: #fff;
-    z-index: 9;
-    background: #5c4084;
-    padding: 8px 18px;
-    border-radius: 5px;
-    left: calc(50% - 45px);
-    top: calc(50% - 18px);
-}
-
-.load-enter-active,
-.load-leave-active {
-    transition: opacity 0.5s;
-}
-
-.load-enter-from,
-.load-leave-to {
-    opacity: 0;
-}
-</style>
     
 <script lang="js">
 import Members from './components/Members.vue';

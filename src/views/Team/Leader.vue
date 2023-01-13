@@ -1,6 +1,7 @@
+TODO:社群分享連結
 <template>
     <Layout>
-        <div class="container my-5">
+        <div v-if="!loading" class="container my-5">
             <RouterLink :to="{ name: 'MemberIndex' }"
                 class="btn btn-bgc-white btn-outline-default px-35 btn-text-slide-x mb-3">
                 <i class="btn-text-2 fa fa-arrow-left text-110 align-text-bottom mr-2"></i>
@@ -62,12 +63,12 @@
                                             :class="item.status === 0 ? 'disabled' : ''">
                                             <i class="fa fa-plus mr-1"></i> 新增隊員
                                         </RouterLink>
-                                        <!-- <button type="button" @click="shownShare(item.teamId)"
+                                        <button type="button" @click="shownShare(item.teamId)"
                                             class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-info btn-a-lighter-info"
                                             v-bind:class="item.status === 0 ? 'disabled' : ''">
                                             <i class="fas fa-share-alt mr-1"></i>
                                             分享
-                                        </button> -->
+                                        </button>
                                         <button type="button" v-on:click="editModal(item.teamId)"
                                             class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-warning btn-a-lighter-warning">
                                             <i class="fa fa-pencil-alt mr-1"></i>
@@ -95,11 +96,11 @@
                                                     :class="item.status === 0 ? 'disabled' : ''">
                                                     <i class="fa fa-plus text-success mr-1 p-2 w-4"></i> 新增隊員
                                                 </RouterLink>
-                                                <!-- <a href="#" v-on:click.prevent="shownShare(item.teamId)" class="dropdown-item"
+                                                <a href="#" v-on:click.prevent="shownShare(item.teamId)" class="dropdown-item"
                                                     v-bind:class="item.status == 0 ? 'disabled' : ''">
                                                     <i class="far fa-flag text-info-d1 mr-1 p-2 w-4"></i>
                                                     分享
-                                                </a> -->
+                                                </a>
                                                 <a href="#" @click.prevent="editTeammate(item.teamId,element.userInfoId)" class="dropdown-item">
                                                     <i class="fa fa-pencil-alt text-orange mr-1 p-2 w-4"></i>
                                                     編輯
@@ -180,6 +181,13 @@
             </div>
            
         </div>
+        <div v-else class="vh-100">
+            <Transition name="load">
+                <div class="loading">
+                    <span class="fa fa-spinner fa-spin"></span> <span>Loading</span> 
+                </div>
+            </Transition>
+        </div>
         <!-- 隊伍 Modal -->
         <div class="modal fade" id="apply-modal" tabindex="-1" aria-labelledby="apply-modalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -256,16 +264,14 @@
                     <div class="modal-body">
                         <div class="form-group mt-2 mb-3">
                             <label for="joinCode"> 邀請碼 </label>
-                            <form method="post">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" aria-label="Join code" v-bind:value="shareModal.joinCode" readonly>
-                                    <input name="key" type="hidden" v-bind:value="shareModal.key">
-                                    <div class="input-group-append">
-                                        <button asp-action="UpdateJoinCode" class="btn btn-outline-secondary" type="submit">更新</button>
-                                        <button class="btn btn-outline-secondary" type="button" v-on:click="copy(shareModal.joinCode,$event)" v-bind:id="'FC'+shareModal.joinCode" data-placement="top" data-original-title="已複製">複製</button>
-                                    </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" aria-label="Join code" v-bind:value="shareModal.joinCode" readonly>
+                                <input name="key" type="hidden" v-bind:value="shareModal.key">
+                                <div class="input-group-append">
+                                    <button @click="updateJoinCode" class="btn btn-outline-secondary" >更新</button>
+                                    <button class="btn btn-outline-secondary" type="button" v-on:click="copy(shareModal.joinCode,$event)" v-bind:id="'FC'+shareModal.joinCode" data-placement="top" data-original-title="已複製">複製</button>
                                 </div>
-                            </form>
+                            </div>
                             <small class="form-text text-muted">可透過分享「邀請碼」，邀請他人加入隊伍</small>
                         </div>
                         <hr>
@@ -328,7 +334,7 @@ export default {
             teams: [],
             operate:'create',
             formValues: {
-                teamName: '123',
+                teamName: '',
                 summary: '',
                 status: 1,
             },
@@ -339,6 +345,7 @@ export default {
                 joinCode: '',
                 joinShareUri: '',
             },
+            loading:false
         }
     },
     created(){
@@ -346,7 +353,11 @@ export default {
     },
     methods: {
         gets(){
-            axios.get('/api/Team').then(({data}) => this.teams = data);
+            this.loading = true;
+            axios.get('/api/Team').then(({data}) => {
+                this.teams = data;
+                this.loading = false;
+            });
         },
         createModal() {
             let teamModal = $('#apply-modal');
@@ -402,12 +413,21 @@ export default {
 
             this.shareModal.key = team.teamId;
             this.shareModal.joinCode = team.joinCode;
-            this.shareModal.joinShareUri = `https://localhost:44365/team/player/create?joincode=${team.joinCode}`;
+            this.shareModal.joinShareUri = `${window.location.href}/addTeammate/${team.joinCode}`;
 
             this.disposeCopy();
 
             let teamModal = $('#apply-share-modal');
             teamModal.modal('show');
+        },
+        updateJoinCode(){
+            let team = this.teams.find(x => x.teamId == this.shareModal.key);
+            if (team == null) return;
+
+            axios.patch(`/api/team/updateCode/${this.shareModal.key}`).then(({data}) => {
+                this.shareModal.joinCode = data;
+                team.joinCode = data;
+            });
         },
         onSubmit(values) {
             values.startTime = this.date[0];
