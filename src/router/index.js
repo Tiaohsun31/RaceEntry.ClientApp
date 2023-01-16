@@ -29,6 +29,7 @@ import RefundSetting from '../views/Member/RefundSetting.vue';
 
 import Leader from '../views/Team/Leader.vue';
 import TeammateForm from '../views/Team/TeammateForm.vue';
+import Teammate from '../views/Team/Teammate.vue';
 
 import NotFound from '../components/Layout/NotFound.vue';
 
@@ -74,7 +75,7 @@ const routes = [
         ]
     },
     { name: 'AddTeammate', path: '/team/addTeammate/:joinCode?', component: TeammateForm, props:{ operate: 'addTeammate' } },
-    //{ name: 'Teammate', path:'/team/teammate', component: Teammate, parms:[] },
+    { name: 'Teammate', path:'/team/teammate', component: Teammate },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },
     {
         path: '/:code',
