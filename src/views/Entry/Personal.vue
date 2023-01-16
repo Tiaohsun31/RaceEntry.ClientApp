@@ -32,17 +32,25 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <button type="button" class="btn btn-grey btn-h-primary btn-a-purple px-45 mr-3" v-on:click="importUser">
+                    <button type="button" class="btn btn-grey btn-h-primary btn-a-purple px-45 mr-3" v-on:click="importUser('self')">
                         匯入個人資料
                     </button>
                     <button type="button" class="btn btn-outline-danger px-45" v-on:click="clearUser">
                         清空資料
                     </button>
                 </div>
-                <!-- <div class="d-flex flex-column align-items-center justify-content-center mb-3">
+                <div class="d-flex flex-column align-items-center justify-content-center mb-3">
                     <hr class="w-100 mb-2 border-none border-t-3 brc-grey-l2 border-double">
                     <div class="mt-n4 bgc-white-tp2 px-3 py-1 text-secondary-d3 text-90"> 或 </div>
-                </div> -->
+                </div>
+                <select class="form-control" v-model="selectedTeammate" @change="importUser('teammate')">
+                    <option selected value=""> -- 請選擇隊員資料 -- </option>
+                    <template v-for="item in teams">
+                        <optgroup v-if="item.teammates.length > 0" :label="item.teamName">
+                            <option v-for="element in item.teammates" :value="`${item.teamId},${element.userInfoId}`" :label="element.userName"></option>
+                        </optgroup>
+                    </template>
+                </select>
             </div>
         </div>
         <!-- End 快速報名 -->
@@ -369,7 +377,8 @@ export default {
                 freebie:[],
                 addons:[]
             },
-            //datepickerZh:datepickerLangs.zh
+            teams:[],
+            selectedTeammate:''
         }
     },
     created() {
@@ -408,6 +417,9 @@ export default {
                 this.formValues.selectedFreebie = data.freebie;
                 this.selectedAddons = data.addons;
             }).catch(error => axiosResponseStatus(error));
+        };
+        if (this.isAuthenticated) {
+            axios.get('/api/team').then(({data}) => this.teams = data);
         }
     },
     computed: {
@@ -458,10 +470,6 @@ export default {
         }
     },
     methods: {
-        datepickerLangs(){
-            datepickerLangs["zh"];
-            //return datepickerLangs["zh"];
-        },
         checkActStatus(){
             if (!this.act.canSignUp && this.$route.name === 'CreatePersonal') {
                 Swal.fire({icon:'error',title:'該活動已結束報名'}).then(() => {
@@ -477,10 +485,25 @@ export default {
         getAddonsResult(result){
            this.selectedAddons = result;
         },
-        importUser(){
-            axios.get('/api/account/user').then(({data}) => {
-                this.formValues.user = data;
-            }).catch(error => axiosResponseStatus(error))
+        importUser(source){
+            if (!this.isAuthenticated) return;
+            if (source === 'self') {
+                axios.get('/api/account/user').then(({data}) => this.formValues.user = data).catch(error => axiosResponseStatus(error))
+            };
+            if (source === 'teammate') {
+                let selected = this.selectedTeammate?.split(',');
+                if (selected.length !== 2) {
+                    this.formValues.user = {};
+                    return;
+                };
+                axios.get('/api/teammate', { 
+                    params: {
+                        teamId:selected[0],
+                        userInfoId:selected[1]
+                    }
+                }).then(({data}) => this.formValues.user = data)
+                .catch(error => axiosResponseStatus(error));
+            }
         },
         clearUser(){
             this.formValues.user = {};
