@@ -2,10 +2,10 @@
     <template v-if="position === 'Home'">
         <div class="row justify-content-md-center">
             <div class="col col-md-8">
-                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動">
-                    <template v-for="item in acts">
-                        <optgroup v-bind:label="item.year+'&frasl;'+item.month">
-                            <option v-for="element in item.acts"
+                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code">
+                    <template v-for="item,name in acts">
+                        <optgroup v-bind:label="name">
+                            <option v-for="element in item"
                                 v-bind:class="Date.parse(element.actDate) <= Date.now() ? 'bgc-grey-l1' : ''"
                                 v-bind:value="element.actCode"> {{ shortDate(element.actDate) }} &frasl; {{ element.actName }}
                             </option>
@@ -80,10 +80,10 @@
     
                         <div class="row justify-content-md-center my-4">
                             <div class="col-12">
-                                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動">
-                                    <template v-for="item in acts">
-                                        <optgroup v-bind:label="item.year+'&frasl;'+item.month">
-                                            <option v-for="element in item.acts"
+                                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code">
+                                    <template v-for="item,name in acts">
+                                        <optgroup v-bind:label="name">
+                                            <option v-for="element in item"
                                                 v-bind:class="Date.parse(element.actDate) <= Date.now() ? 'bgc-grey-l1' : ''"
                                                 v-bind:value="element.actCode"> {{ shortDate(element.actDate) }} &frasl; {{ element.actName }}
                                             </option>
@@ -156,10 +156,10 @@
             <div class="row justify-content-md-center">
                 <label class="col-form-label col-md-2 d-none d-sm-block"> 活動列表 </label>
                 <div class="col-12 col-md-10 mb-3">
-                    <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動">
-                        <template v-for="item in acts">
-                            <optgroup v-bind:label="item.year+'&frasl;'+item.month">
-                                <option v-for="element in item.acts"
+                    <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code">
+                        <template v-for="item,name in acts">
+                            <optgroup v-bind:label="name">
+                                <option v-for="element in item"
                                     v-bind:class="Date.parse(element.actDate) <= Date.now() ? 'bgc-grey-l1' : ''"
                                     v-bind:value="element.actCode"> {{ shortDate(element.actDate) }} &frasl; {{ element.actName }}
                                 </option>
@@ -191,9 +191,9 @@
                                         <template v-for="item in options.years">
                                             <label role="button"
                                                 class=" d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 overflow-hidden"
-                                                v-bind:class="store.filter.selectedYears.includes(item) ? 'active' : ''">
+                                                v-bind:class="filter.selectedYears.includes(item) ? 'active' : ''">
                                                 <input type="checkbox" name="SelectedYears" v-bind:value="item"
-                                                    v-model="store.filter.selectedYears">
+                                                    v-model="filter.selectedYears">
                                                 {{ item }}
                                             </label>
                                         </template>
@@ -205,15 +205,14 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"> 從 </span>
                                         </div>
-                                        <input type="date" aria-label="StartDate" class="form-control" name="StartTime"
-                                            v-model="store.filter.startTime">
+                                        <input type="date" aria-label="StartDate" class="form-control" name="StartTime" v-model="filter.startTime">
                                     </div>
                                     <div class="input-group mt-2">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"> 到 </span>
                                         </div>
                                         <input type="date" aria-label="EndDate" class="form-control" name="EndTime"
-                                            v-model="store.filter.endTime">
+                                            v-model="filter.endTime">
                                     </div>
                                 </div>
                                 <div class="col-12 mb-4">
@@ -222,9 +221,9 @@
                                         <template v-for="item in options.categories">
                                             <label role="button"
                                                 class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 overflow-hidden"
-                                                v-bind:class="store.filter.selectedCategories.includes(item) ? 'active' : ''">
+                                                v-bind:class="filter.selectedCategories.includes(item) ? 'active' : ''">
                                                 <input type="checkbox" name="SelectedCategories" v-bind:value="item"
-                                                    v-model="store.filter.selectedCategories">
+                                                    v-model="filter.selectedCategories">
                                                 {{ item }}
                                             </label>
                                         </template>
@@ -248,27 +247,37 @@ import axios from 'axios';
 import 'bootstrap-select/dist/css/bootstrap-select.min.css';
 import 'bootstrap-select';
 import moment from 'moment';
-import { store } from '../../store/actFilter.js'
+import { storeToRefs } from 'pinia'
+import { useFilterStore } from '@/store/actFilter';
+
+import { groupBy } from "lodash"
 
 export default {
     name: 'SearchFilter',
     props: ['position'],
+    setup(){
+        const store = useFilterStore();
+        const { filter } = storeToRefs(store);
+        return { store,filter }
+    },
     data(){
         return {
             acts:{},
             options:[],
-            filter:{
-                selectedCategories:[],
-                selectedYears:[],
-                startTime:'',
-                endTime:''
-            },
-            store
+            code:''
         }
     },
     created(){
-        axios.get('/api/configs/recommendActs').then(({data}) => this.acts = data);
+        axios.get('/api/configs/recommendActs').then(({data}) => {
+            this.acts = groupBy(data,(x) => `${x.year}-${x.month}`);
+        });
         axios.get('/api/configs/filter').then(({data}) => this.options = data);
+    },
+    watch:{
+        code(){
+            $('#aside').modal('hide');
+            this.$router.push({ name: 'HomePage', params: { code:`${this.code}` } });
+        }
     },
     updated() {
         $(this.$refs.select).selectpicker('refresh');
@@ -278,9 +287,8 @@ export default {
             return moment(value).format('YYYY-MM-DD');
         },
         toAct() {
-            store.setFilter(JSON.parse(JSON.stringify(this.filter)));
-            this.$router.push({name: 'Acts'}).catch(()=>{});
-        }
+            this.$router.push({name: 'Acts'});
+        },
     }
 }
 </script>

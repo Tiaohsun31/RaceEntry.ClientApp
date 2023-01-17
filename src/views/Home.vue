@@ -36,15 +36,14 @@
                                         <p class="card-text h3 mt-4" v-text="'活動時間:' + shortDate(item.actDate)"> </p>
                                         <p class="card-text h3 mt-4" v-text="'報名截止:' + shortDate(item.regETime)"> </p>
                                         <p class="card-text h3 mt-4" v-text="item.address"> </p>
-
-                                        <a v-if="item.canSignUp" v-bind:href="'/Activities/' + item.actCode + '#signup'"
+                                        <RouterLink v-if="item.canSignUp" :to="`/${item.actCode}#signup`" 
                                             class="btn btn-lg btn-orange rounded-pill mt-5 px-5">
                                             我要報名
-                                        </a>
-                                        <a v-if="!item.canSignUp" v-bind:href="'/Activities/' + item.actCode"
-                                            class="btn btn-lg btn-info rounded-pill mt-5 px-5">
+                                        </RouterLink>
+                                        <router-link v-bind:to="{name:'HomePage',params:{code:item.actCode}}"
+                                        class="btn btn-lg btn-info rounded-pill mt-5 px-5">
                                             活動詳情
-                                        </a>
+                                        </router-link>
                                     </div>
                                 </div>
                                 <div class="col-md-8 col-12">
@@ -75,8 +74,8 @@
         <div class="border-t-4 brc-orange mt-5 pb-5 bgc-primary-l3">
             <div class="my-5 container">
                 <div class="row">
-                    <template v-for="element in recommendActs">
-                        <div class="col-md-3 col-12 mb-4" v-for="item in element.acts" v-bind:key="item.actCode">
+                    <template v-for="item in recommendActs">
+                        <div class="col-md-3 col-12 mb-4">
                             <div class="card pos-rel shadow-sm" v-bind:class="item.displayLabel == '推薦賽事' ? 'border-3 brc-orange' : ''">
                                 <span v-show="item.displayLabel == '推薦賽事'"
                                     class="badge bgc-orange-d2 text-white position-tl m-n25 badge-pill text-110 border-3 brc-white-tp6 radius-4"

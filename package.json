@@ -18,6 +18,7 @@
     "bootstrap-select": "^1.13.18",
     "fontawesome-free": "^1.0.4",
     "jquery": "^3.6.3",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "pinia": "^2.0.28",
     "pinia-plugin-persistedstate": "^3.0.2",

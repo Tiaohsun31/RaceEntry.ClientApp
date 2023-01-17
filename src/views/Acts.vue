@@ -31,74 +31,75 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-4" v-for="item in sortdata">
-                                <h5 v-show="item.acts.length != 0"> 
-                                    <span class="h3 text-danger"> {{item.month}} </span>
-                                    月，{{item.year}} 
+                            <div class="mt-4" v-for="item,name in sortdata">
+                                <h5>
+                                    <span class="h3 text-danger"> {{ name.split('-')[1] }} </span>
+                                    月，{{ name.split('-')[0] }}
                                 </h5>
-                                <div class="card mb-3" v-for="element in item.acts" :Key="element.actCode">
-                                    <div class="row">
-                                        <div class="col-md-3 col-4 pos-rel pr-0">
-                                            <RouterLink v-bind:to="`/${element.actCode}`" > 
-                                                <img v-bind:src="element.square" class="img-fluid rounded-start" v-bind:alt="element.actName">
-                                            </RouterLink>
-                                        </div>
-                                        <div class="col-md-9 col-8 pl-0">
-                                            <span style="border-radius: 0% 0 50% 50%;"
-                                                class="float-right badge d-none d-sm-block px-3 py-2 text-white"
-                                                v-bind:class="labelStyle(element.displayLabel)">
-                                                {{element.displayLabel}}
-                                            </span>
-                                            <div class="card-body pb-0 py-2">
-                                                <RouterLink v-bind:to="`/${element.actCode}`" class="no-underline">
-                                                    <div class="card-title h5 d-none d-sm-block">{{element.actName}}</div>
-                                                    <div class="card-title text-truncate d-block d-sm-none">{{element.actName}}</div>
+                                <div v-for="element in item">
+                                    <div class="card mb-3" v-if="element.canSignUp || !isApply">
+                                        <div class="row">
+                                            <div class="col-md-3 col-4 pos-rel pr-0">
+                                                <RouterLink v-bind:to="`/${element.actCode}`">
+                                                    <img v-bind:src="element.square" class="img-fluid rounded-start" v-bind:alt="element.actName">
                                                 </RouterLink>
-                                                <div class="row">
-                                                    <div class="col-md-8 col-12">
-                                                        <div class="card-text mt-2 mt-sm-2">
-                                                            <span data-toggle="tooltip" data-placement="top" title="活動日期">
-                                                                <strong> <i class="fas fa-calendar-day"></i> : </strong>
-                                                                {{ actDate(element.actDate) }}
-                                                            </span>
+                                            </div>
+                                            <div class="col-md-9 col-8 pl-0">
+                                                <span style="border-radius: 0% 0 50% 50%;"
+                                                    class="float-right badge d-none d-sm-block px-3 py-2 text-white"
+                                                    v-bind:class="labelStyle(element.displayLabel)">
+                                                    {{element.displayLabel}}
+                                                </span>
+                                                <div class="card-body pb-0 py-2">
+                                                    <RouterLink v-bind:to="`/${element.actCode}`" class="no-underline">
+                                                        <div class="card-title h5 d-none d-sm-block">{{element.actName}}</div>
+                                                        <div class="card-title text-truncate d-block d-sm-none">{{element.actName}}</div>
+                                                    </RouterLink>
+                                                    <div class="row">
+                                                        <div class="col-md-8 col-12">
+                                                            <div class="card-text mt-2 mt-sm-2">
+                                                                <span data-toggle="tooltip" data-placement="top" title="活動日期">
+                                                                    <strong> <i class="fas fa-calendar-day"></i> : </strong>
+                                                                    {{ actDate(element.actDate) }}
+                                                                </span>
+                                                            </div>
+                                                            <div class="card-text mt-1 d-none d-sm-block">
+                                                                <span data-toggle="tooltip" data-bs-placement="top" title="活動地點">
+                                                                    <strong> <i class="fas fa-map-marker-alt"></i> : </strong>
+                                                                    {{element.address}}
+                                                                </span>
+                                                            </div>
+                                                            <div class="card-text mt-1 d-none d-sm-block">
+                                                                <span data-toggle="tooltip" data-bs-placement="top" title="報名時間">
+                                                                    <strong> <i class="fas fa-calendar-minus"></i> : </strong>
+                                                                    {{ shortDate(element.regSTime)}} -
+                                                                    {{ shortDate(element.regETime)}}
+                                                                </span>
+                                                            </div>
+                                                            <div class="card-text mt-1 d-none d-sm-block">
+                                                                <span class="badge bgc-secondary-l3 text-secondary-d3 text-80 px-2 mr-1"
+                                                                    v-for="tag in element.kmTags?.split(',')">
+                                                                    {{tag}}
+                                                                </span>
+                                                            </div>
+                                                            <div class="card-text mt-1 d-none d-sm-block">
+                                                                <span class="badge bgc-secondary-l3 text-secondary-d3 text-80 px-2 mr-1"
+                                                                    v-for="tag in element.otherTags?.split(',')">
+                                                                    {{tag}}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <div class="card-text mt-1 d-none d-sm-block">
-                                                            <span data-toggle="tooltip" data-bs-placement="top" title="活動地點">
-                                                                <strong> <i class="fas fa-map-marker-alt"></i> : </strong>
-                                                                {{element.address}}
-                                                            </span>
-                                                        </div>
-                                                        <div class="card-text mt-1 d-none d-sm-block">
-                                                            <span data-toggle="tooltip" data-bs-placement="top" title="報名時間">
-                                                                <strong> <i class="fas fa-calendar-minus"></i> : </strong>
-                                                                {{ shortDate(element.regSTime)}} -
-                                                                {{ shortDate(element.regETime)}}
-                                                            </span>
-                                                        </div>
-                                                        <div class="card-text mt-1 d-none d-sm-block">
-                                                            <span class="badge bgc-secondary-l3 text-secondary-d3 text-80 px-2 mr-1"
-                                                                v-for="tag in element.kmTags?.split(',')">
-                                                                {{tag}}
-                                                            </span>
-                                                        </div>
-                                                        <div class="card-text mt-1 d-none d-sm-block">
-                                                            <span class="badge bgc-secondary-l3 text-secondary-d3 text-80 px-2 mr-1"
-                                                                v-for="tag in element.otherTags?.split(',')">
-                                                                {{tag}}
-                                                            </span>
+                                                        <div class="col-md-4 col-12">
+                                                            <div v-if="element.canSignUp"
+                                                                class="card-text text-right d-none d-sm-block pos-abs position-b position-r mr-2">
+                                                                <router-link v-bind:to="`/${element.actCode}#signup`" class="btn btn-info btn-sm px-4">
+                                                                    我要報名
+                                                                </router-link>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4 col-12">
-                                                        <div v-if="element.canSignUp"
-                                                            class="card-text text-right d-none d-sm-block pos-abs position-b position-r mr-2">
-                                                            <router-link v-bind:to="`/${element.actCode}#signup`"
-                                                                class="btn btn-info btn-sm px-4">
-                                                                我要報名
-                                                            </router-link>
-                                                        </div>
-                                                    </div>
+                                
                                                 </div>
-                
                                             </div>
                                         </div>
                                     </div>
@@ -127,71 +128,61 @@
     import moment from 'moment';
     import 'moment/dist/locale/zh-tw';
 
-    import { store } from '../store/actFilter.js'
+    import { storeToRefs } from 'pinia';
+    import { useFilterStore } from '@/store/actFilter.js'
+    import { groupBy } from "lodash"
 
     export default {
         components: {
             SearchFilter,AdSidebar
+        },
+        setup(){
+            const store = useFilterStore();
+            const { filter } = storeToRefs(store);
+            return { filter }
         },
         data() {
             return {
                 isApply: false,
                 orderby: 'desc',
                 acts:[],
-                store
+                month:[]
             }
         },
         created() {
-            axios.get('/api/configs/filter').then(({ data }) => this.options = data);
             axios.get('/api/configs/recommendActs').then(({data}) => this.acts = data);
         },
         computed: {
             sortdata() {
-                let data = this.isApply ? this.acts.filter(x => x.canSignUp === true) : JSON.parse(JSON.stringify(this.acts));
+                this.month = [];
+                let data = JSON.parse(JSON.stringify(this.acts));
 
-                if (this.store.filter != null) {
-                    
-                    if (this.store.filter.selectedYears.length > 0) {
-                       data = data.filter(x => this.store.filter.selectedYears.includes(x.year));
-                    };
+                if (this.filter.selectedYears.length > 0) {
+                    data = data.filter(x => this.filter.selectedYears.includes(x.year));
+                };
 
-                    if (this.store.filter.startTime != '') {
-                        let startTime = new Date(this.store.filter.startTime).getTime();
-                        data.filter(eachMonth => {
-                            eachMonth.acts = eachMonth.acts.filter(({actDate}) => {
-                                let actTimeSpan = new Date(actDate).getTime();
-                                return actTimeSpan >= startTime;
-                            })
-                        });
-                    };
-                    if (this.store.filter.endTime != '') {
-                        let endTime = new Date(this.store.filter.endTime).getTime();
-                        data.filter(eachMonth => {
-                            eachMonth.acts = eachMonth.acts.filter(({actDate}) => {
-                                let actTimeSpan = new Date(actDate).getTime();
-                                return actTimeSpan <= endTime;
-                            })
-                        });
-                    };
-                    if (this.store.filter.selectedCategories.length > 0) {
-                        data.filter(eachMonth => {
-                            eachMonth.acts = eachMonth.acts.filter(s => {
-                                return this.store.filter.selectedCategories.includes(s.category);
-                            })
-                        })
-                    };
-                }
+                if (this.filter.startTime != '') { 
+                    data = data.filter(({actDate}) => {
+                        return moment(actDate).isSameOrAfter(this.filter.startTime);
+                    });
+                };
+                
+                if (this.filter.endTime != '') { 
+                    data = data.filter(({actDate}) => {
+                        return moment(actDate).isSameOrBefore(this.filter.endTime);
+                    });
+                };
+                if (this.filter.selectedCategories.length > 0) {
+                    data = data.filter(({category}) => { return this.filter.selectedCategories.includes(category) })
+                };
 
                 if (this.orderby === 'asc') {
-                    return data.sort(function (a, b) {
-                        return new Date(a.year, a.month) - new Date(b.year, b.month);
-                    });
+                    data.sort((a,b) => new Date(a.actDate) - new Date(b.actDate));
+                } else {
+                    data.sort((a,b) => new Date(b.actDate) - new Date(a.actDate));
                 }
-                if (this.orderby === 'desc') {
-                    return data.sort(function (a, b) {
-                        return new Date(b.year, b.month) - new Date(a.year, a.month);
-                    });
-                }
+
+                return groupBy(data,(b) => `${b.year}-${b.month}`);
             }
         },
         methods: {

@@ -145,6 +145,15 @@
                 return this.$route.params.code;
             }
         },
+        created(){
+            axios.get(`/api/content/homePage/${this.code}`)
+                .then(({ data }) => this.pageContent = data)
+                .catch(error => {
+                    if (error.response.status === 404) {
+                        this.$router.push({ name: 'NotFound' });
+                    }
+                });
+        },
         updated() {
             const diff = moment.duration(new Date(this.act.regETime).getTime() - Date.now());
             countdown(diff);
@@ -153,15 +162,6 @@
             if (section) {
                 this.$nextTick(() => window.document.getElementById(section).scrollIntoView());
             }
-        },
-        mounted() {
-            axios.get(`/api/content/homePage/${this.code}`)
-                .then(({ data }) => this.pageContent = data)
-                .catch(error => {
-                    if (error.response.status === 404) {
-                        this.$router.push({ name: 'NotFound' });
-                    }
-                });
         },
         methods: {
             signUpRange() {

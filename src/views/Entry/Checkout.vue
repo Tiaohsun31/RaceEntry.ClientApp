@@ -578,8 +578,8 @@ export default {
             let isAndroid = whatSystem.match(/android/i);
             let isiOS = whatSystem.match(/(iphone|ipad|ipod);?/i);
             //TODO:修改正式機回傳網址
-            const requestUrls = encodeURIComponent(`https://localhost:7256/Api/Emap`);
-            //const requestUrls = encodeURIComponent(`${window.location.origin}/Api/Emap/Index`);
+            //const requestUrls = encodeURIComponent(`https://localhost:7256/Api/Emap`);
+            const requestUrls = encodeURIComponent(`${window.location.origin}/Api/Emap/Index`);
             let typesInterface = (isiOS || isAndroid) ? "MOBILE" : "WEB";
             let url = "https://ssl.smse.com.tw/api/LogisticsEmap.asp?TypesInterface=" + typesInterface + "&TypesServer=" + type + "&url=" + requestUrls;
             return url;

@@ -81,7 +81,7 @@ const routes = [
         path: '/:code',
         component: ActLayout,
         children: [
-            { name: 'HomePage', path: '/:code', component: HomePage },
+            { name: 'HomePage', path: '', component: HomePage },
             { name: 'ActContent', path: ':id(\\d+)', component: ActContent },
         ]
     },

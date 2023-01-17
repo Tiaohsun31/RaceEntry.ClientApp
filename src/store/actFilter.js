@@ -1,13 +1,12 @@
-import { reactive } from 'vue'
+import { defineStore } from 'pinia'
 
-export const store = reactive({
-    filter: {
+export const useFilterStore = defineStore('filterStore', {
+  state: () => ({
+      filter: {
         selectedYears:[],
         selectedCategories:[],
         startTime:'',
         endTime:''
     },
-    setFilter(data) {
-      this.filter = JSON.parse(JSON.stringify(data))
-    }
-  })
+  }),
+});
