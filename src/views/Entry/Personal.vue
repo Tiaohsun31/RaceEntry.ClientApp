@@ -555,7 +555,8 @@ export default {
         },
         createPersonalOrder(values){
             const form = JSON.stringify(values, null,2);
-
+            console.log(form);
+            return;
             axios.post('/api/order/personal', form, config)
                 .then(response => {
                     sessionStorage.setItem("orderId", response.data.orderId);
