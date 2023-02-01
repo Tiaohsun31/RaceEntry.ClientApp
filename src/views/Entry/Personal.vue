@@ -555,8 +555,6 @@ export default {
         },
         createPersonalOrder(values){
             const form = JSON.stringify(values, null,2);
-            console.log(form);
-            return;
             axios.post('/api/order/personal', form, config)
                 .then(response => {
                     sessionStorage.setItem("orderId", response.data.orderId);
@@ -566,7 +564,6 @@ export default {
         editPersonal(values) {
             values.userInfoId = this.userId;
             const form = JSON.stringify(values, null, 2);
-
             axios.patch(`/api/personal/${this.userId}`, form, config)
             .then(response => {
                 this.responsedResult(response,'修改成功', '');
