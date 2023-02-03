@@ -150,7 +150,7 @@
             }
         },
         created() {
-            axios.get('/api/configs/recommendActs').then(({data}) => this.acts = data);
+            axios.get('/api/act').then(({data}) => this.acts = data);
         },
         computed: {
             sortdata() {

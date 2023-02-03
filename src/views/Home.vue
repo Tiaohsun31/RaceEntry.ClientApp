@@ -150,9 +150,9 @@ export default {
     },
     created(){
         let endpoints = [
-            `/api/configs/marquee`,
-            `/api/configs/banners`,
-            `/api/configs/recommendActs?number=12`,
+            `/api/webSetting/marquee`,
+            `/api/webSetting/banners`,
+            `/api/act?number=12`,
         ];
         Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
             .then(([{ data: marquee }, { data: banners }, { data:recommendActs }]) => {

@@ -16,7 +16,7 @@
             }
         },
         mounted(){
-            axios.get('/api/configs/ads').then(({data}) => this.ads = data);
+            axios.get('/api/webSetting/ads').then(({data}) => this.ads = data);
         }
     }
 </script>

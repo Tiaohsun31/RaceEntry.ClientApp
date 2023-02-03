@@ -268,10 +268,10 @@ export default {
         }
     },
     created(){
-        axios.get('/api/configs/recommendActs').then(({data}) => {
+        axios.get('/api/act').then(({data}) => {
             this.acts = groupBy(data,(x) => `${x.year}-${x.month}`);
         });
-        axios.get('/api/configs/filter').then(({data}) => this.options = data);
+        axios.get('/api/webSetting/filter').then(({data}) => this.options = data);
     },
     watch:{
         code(){

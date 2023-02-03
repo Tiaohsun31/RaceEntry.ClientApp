@@ -118,7 +118,7 @@ export default {
             }
         });
 
-        axios.get(`/api/configs/popup/${this.code}`).then(({data}) => {
+        axios.get(`/api/act/popup/${this.code}`).then(({data}) => {
             this.adImg = data;
             if (this.adImg.show) {
                 let lastShown = parseInt(sessionStorage.getItem(this.code));
