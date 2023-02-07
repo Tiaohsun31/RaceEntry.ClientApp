@@ -2,7 +2,7 @@
     <template v-if="position === 'Home'">
         <div class="row justify-content-md-center">
             <div class="col col-md-8">
-                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code">
+                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code" @change="toActPage">
                     <template v-for="item,name in acts">
                         <optgroup v-bind:label="name">
                             <option v-for="element in item"
@@ -80,7 +80,7 @@
     
                         <div class="row justify-content-md-center my-4">
                             <div class="col-12">
-                                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code">
+                                <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code" @change="toActPage">
                                     <template v-for="item,name in acts">
                                         <optgroup v-bind:label="name">
                                             <option v-for="element in item"
@@ -156,7 +156,7 @@
             <div class="row justify-content-md-center">
                 <label class="col-form-label col-md-2 d-none d-sm-block"> 活動列表 </label>
                 <div class="col-12 col-md-10 mb-3">
-                    <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code">
+                    <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code" @change="toActPage">
                         <template v-for="item,name in acts">
                             <optgroup v-bind:label="name">
                                 <option v-for="element in item"
@@ -240,6 +240,18 @@
             </div>
         </div>
     </template>
+    <template v-else-if="position === 'Search'">
+        <select ref="select" name="code" class="form-control" data-live-search="true" title="請選擇活動" v-model="code">
+            <template v-for="item,name in acts">
+                <optgroup v-bind:label="name">
+                    <option v-for="element in item"
+                        v-bind:class="Date.parse(element.actDate) <= Date.now() ? 'bgc-grey-l1' : ''"
+                        v-bind:value="element.actCode"> {{ shortDate(element.actDate) }} &frasl; {{ element.actName }}
+                    </option>
+                </optgroup>
+            </template>
+        </select>
+    </template>
 </template>
 
 <script>
@@ -273,12 +285,12 @@ export default {
         });
         axios.get('/api/webSetting/filter').then(({data}) => this.options = data);
     },
-    watch:{
-        code(){
-            $('#aside').modal('hide');
-            this.$router.push({ name: 'HomePage', params: { code:`${this.code}` } });
-        }
-    },
+    // watch:{
+    //     code(){
+    //         $('#aside').modal('hide');
+    //         this.$router.push({ name: 'HomePage', params: { code:`${this.code}` } });
+    //     }
+    // },
     updated() {
         $(this.$refs.select).selectpicker('refresh');
     },
@@ -289,6 +301,10 @@ export default {
         toAct() {
             this.$router.push({name: 'Acts'});
         },
+        toActPage() {
+            $('#aside').modal('hide');
+            this.$router.push({ name: 'HomePage', params: { code:`${this.code}` } });
+        }
     }
 }
 </script>

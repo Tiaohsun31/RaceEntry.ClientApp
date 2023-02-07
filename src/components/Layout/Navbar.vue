@@ -27,11 +27,10 @@
                             </router-link>
                         </li>
                         <li class="nav-item mx-2">
-                            <a class=" btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2 "
-                                asp-controller="Tracking" asp-action="Index">
+                            <RouterLink :to="{name:'Tracking'}" class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2">
                                 <div class="text-125 mt-1">報名查詢</div>
                                 <div>Search</div>
-                            </a>
+                            </RouterLink>
                         </li>
                         <li class="nav-item dropdown mx-2">
                             <a class=" dropdown-toggle btn d-block  btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2"
@@ -64,7 +63,7 @@
                         </li>
                         <li class="nav-item mx-2">
                             <a class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2  "
-                                href="https://www.focusline.com.tw/score" target="_blank">
+                                href="https://score.focusline.com.tw" target="_blank">
                                 <div class=" text-125 mt-1"> 成績查詢 </div>
                                 <div>Score</div>
                             </a>

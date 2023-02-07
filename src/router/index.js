@@ -16,6 +16,7 @@ import Refund from '../views/Entry/Refund.vue';
 
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
+import Tracking from '@/views/Tracking.vue';
 
 import ChangePassword from '../views/Login/ChangePassword.vue';
 import BindExternalLogin from '../views/Login/BindExternalLogin.vue';
@@ -36,6 +37,7 @@ import NotFound from '../components/Layout/NotFound.vue';
 const routes = [
     { name: 'Home', path: '/', component: Home, meta: { requiresAuth: false } },
     { name: 'Acts', path: '/acts', component: Acts, meta: { requiresAuth: false } },
+    { name: 'Tracking', path: '/tracking', component:Tracking, meta: { requiresAuth: false }},
     {
         path: '/entry',
         component: ActLayout,
