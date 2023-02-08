@@ -28,14 +28,17 @@
                                             活動列表
                                         </router-link>
                                         <br />
-                                        <a asp-area="" asp-controller="Service" asp-action="Index"
-                                            class="text-white">服務項目</a>
+                                        <RouterLink :to="{name:'Timing'}" class="text-white"> 
+                                            服務項目
+                                        </RouterLink>
                                         <br />
-                                        <a asp-area="" asp-controller="Instrucation" asp-action="Index"
-                                            class="text-white">晶片說明</a>
+                                        <RouterLink :to="{name:'Instruction'}" class="text-white"> 
+                                            晶片說明
+                                        </RouterLink>
                                         <br />
                                         <a href="#" class="text-white" data-toggle="modal"
-                                            data-target="#privacyPolicyModal">隱私權政策</a>
+                                            data-target="#privacyPolicyModal">隱私權政策
+                                        </a>
                                     </div>
                                 </div>
 
@@ -72,12 +75,17 @@
             </a>
         </div>
     </footer>
+    <PrivacyPolicy></PrivacyPolicy>
 </template>
 
 <script>
+import PrivacyPolicy from './PrivacyPolicy.vue';
 
 export default {
     name: "Footer",
+    components:{
+        PrivacyPolicy
+    }
 };
 </script>
 

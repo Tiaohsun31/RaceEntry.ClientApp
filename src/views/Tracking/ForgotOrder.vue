@@ -1,8 +1,8 @@
 <template>
     <Layout>
-        <img src="../../public/眾點-網站版主視覺.png" alt="" class="img-fluid">
-        
-        <div class="container py-5">
+        <img src="/service/computer2.png" alt="眾點-網站版主視覺" class="img-fluid" />
+
+        <div class="container my-5">
             <Form @submit="onSubmit">
                 <div class="form-group row">
                     <div class="col-sm-3 col-form-label text-sm-right pr-0">
@@ -18,11 +18,11 @@
 
                 <div class="form-group row">
                     <div class="col-sm-3 col-form-label text-sm-right pr-0">
-                        <label for="tracking-order">訂單編號</label>
+                        <label for="tracking-email">Email</label>
                     </div>
                     <div class="col-sm-5">
-                        <Field name="orderId" label="訂單編號" rules="required" class="form-control" id="tracking-order"></Field>
-                        <ErrorMessage name="orderId" class="text-danger" as="div"></ErrorMessage>
+                        <Field name="email" label="Email" rules="required|email" class="form-control" id="tracking-email"></Field>
+                        <ErrorMessage name="email" class="text-danger" as="div"></ErrorMessage>
                     </div>
                 </div>
 
@@ -46,17 +46,18 @@
                 </div>
             </Form>
         </div>
+        
     </Layout>
 </template>
 
 <script lang="js">
-    import SearchFilter from '../components/Layout/SearchFilter.vue';
+    import SearchFilter from '@/components/Layout/SearchFilter.vue';
     import { Field,ErrorMessage,Form } from 'vee-validate';
     import axios from 'axios';
     import Swal from 'sweetalert2';
 
     export default {
-        name:'Tracking',
+        name:'ForgotOrder',
         components:{
             SearchFilter,
             Field,Form,ErrorMessage
@@ -65,16 +66,15 @@
             onSubmit(values){
                 const form = JSON.stringify(values,null,2);
 
-                axios.post('/api/order/search',form,{
+                axios.post('/api/order/forgotOrder',form,{
                     headers:{
                         'Content-Type':'application/json'
                     }
                 }).then(({data}) => {
-                    sessionStorage.setItem("orderId",data);
-                    this.$router.push({name:'Checkout',params: { code: `${values.code}` }});
-                }).catch((error) => {
-                    if (error.response.status == 404) {
-                        Swal.fire({icon:'error',title:'找不到資料'});
+                    if (data) {
+                        Swal.fire({icon:'success',title:'已寄送至領隊(訂購人Email)'})
+                    } else {
+                        Swal.fire({icon:'error',title:'找不到訂單或訊息寄送失敗，如需協助，請聯繫客服人員'})
                     }
                 });
             }

@@ -16,7 +16,13 @@ import Refund from '../views/Entry/Refund.vue';
 
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts.vue';
-import Tracking from '@/views/Tracking.vue';
+
+import Tracking from '@/views/Tracking/Tracking.vue';
+import ForgotOrder from '@/views/Tracking/ForgotOrder.vue';
+
+import Design from '@/views/Service/Design.vue';
+import Timing from '@/views/Service/Timing.vue';
+import Instruction from '@/views/Service/Instruction.vue';
 
 import ChangePassword from '../views/Login/ChangePassword.vue';
 import BindExternalLogin from '../views/Login/BindExternalLogin.vue';
@@ -38,6 +44,10 @@ const routes = [
     { name: 'Home', path: '/', component: Home, meta: { requiresAuth: false } },
     { name: 'Acts', path: '/acts', component: Acts, meta: { requiresAuth: false } },
     { name: 'Tracking', path: '/tracking', component:Tracking, meta: { requiresAuth: false }},
+    { name: 'ForgotOrder', path: '/tracking/forgotOrder', component:ForgotOrder, meta: { requiresAuth: false }},
+    { name: 'Design', path: '/service/design', component:Design, meta: { requiresAuth: false }},
+    { name: 'Timing', path: '/service/timing', component:Timing, meta: { requiresAuth: false }},
+    { name: 'Instruction', path: '/service/instruction', component:Instruction, meta: { requiresAuth: false }},
     {
         path: '/entry',
         component: ActLayout,

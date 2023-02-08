@@ -43,23 +43,20 @@
                                 x-placement="bottom-start"
                                 style="min-width: 240px; position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
                                 <div class="dropdown-divider my-0"></div>
-                                <a class="btn btn-outline-dark border-l-4 btn-brc-tp btn-h-outline-info btn-a-outline-info my-2px radius-l-0 py-2 pl-3 pr-2 w-100 text-left border-bottom-0 border-top-0 border-right-0"
-                                    asp-controller="Service" asp-action="Index">
+                                <RouterLink :to="{name:'Timing'}" class="btn btn-outline-dark border-l-4 btn-brc-tp btn-h-outline-info btn-a-outline-info my-2px radius-l-0 py-2 pl-3 pr-2 w-100 text-left border-bottom-0 border-top-0 border-right-0">
                                     活動承辦/運動計時
-                                </a>
+                                </RouterLink>
                                 <div class="dropdown-divider my-0"></div>
-                                <a class="btn btn-outline-dark border-l-4 btn-brc-tp btn-h-outline-info btn-a-outline-info my-2px radius-l-0 py-2 pl-3 pr-2 w-100 text-left border-bottom-0 border-top-0 border-right-0"
-                                    asp-controller="Service" asp-action="Design">
+                                <RouterLink :to="{name:'Design'}" class="btn btn-outline-dark border-l-4 btn-brc-tp btn-h-outline-info btn-a-outline-info my-2px radius-l-0 py-2 pl-3 pr-2 w-100 text-left border-bottom-0 border-top-0 border-right-0">
                                     視覺設計
-                                </a>
+                                </RouterLink>
                             </div>
                         </li>
                         <li class="nav-item mx-2">
-                            <a class=" btn d-block  btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2"
-                                asp-controller="Instrucation" asp-action="Index">
+                            <RouterLink :to="{name:'Instruction'}" class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp px-4 px-lg-2">
                                 <div class=" text-125 mt-1"> 晶片說明 </div>
-                                <div>Instructions</div>
-                            </a>
+                                <div>Instruction</div>
+                            </RouterLink>
                         </li>
                         <li class="nav-item mx-2">
                             <a class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp px-4 px-lg-2  "
