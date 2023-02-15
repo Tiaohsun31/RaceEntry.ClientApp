@@ -146,7 +146,7 @@ export default {
         }
     },
     created() {
-        axios.get(`/api/configs/act/${this.code}`).then(({ data }) => {
+        axios.get(`/api/act/${this.code}`).then(({ data }) => {
             this.act = data;
             if (Date.now() >= new Date(this.act.regSTime).getTime()) {
                 this.$router.push({name:'Activities'})

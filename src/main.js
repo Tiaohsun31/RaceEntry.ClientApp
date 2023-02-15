@@ -7,7 +7,7 @@ import { createHead } from "@vueuse/head"
 import App from './App.vue'
 import Layout from './components/Layout/Layout.vue'
 // vee-validate
-import {  defineRule ,configure  } from 'vee-validate';
+import { defineRule , configure } from 'vee-validate';
 import AllRules from '@vee-validate/rules';
 import { localize, setLocale } from '@vee-validate/i18n';
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
@@ -23,6 +23,8 @@ setLocale('zh_TW');
 
 import 'bootstrap'
 import './js/ace'
+
+import './vendor'
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);

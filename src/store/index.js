@@ -9,7 +9,6 @@ export const useStore = defineStore('store', {
     setAuthenticate() {
      axios.get('/api/Account').then(response => {
         this.isAuthenticated = response.status === 200 && response.data;
-        //localStorage.setItem('auth',response.status === 200 && response.data);
       });
     },
   },

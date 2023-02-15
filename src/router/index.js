@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useStore } from '../store/index'
 
-import Layout from '../components/Layout/Layout.vue';
 import ActLayout from '../views/ActPage/ActLayout.vue';
 import ComingSoon from '../views/ActPage/ComingSoon.vue';
 import ActContent from '../views/ActPage/ActContent.vue';
@@ -97,9 +96,6 @@ const routes = [
             { name: 'ActContent', path: ':id(\\d+)', component: ActContent },
         ]
     },
-    
-    //{ name:'HomePage', path: '/Activities/:code', component:HomePage },
-    // { name:'Activities', path: '/Activities/:code/:id', component: ActLayout },
     { name: 'ComingSoon', path: '/ComingSoon/:code', component: ComingSoon,  },
     { name: 'NotFound', path: '/:pathMatch(.*)*', component: NotFound,  }
 ]
