@@ -57,13 +57,13 @@
                 <div class="col-sm-2 col-4 mt-2" v-text="'NT$'+element.unitPrice"></div>
     
                 <div class="col-sm-2 col-4 mt-2">
-                    <div v-if="element.specs.length">
+                    <div v-if="element.spec !== null && element.spec.length > 0">
                         <input type="hidden" v-bind:value="element.name">
-                        <template v-if="element.specs.length == 1">
+                        <template v-if="element.spec.length == 1">
                             <select v-bind:id="'addonsSpecs'+element.productId" class="form-control"
                                 v-on:change="resetQty(element.ProductId)">
                                 <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
+                                <option v-for="option in element.spec[0].list" v-bind:disabled="option.disabled"
                                     v-bind:value="(option.name || option.title)">
                                     {{ option.name || option.title }}
                                     {{ option.disabled ? "已售完" : "" }}
@@ -74,7 +74,7 @@
                             <select v-bind:id="'addonsSpecs'+element.productId" class="form-control"
                                 v-on:change="resetQty(element.productId)">
                                 <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                <optgroup v-for="options in element.specs"
+                                <optgroup v-for="options in element.spec"
                                     v-bind:label="options.key == null ? '' : options.key">
                                     <option v-for="item in options.list" v-bind:disabled="item.disabled"
                                         v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${item.title}${item.name}`">
@@ -126,7 +126,7 @@ export default {
                 spec: ""
             };
 
-            if (element.specs.length > 0) {
+            if (element.spec.length > 0) {
                 let selectedSpec = $('#addonsSpecs' + element.productId + " :selected").val();
                 if (selectedSpec == "") {
                     $('#' + target.id).val(0);

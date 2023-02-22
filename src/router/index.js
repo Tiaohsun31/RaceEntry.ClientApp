@@ -42,11 +42,11 @@ import NotFound from '../components/Layout/NotFound.vue';
 const routes = [
     { name: 'Home', path: '/', component: Home, meta: { requiresAuth: false } },
     { name: 'Acts', path: '/acts', component: Acts, meta: { requiresAuth: false } },
-    { name: 'Tracking', path: '/tracking', component:Tracking, meta: { requiresAuth: false }},
-    { name: 'ForgotOrder', path: '/tracking/forgotOrder', component:ForgotOrder, meta: { requiresAuth: false }},
-    { name: 'Design', path: '/service/design', component:Design, meta: { requiresAuth: false }},
-    { name: 'Timing', path: '/service/timing', component:Timing, meta: { requiresAuth: false }},
-    { name: 'Instruction', path: '/service/instruction', component:Instruction, meta: { requiresAuth: false }},
+    { name: 'Tracking', path: '/tracking', component: Tracking, meta: { requiresAuth: false } },
+    { name: 'ForgotOrder', path: '/tracking/forgotOrder', component: ForgotOrder, meta: { requiresAuth: false } },
+    { name: 'Design', path: '/service/design', component: Design, meta: { requiresAuth: false } },
+    { name: 'Timing', path: '/service/timing', component: Timing, meta: { requiresAuth: false } },
+    { name: 'Instruction', path: '/service/instruction', component: Instruction, meta: { requiresAuth: false } },
     {
         path: '/entry',
         component: ActLayout,
@@ -71,9 +71,9 @@ const routes = [
         meta: { requiresAuth: true },
         children: [
             { name: 'MemberIndex', path: '', component: Member },
-            { name: 'EditMember', path:'edit', component: EditMember },
-            { name: 'BindOtherLogin', path:'bindOtherLogin', component: BindOtherLogin },
-            { name: 'RefundSetting', path:'refundSetting', component: RefundSetting }
+            { name: 'EditMember', path: 'edit', component: EditMember },
+            { name: 'BindOtherLogin', path: 'bindOtherLogin', component: BindOtherLogin },
+            { name: 'RefundSetting', path: 'refundSetting', component: RefundSetting }
         ]
     },
     {
@@ -85,8 +85,8 @@ const routes = [
             { name: 'EditTeammate', path: 'editTeammate', component: TeammateForm }
         ]
     },
-    { name: 'AddTeammate', path: '/team/addTeammate/:joinCode?', component: TeammateForm, props:{ operate: 'addTeammate' } },
-    { name: 'Teammate', path:'/team/teammate', component: Teammate },
+    { name: 'AddTeammate', path: '/team/addTeammate/:joinCode?', component: TeammateForm, props: { operate: 'addTeammate' } },
+    { name: 'Teammate', path: '/team/teammate', component: Teammate },
     { name: 'History', path: '/history', component: History, meta: { requiresAuth: true } },
     {
         path: '/:code',
@@ -96,8 +96,8 @@ const routes = [
             { name: 'ActContent', path: ':id(\\d+)', component: ActContent },
         ]
     },
-    { name: 'ComingSoon', path: '/ComingSoon/:code', component: ComingSoon,  },
-    { name: 'NotFound', path: '/:pathMatch(.*)*', component: NotFound,  }
+    { name: 'ComingSoon', path: '/ComingSoon/:code', component: ComingSoon, },
+    { name: 'NotFound', path: '/:pathMatch(.*)*', component: NotFound, }
 ]
 
 const router = createRouter({
@@ -112,4 +112,4 @@ router.beforeEach((to) => {
     if (to.meta.requiresAuth && !store.isAuthenticated) return '/'
 })
 
-export {router};
+export { router };

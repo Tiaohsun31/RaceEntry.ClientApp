@@ -208,7 +208,7 @@
             </div>
             <!-- End 報名項目 -->
             <!-- 附贈項目 -->
-            <div v-if="getfreebie != null && getfreebie.length > 0" class="card border-0">
+            <div v-if="getfreebie != null" class="card border-0">
                 <div class="card-header bgc-secondary-l4 brc-green-m1 border-0 border-l-4 radius-0 text-dark-tp2 mb-1">
                     <div class="card-title h5">
                         附贈項目
@@ -220,18 +220,19 @@
                         <div class="py-2">
                             <a v-if="element.images" href="#" class="text-blue mr-1" v-on:click.prevent="showImages(element.productId)">
                                 {{ i=index+1 + '、'+ element.name + (element.unitPrice == 0 || element.unitPrice == null ? "" :
-                                `／$NT${element.UnitPrice}`)}}
+                                `／$NT${element.unitPrice}`)}}
                                 <i class="far fa-image text-blue w-2"></i>
                             </a>
                             <span v-else> {{ i=index+1 + '、'+ element.name + (element.unitPrice == 0 || element.unitPrice == null ? "" :
                                 `／$NT${element.unitPrice}`)}} </span>
                             <span v-show="element.description"> ({{element.description}}) </span>
                         </div>
-                        <div v-if="element.specs.length > 0" class="mb-3 mt-2">
-                            <div v-if="element.specs.length == 1">
+                        
+                        <div v-if="element.spec !== null && element.spec.length > 0" class="mb-3 mt-2">
+                            <div v-if="element.spec.length === 1">
                                 <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格" required>
                                     <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                    <option v-for="option in element.specs[0].list" v-bind:disabled="option.disabled"
+                                    <option v-for="option in element.spec[0].list" v-bind:disabled="option.disabled"
                                         v-bind:value="`${option.title || option.name}`"
                                         v-bind:selected="freebieChecked(element.productId,(option.title || option.name))">
                                         {{ option.name || option.title }} {{ option.disabled ? "已售完" : "" }}
@@ -241,7 +242,7 @@
                             <div v-else>
                                 <select :id="`selectedFreebie[${element.productId}].spec`" class="form-control" title="請選擇規格" required>
                                     <option value="" disabled hidden selected> -- 請選擇 -- </option>
-                                    <optgroup v-for="options in element.specs" v-bind:label="options.key == '' ? '' : options.key">
+                                    <optgroup v-for="options in element.spec" v-bind:label="options.key == '' ? '' : options.key">
                                         <option v-for="item in options.list" 
                                             v-bind:disabled="item.disabled"
                                             v-bind:value="item.title != '' && item.name != '' ? `${item.title}-${item.name}` : `${element.productId},${item.title}${item.name}`"
@@ -427,7 +428,7 @@ export default {
             return this.$route.params.code;
         },
         getfreebie() {
-           if (this.settings.freebie.length == 0 || this.formValues.selectedGroup == 0) return null;
+           if (this.settings.freebie == null || this.settings.freebie.length == 0 && this.formValues.selectedGroup == 0) return null;
            return this.settings.freebie.filter(x => x.actGroupId.includes(this.formValues.selectedGroup));
         },
         getAddons() {
@@ -539,7 +540,7 @@ export default {
                     name: element.name,
                     spec:''
                 };
-                if (element.specs.length > 0) {
+                if (element.spec !== null && element.spec.length > 0) {
                     let selected = document.getElementById(`selectedFreebie[${element.productId}].spec`);
                     if (selected && selected.value == "") {
                         actions.setFieldError(`selectedFreebie[${element.productId}].spec`,`請先選擇 ${element.name} 規格`);
@@ -555,6 +556,8 @@ export default {
         },
         createPersonalOrder(values){
             const form = JSON.stringify(values, null,2);
+            console.log(form);
+            return;
             axios.post('/api/order/personal', form, config)
                 .then(response => {
                     sessionStorage.setItem("orderId", response.data.orderId);
