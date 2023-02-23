@@ -1,0 +1,84 @@
+//網頁字體
+$chFont: "Noto Sans TC";
+$engFont: "Inter";
+
+//文字字級
+$h1: 1.9375rem;
+$h2: 1.75rem;
+$h3: 1.5625rem;
+$h4: 1.375rem;
+$h5: 1.1875rem;
+$h6: 1rem;
+
+$infoSize: 1.125rem;
+$titleSize: 1.625rem; //26px
+$clock: 50px;
+
+//基本顏色設置 -> 樣板顏色請至_colorMode.scss檔案設定
+$maincolor: #00cfcf;
+$mainHoverColor: #158383;
+$darkfontcolor: #394149;
+$lightfontcolor: #88929b;
+$titlecolor: #394149;
+$whiteFont: #ffffff;
+$bgcolor: #ffffff;
+$hovercolor: #ffffff;
+$fontcolor: #00cfcf;
+$warning: #d63737;
+$warningHover: #a12b2b;
+$white: #ffffff;
+$btncolor: #88929b;
+$btnHovercolor: #394149;
+$functionBtn: #e0e0e0;
+$functionBtnFont: #88929b;
+$functionBtnFontHover: #394149;
+$lightbox_bg: rgba(0, 0, 0, 0.6);
+$showMsg: #ffffff;
+
+$darkBtnColor: #d9dde0;
+$darkBtnBorder: #88929b;
+$darkBtnBorderHover: #606468;
+$tablebg: #ececec;
+$tableline: #bdbdbd;
+$navbgcolor: #f3f3f3;
+$blackshadow: #9b9b9b;
+
+//scroll bar setting
+
+$scrollbar-background-color: #d4d4d4;
+$scrollbar-thumb-color: #8f8f8f;
+
+//loading-setting
+$base-line-height: 24px;
+$loading-color: rgb(173, 173, 173);
+$off-white: rgba($loading-color, 0.4);
+$spin-duration: 1s;
+$pulse-duration: 750ms;
+
+.darkmode {
+    --maincolor: #00cfcf;
+    --mainHoverColor: #158383;
+    --darkfontcolor: #394149;
+    --lightfontcolor: #88929b;
+    --lighttablefont: #8a96a0;
+    --bgcolor: #212427;
+    --hovercolor: black;
+    --warning: #a12b2b;
+    --warningHover: #d63737;
+    --white: #ffffff;
+    --titlecolor: #e8ecf0;
+    --whiteFont: #ffffff;
+    --btncolor: #1a9494;
+    --btnHovercolor: #00cfcf;
+    --functionBtn: #394149;
+    --functionBtnFont: #bdbdbd;
+    --functionBtnFontHover: white;
+    --lightbox_bg: rgba(245, 245, 245, 0.3);
+    --showMsg: #bdc0c4;
+    --blackshadow: #111111;
+    --navbgcolor: rgb(65, 62, 62);
+
+    //scroll bar setting
+    --scrollBarBack: #363a3f;
+    --scrollBarThumb: #717a83;
+}

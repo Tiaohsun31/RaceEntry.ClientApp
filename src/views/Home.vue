@@ -23,8 +23,10 @@
             </div>
         </Transition>
         <!-- End marquee-->
+        
         <!-- Banner -->
-        <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+        <SwiperBanner :bannerArray="banners"/>
+        <!-- <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
             <div class="carousel-inner">
                 <template v-for="(item,index) in banners">
                     <div class="carousel-item" v-bind:class="{ active:index == 0 }">
@@ -63,14 +65,17 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
             </a>
-        </div>
+        </div> -->
         <!-- End Banner-->
+
         <!-- Search and Filter-->
         <div class="container mt-md-4">
             <SearchFilter position="Home"></SearchFilter>
         </div>
         <!-- End Search and Filter -->
+
         <!-- Act List -->
+        <SwiperActList :bannerArray="banners"/>
         <div class="border-t-4 brc-orange mt-5 pb-5 bgc-primary-l3">
             <div class="my-5 container">
                 <div class="row">
@@ -133,13 +138,15 @@
 
 
 import SearchFilter from '../components/Layout/SearchFilter.vue';
+import SwiperBanner from '@/components/Layout/SwiperBanner.vue';
+import SwiperActList from '@/components/Layout/SwiperActList.vue';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/dist/locale/zh-tw';
 
 export default {
     components:{
-        SearchFilter
+        SearchFilter,SwiperBanner,SwiperActList
     },
     data() {
         return {
