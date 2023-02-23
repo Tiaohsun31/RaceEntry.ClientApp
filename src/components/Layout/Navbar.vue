@@ -11,7 +11,7 @@
 
             <div class="navbar-intro ">
                 <router-link to="/" class="navbar-brand text-primary text-180">
-                    <i class=" font-bold">FOCUSLINE</i>
+                    <i class=" font-bold">FOCUSLINE測試</i>
                 </router-link>
             </div>
 
