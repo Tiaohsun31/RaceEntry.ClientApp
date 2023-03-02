@@ -28,15 +28,15 @@ export default defineConfig({
         },
     },
     server:{
-        // https: {
-        //     key: readFileSync(keyFilePath),
-        //     cert: readFileSync(certFilePath),
-        // },
+        https: {
+            key: readFileSync(keyFilePath),
+            cert: readFileSync(certFilePath),
+        },
         host: true,
         port: 5002,
         proxy: {
             '/api': {
-                target: 'https://web.focusline.com.tw',
+                target: 'https://localhost:7256',
                 changeOrigin: true,
                 secure: false,
             },
