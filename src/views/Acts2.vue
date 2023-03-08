@@ -144,10 +144,10 @@
                         {{ shortDate(element.regETime) }}
                       </span>
                     </div>
-                    <div class="tagContent" v-if="element.kmTags">
+                    <div class="tagContent" v-if="element.Tags">
                       <span
                         class="badge bgc-secondary-l3 text-secondary-d3 text-80 px-2 mr-1"
-                        v-for="tag in element.kmTags?.split(',')"
+                        v-for="tag in element.Tags?.split(',')"
                       >
                         {{ tag }}
                       </span>
