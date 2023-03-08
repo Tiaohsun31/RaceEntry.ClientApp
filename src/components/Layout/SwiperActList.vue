@@ -45,9 +45,9 @@
               </div>
             </div>
           </div>
-          <div :class="insideItem.kmTags ? 'btn-area':'btn-area-noTag'">
-            <div class="leftbox" v-if="insideItem.kmTags">
-              <span v-for="tag in insideItem.kmTags?.split(',')">{{
+          <div :class="insideItem.Tags ? 'btn-area':'btn-area-noTag'">
+            <div class="leftbox" v-if="insideItem.Tags">
+              <span v-for="tag in insideItem.Tags?.split(',')">{{
                 tag
               }}</span>
             </div>
