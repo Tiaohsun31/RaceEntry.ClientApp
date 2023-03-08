@@ -51,15 +51,17 @@
     <!-- End Banner-->
 
     <!-- Search and Filter-->
-    <div class="container mt-5">
+    <div class="container" id="searchContainer">
+      <SubTitle Title="條件篩選活動" />
       <SearchFilter position="Home"></SearchFilter>
     </div>
     <!-- End Search and Filter -->
 
     <!-- Act List -->
+    <SubTitle Title="眾點推薦活動" />
     <SwiperActList :ActList="actList" />
     <section class="moreActArea">
-      <router-link to="/acts" >更多活動</router-link>
+      <router-link to="/acts">更多活動</router-link>
     </section>
     <!-- End Act List -->
   </Layout>
@@ -69,6 +71,8 @@
   import SearchFilter from "../components/Layout/SearchFilter2.vue";
   import SwiperBanner from "@/components/Layout/SwiperBanner.vue";
   import SwiperActList from "@/components/Layout/SwiperActList.vue";
+  import SubTitle from "@/components/Layout/SubTitle.vue";
+
   import axios from "axios";
   import moment from "moment";
   import "moment/dist/locale/zh-tw";
@@ -78,6 +82,7 @@
       SearchFilter,
       SwiperBanner,
       SwiperActList,
+      SubTitle
     },
     data() {
       return {
@@ -153,11 +158,10 @@
           return acc;
         }, []);
 
-        
         //新陣列內的objList只留下前五個物件，其餘刪除
-        this.actList.forEach(item=>{
-            item.objList.splice(5)
-        })
+        this.actList.forEach((item) => {
+          item.objList.splice(5);
+        });
       },
     },
   };
@@ -183,10 +187,6 @@
   }
 
 
-  #ActListSwiper{
-    margin-top: 80px;
-  }
-
   .moreActArea {
     width: 100%;
     margin: 50px 0;
@@ -197,9 +197,9 @@
       border: 1px solid $darkfontcolor;
       color: $darkfontcolor;
       text-decoration: none;
-      transition: .2s;
+      transition: 0.2s;
 
-      &:hover{
+      &:hover {
         border: 1px solid $mainhovercolor;
         background-color: $mainhovercolor;
         color: white;

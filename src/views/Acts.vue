@@ -49,7 +49,7 @@
                                                     class="float-right badge d-none d-sm-block px-3 py-2 text-white"
                                                     v-bind:class="labelStyle(element.displayLabel)">
                                                     {{element.displayLabel}}
-                                                </span>
+                                                </span>ji3rm,6
                                                 <div class="card-body pb-0 py-2">
                                                     <RouterLink v-bind:to="`/${element.actCode}`" class="no-underline">
                                                         <div class="card-title h5 d-none d-sm-block">{{element.actName}}</div>

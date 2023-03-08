@@ -35,6 +35,16 @@
               </router-link>
             </li>
             <li class="nav-item">
+              <a
+                href="https://photo.focusline.com.tw/"
+                target="_blank"
+                class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp"
+              >
+                <div class="navTitle">活動相簿</div>
+                <div class="navEngTitle">Photos</div>
+              </a>
+            </li>
+            <li class="nav-item">
               <RouterLink
                 :to="{ name: 'Tracking' }"
                 class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp"
@@ -85,11 +95,11 @@
             </li>
             <li class="nav-item">
               <RouterLink
-                :to="{ name: 'Instruction' }"
+                :to="{ name: 'Memberplan' }"
                 class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp"
               >
-                <div class="navTitle">晶片說明</div>
-                <div class="navEngTitle">Instruction</div>
+                <div class="navTitle">會員分級</div>
+                <div class="navEngTitle">Membership</div>
               </RouterLink>
             </li>
             <li class="nav-item">
@@ -144,7 +154,10 @@
                       寫信給我們
                     </div>
                     <div class="content">
-                      <a href="mailto:service@focusline.com.tw" class="content-link">
+                      <a
+                        href="mailto:service@focusline.com.tw"
+                        class="content-link"
+                      >
                         service@focusline.com.tw
                       </a>
                     </div>
@@ -221,8 +234,8 @@
       .content {
         flex: 1;
         font-size: 16px !important;
-        p{
-            margin-bottom: 0;
+        p {
+          margin-bottom: 0;
         }
         .content-link {
           display: inline-block !important;
@@ -234,8 +247,8 @@
 
   .dropdown-xs {
     width: 400px !important;
-    .dropdownTitleBox{
-        @include flex;
+    .dropdownTitleBox {
+      @include flex;
     }
   }
 </style>

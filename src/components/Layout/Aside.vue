@@ -10,7 +10,7 @@
         </div>
     </div>
     <Teleport to="body">
-        <div class="modal fade aside-right ace-aside aside-below-nav my-2" id="aside" tabindex="-1"
+        <div class="modal fade aside-right ace-aside aside-below-nav" id="aside" tabindex="-1"
              aria-labelledby="asideLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content shadow border-0 radius-0">
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-    import SearchFilter from './SearchFilter.vue';
+    import SearchFilter from './SearchFilter2.vue';
 
     export default {
         name: 'Aside',
@@ -41,3 +41,7 @@
         }
     }
 </script>
+
+<style lang="scss">
+
+</style>

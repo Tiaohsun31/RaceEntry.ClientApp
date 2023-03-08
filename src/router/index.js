@@ -14,7 +14,7 @@ import Checkout from '../views/Entry/Checkout.vue';
 import Refund from '../views/Entry/Refund.vue';
 
 import Home from '../views/Home.vue';
-import Acts from '../views/Acts.vue';
+import Acts from '../views/Acts2.vue';
 
 import Tracking from '@/views/Tracking/Tracking.vue';
 import ForgotOrder from '@/views/Tracking/ForgotOrder.vue';
@@ -32,6 +32,7 @@ import History from '../views/History/Index.vue';
 import EditMember from '../views/Member/EditMember.vue';
 import BindOtherLogin from '../views/Member/BindOtherLogin.vue';
 import RefundSetting from '../views/Member/RefundSetting.vue';
+import MemberPlan from '../views/Member/Memberplan.vue';
 
 import Leader from '../views/Team/Leader.vue';
 import TeammateForm from '../views/Team/TeammateForm.vue';
@@ -47,6 +48,7 @@ const routes = [
     { name: 'Design', path: '/service/design', component: Design, meta: { requiresAuth: false } },
     { name: 'Timing', path: '/service/timing', component: Timing, meta: { requiresAuth: false } },
     { name: 'Instruction', path: '/service/instruction', component: Instruction, meta: { requiresAuth: false } },
+    { name: 'Memberplan', path: '/memberplan', component: MemberPlan, meta: { requiresAuth: false } },
     {
         path: '/entry',
         component: ActLayout,

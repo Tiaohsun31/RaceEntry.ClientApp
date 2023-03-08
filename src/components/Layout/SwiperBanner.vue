@@ -14,19 +14,32 @@
     :loop="true"
     class="myBannerSwiper"
   >
-    <swiper-slide v-for="(item, index) in bannerArray">
+    <swiper-slide v-for="(item, index) in bannerArray" class="swiperCard">
       <router-link
         :to="{ name: 'HomePage', params: { code: item.actCode } }"
-        class="swiperCard"
         target="_blank"
       >
         <img :src="item.rectangle" :alt="item.actName" />
+
+        <article class="bannerInfoCard">
+          <div class="infoCardContainer">
+            <div class="titleBox">
+              {{ item.actName }}
+            </div>
+            <div class="contentBox">
+              <span>活動時間 / {{ actDate(item.actDate) }}</span>
+              <span>報名截止 / {{ shortDate(item.regETime) }}</span>
+            </div>
+          </div>
+        </article>
       </router-link>
     </swiper-slide>
   </swiper>
 </template>
 
 <script>
+  import moment from "moment";
+  import "moment/dist/locale/zh-tw";
   // Import Swiper Vue.js components
   import { Swiper, SwiperSlide } from "swiper/vue";
 
@@ -52,6 +65,14 @@
         modules: [Autoplay, Pagination, Navigation],
       };
     },
+    methods: {
+      actDate: function (value) {
+        return moment(value).format("YYYY-MM-DD (dd)");
+      },
+      shortDate: function (value) {
+        return moment(value).format("YYYY-MM-DD");
+      },
+    },
   };
 </script>
 
@@ -69,7 +90,50 @@
     .swiperCard {
       width: 100%;
       height: auto;
-      cursor: default;
+
+      a {
+        width: 100%;
+        cursor: default;
+        text-decoration: none;
+
+        img {
+          width: 100%;
+        }
+
+        .bannerInfoCard {
+          width: 100%;
+          height: 75px;
+          background-color: rgba($color: black, $alpha: 0.25);
+          color: white;
+          
+
+          .infoCardContainer {
+            margin: 0 auto;
+            max-width: 1403px;
+            height: 100%;
+            padding: 0 15px;
+            @include flex(space-between, center);
+
+            .titleBox {
+              font-size: 20px;
+            }
+
+            .contentBox {
+              span {
+                font-size: 15px;
+                margin-right: 20px;
+                &:last-of-type {
+                  margin-right: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .swiper-pagination {
+      bottom: 90px !important;
     }
 
     .swiper-button-prev,
