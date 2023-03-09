@@ -15,6 +15,8 @@ import Refund from '../views/Entry/Refund.vue';
 
 import Home from '../views/Home.vue';
 import Acts from '../views/Acts2.vue';
+import AlbumIndex from '../views/AlbumIndex.vue';
+import ScoreIndex from '../views/ScoreIndex.vue';
 
 import Tracking from '@/views/Tracking/Tracking.vue';
 import ForgotOrder from '@/views/Tracking/ForgotOrder.vue';
@@ -43,6 +45,8 @@ import NotFound from '../components/Layout/NotFound.vue';
 const routes = [
     { name: 'Home', path: '/', component: Home, meta: { requiresAuth: false } },
     { name: 'Acts', path: '/acts', component: Acts, meta: { requiresAuth: false } },
+    { name: 'Album', path: '/photo', component: AlbumIndex, meta: { requiresAuth: false } },
+    { name: 'Score', path: '/score', component: ScoreIndex, meta: { requiresAuth: false } },
     { name: 'Tracking', path: '/tracking', component: Tracking, meta: { requiresAuth: false } },
     { name: 'ForgotOrder', path: '/tracking/forgotOrder', component: ForgotOrder, meta: { requiresAuth: false } },
     { name: 'Design', path: '/service/design', component: Design, meta: { requiresAuth: false } },

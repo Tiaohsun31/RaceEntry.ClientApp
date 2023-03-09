@@ -275,6 +275,7 @@
                   name="SelectedYears"
                   v-bind:value="item"
                   v-model="filter.selectedYears"
+                  @click="cleanMonthsData"
                 />
                 {{ item }}
               </label>
@@ -338,6 +339,54 @@
     </section>
   </template>
 
+  <template v-else-if="position === 'Album'">
+    <section id="albumFilterSection" class="card">
+      <div class="filterTitle">搜尋相簿</div>
+
+      <select
+        ref="select"
+        name="code"
+        class="form-control"
+        data-live-search="true"
+        title="請選擇活動"
+        v-model="code"
+        @change="toAlbumPage($event)"
+      >
+        <template v-for="(item, name) in albumActs">
+          <optgroup :label="name">
+            <option v-for="element in item" :value="element.actCode">
+              {{ shortDate(element.minTime) }} &frasl; {{ element.actName }}
+            </option>
+          </optgroup>
+        </template>
+      </select>
+    </section>
+  </template>
+
+  <template v-else-if="position === 'Score'">
+    <section id="albumFilterSection" class="card">
+      <div class="filterTitle">活動搜尋</div>
+
+      <select
+        ref="select"
+        name="code"
+        class="form-control"
+        data-live-search="true"
+        title="請選擇活動"
+        v-model="code"
+        @change="toScorePage($event)"
+      >
+        <template v-for="(item, name) in albumActs">
+          <optgroup :label="name">
+            <option v-for="element in item" :value="element.actCode">
+              {{ shortDate(element.minTime) }} &frasl; {{ element.actName }}
+            </option>
+          </optgroup>
+        </template>
+      </select>
+    </section>
+  </template>
+
   <template v-else-if="position === 'Search'">
     <select
       ref="select"
@@ -362,6 +411,10 @@
       </template>
     </select>
   </template>
+
+  <template v-else-if="position === 'ActListBtn'">
+    <button @click="toActWithYearMonth">本月更多活動</button>
+  </template>
 </template>
 
 <script>
@@ -380,13 +433,16 @@
 
   export default {
     name: "SearchFilter",
-    props: ["position"],
+    props: ["position", "year", "month"],
     components: {
       Datepicker,
     },
     computed: {
       datepickerLangs() {
         return datepickerLangs;
+      },
+      path() {
+        return this.$route.fullPath;
       },
     },
     setup() {
@@ -399,15 +455,33 @@
         acts: {},
         options: [],
         code: "",
+        albumActs: [],
       };
     },
     created() {
-      axios.get("/api/act").then(({ data }) => {
-        this.acts = groupBy(data, (x) => `${x.year}-${x.month}`);
-      });
-      axios
-        .get("/api/webSetting/filter")
-        .then(({ data }) => (this.options = data));
+      if (this.path === "/photo") {
+        axios
+          .get("https://photo.focusline.com.tw/api/act")
+          .then(({ data }) => {
+            data.sort((a, b) => new Date(b.minTime) - new Date(a.minTime));
+            this.albumActs = groupBy(data, (x) => `${x.year}-${x.month}`);
+          })
+      } else if(this.path === '/score'){
+        axios
+          .get("https://score.focusline.com.tw/api/activity")
+          .then(({ data }) => {
+            data.sort((a, b) => new Date(b.minTime) - new Date(a.minTime));
+            this.albumActs = groupBy(data, (x) => `${x.year}-${x.month}`);
+          })
+      }
+      else {
+        axios.get("/api/act").then(({ data }) => {
+          this.acts = groupBy(data, (x) => `${x.year}-${x.month}`);
+        });
+        axios
+          .get("/api/webSetting/filter")
+          .then(({ data }) => (this.options = data));
+      }
     },
     // watch:{
     //     code(){
@@ -433,6 +507,34 @@
           params: { code: `${this.code}` },
         });
       },
+      toActWithYearMonth() {
+        this.filter.selectedYears = [];
+        this.filter.selectedMonths = [];
+
+        const ActiveSwiper = document.querySelector('.swiper-slide-active > .title');
+
+        this.filter.selectedYears.push(Number(ActiveSwiper.dataset.year));
+        this.filter.selectedMonths.push(Number(ActiveSwiper.dataset.month));
+        
+        if(this.filter.selectedYears.length>0 && this.filter.selectedMonths.length>0){
+          this.$router.push({ name: "Acts" });
+        }
+      },
+
+      toAlbumPage(e){
+        const actCode = e.target.value
+        window.open(`https://photo.focusline.com.tw/${actCode}`)
+      },
+
+      toScorePage(e){
+        const actCode = e.target.value
+        window.open(`https://score.focusline.com.tw/focusline/${actCode}`)
+      },
+      cleanMonthsData(){
+        if(this.filter.selectedMonths.length > 0){
+          this.filter.selectedMonths = [];
+        }
+      }
     },
     mounted() {},
   };
@@ -450,6 +552,19 @@
 
       &:hover {
         background-color: $mainhovercolor !important;
+      }
+    }
+
+    .dropdown-menu {
+      width: 100%;
+      .dropdown-item {
+        width: 99%;
+        .text {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
     }
 
@@ -561,11 +676,11 @@
       }
     }
 
-    .searchBtn{
+    .searchBtn {
       width: 100%;
       background-color: $maincolor;
       color: white;
-      border-radius: 0 ;
+      border-radius: 0;
       position: absolute;
       bottom: 0;
       font-size: 18px;
@@ -573,6 +688,97 @@
   }
 
   #actsFilterSection {
+    .dropdown-menu {
+      width: 100%;
+      .dropdown-item {
+        width: 99%;
+        .text {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .filterTitle {
+      width: 100%;
+      @include flex;
+      margin-bottom: 20px;
+      color: $lightfontcolor;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    padding: 20px;
+    .dateFilterBox {
+      margin: 10px 0;
+      @include flex(flex-start, flex-start);
+
+      @include pad {
+        flex-direction: column;
+      }
+
+      .dateRangeFilter {
+        flex: 1;
+        @include bkpt(535px) {
+          width: 100%;
+        }
+        .inputBox {
+          @include flex;
+
+          @include bkpt(535px) {
+            flex-direction: column;
+          }
+
+          .input-group {
+            width: 100%;
+            margin-right: 15px;
+
+            @include flex;
+            &:last-of-type {
+              margin-right: 0;
+            }
+
+            @include bkpt(535px) {
+              margin-right: 0;
+
+              &:nth-child(2n) {
+                margin-top: 10px;
+              }
+            }
+
+            .mx-datepicker {
+              width: unset !important;
+              flex: 1;
+              .mx-input {
+                height: 38px !important;
+                border-radius: 0 0.25rem 0.25rem 0 !important;
+              }
+            }
+
+            .form-control {
+              border-radius: 0 0.25rem 0.25rem 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  #albumFilterSection {
+    .dropdown-menu {
+      width: 100%;
+      .dropdown-item {
+        width: 99%;
+        .text {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
     .filterTitle {
       width: 100%;
       @include flex;

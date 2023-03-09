@@ -4,9 +4,10 @@ export const useFilterStore = defineStore('filterStore', {
   state: () => ({
       filter: {
         selectedYears:[],
+        selectedMonths:[],
         selectedCategories:[],
-        startTime:'',
-        endTime:''
+        startTime:null,
+        endTime:null
     },
   }),
 });

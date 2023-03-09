@@ -35,14 +35,13 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <a
-                href="https://photo.focusline.com.tw/"
-                target="_blank"
+              <RouterLink
+                :to="{ name: 'Album' }"
                 class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp"
               >
                 <div class="navTitle">活動相簿</div>
                 <div class="navEngTitle">Photos</div>
-              </a>
+              </RouterLink>
             </li>
             <li class="nav-item">
               <RouterLink
@@ -103,14 +102,13 @@
               </RouterLink>
             </li>
             <li class="nav-item">
-              <a
-                class="btn d-block btn-a-bold btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-secondary btn-brc-tp"
-                href="https://score.focusline.com.tw"
-                target="_blank"
+              <RouterLink
+                :to="{ name: 'Score' }"
+                class="btn d-block btn-outline-secondary btn-h-lighter-secondary btn-a-lighter-primary btn-brc-tp"
               >
                 <div class="navTitle">成績查詢</div>
                 <div class="navEngTitle">Score</div>
-              </a>
+              </RouterLink>
             </li>
             <li class="nav-item dd-backdrop dropdown dropdown-mega">
               <a

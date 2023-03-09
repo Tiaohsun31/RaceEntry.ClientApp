@@ -1,6 +1,5 @@
 <template>
   <Layout>
-    <!-- marquee -->
     <Transition v-if="marquee.length" name="slide-fade" appear>
       <div
         id="carouselExampleControls"
@@ -49,20 +48,20 @@
     <!-- Banner -->
     <SwiperBanner :bannerArray="banners" />
     <!-- End Banner-->
-
-    <!-- Search and Filter-->
-    <div class="container" id="searchContainer">
-      <SubTitle Title="條件篩選活動" />
-      <SearchFilter position="Home"></SearchFilter>
-    </div>
-    <!-- End Search and Filter -->
+    <section id="homepage">
+      <!-- marquee -->
+      <!-- Search and Filter-->
+      <div class="container" id="searchContainer">
+        <SubTitle Title="條件篩選活動" />
+        <SearchFilter position="Home"></SearchFilter>
+      </div>
+      <!-- End Search and Filter -->
+    </section>
 
     <!-- Act List -->
     <SubTitle Title="眾點推薦活動" />
     <SwiperActList :ActList="actList" />
-    <section class="moreActArea">
-      <router-link to="/acts">更多活動</router-link>
-    </section>
+
     <!-- End Act List -->
   </Layout>
 </template>
@@ -82,7 +81,7 @@
       SearchFilter,
       SwiperBanner,
       SwiperActList,
-      SubTitle
+      SubTitle,
     },
     data() {
       return {
@@ -158,9 +157,9 @@
           return acc;
         }, []);
 
-        //新陣列內的objList只留下前五個物件，其餘刪除
+        //新陣列內的objList只留下前3個物件，其餘刪除
         this.actList.forEach((item) => {
-          item.objList.splice(5);
+          item.objList.splice(3);
         });
       },
     },
@@ -171,6 +170,12 @@
   @import "@/scss/mixin";
   @import "@/scss/variable";
   @import "@/scss/common";
+
+  #homepage {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
 
   .slide-fade-enter-active {
     transition: all 1s ease-out;
@@ -184,26 +189,5 @@
   .slide-fade-leave-to {
     transform: translateY(-20px);
     opacity: 0;
-  }
-
-
-  .moreActArea {
-    width: 100%;
-    margin: 50px 0;
-    @include flex;
-    a {
-      padding: 3px 50px;
-      display: inline-block;
-      border: 1px solid $darkfontcolor;
-      color: $darkfontcolor;
-      text-decoration: none;
-      transition: 0.2s;
-
-      &:hover {
-        border: 1px solid $mainhovercolor;
-        background-color: $mainhovercolor;
-        color: white;
-      }
-    }
   }
 </style>

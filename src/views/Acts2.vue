@@ -215,15 +215,22 @@
 
         if (this.filter.selectedYears.length > 0) {
           data = data.filter((x) => this.filter.selectedYears.includes(x.year));
+
+          if (this.filter.selectedMonths.length > 0) {
+            data = data.filter((x) =>
+              this.filter.selectedMonths.includes(x.month)
+            );
+          }
+
         }
 
-        if (this.filter.startTime != "") {
+        if (this.filter.startTime != null) {
           data = data.filter(({ actDate }) => {
             return moment(actDate).isSameOrAfter(this.filter.startTime);
           });
         }
 
-        if (this.filter.endTime != "") {
+        if (this.filter.endTime != null) {
           data = data.filter(({ actDate }) => {
             return moment(actDate).isSameOrBefore(this.filter.endTime);
           });
@@ -311,7 +318,7 @@
     .filterBox {
       @include flex(space-between, center);
 
-      @include bkpt(535px){
+      @include bkpt(535px) {
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
@@ -390,7 +397,7 @@
             @include flex(flex-start, flex-start);
             width: calc((100% - 15px) / 2);
             margin: 15px 15px 0 0;
-            transition: .3s;
+            transition: 0.3s;
             &:nth-child(2n) {
               margin: 15px 0 0 0;
             }
@@ -406,9 +413,23 @@
               margin: 25px 10px 0 !important;
             }
 
-            &:hover{
+            &:hover {
               transform: translateY(-8px);
+              .contentBox{
+                .middleBox{
+                  .content{
+                    span{
+                      width: calc(100% - 100px);
+
+                      @include pad{
+                        width: 100%;
+                      }
+                    }
+                  }
+                }
+              }
             }
+
 
 
             .imgBox {
@@ -569,6 +590,14 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
+
+                    @include bkpt(1300px){
+                      width: calc(100% - 100px);
+                    }
+
+                    @include pad{
+                      width: 100%;
+                    }
                   }
                 }
 

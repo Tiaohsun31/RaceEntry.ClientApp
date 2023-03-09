@@ -1,14 +1,15 @@
 <template>
   <section id="ActListSwiper">
     <swiper
-      :slidesPerView="1.5"
+      :slidesPerView="1.2"
       :spaceBetween="15"
       :initialSlide="3"
       :centeredSlides="true"
       :navigation="true"
       :modules="modules"
       :breakpoints="{
-        768:{ slidesPerView: 1.5},
+        535: { slidesPerView: 1.2 },
+        768: { slidesPerView: 1.5 },
         850: { slidesPerView: 2 },
         1024: { slidesPerView: 2.5 },
         1200: { slidesPerView: 3 },
@@ -17,10 +18,16 @@
       class="myActListSwiper"
     >
       <swiper-slide class="ActListCard" v-for="item in ActList">
-        <h3 class="title">
-          <span>{{ item.year }}</span>&nbsp;年&nbsp;<span>{{ item.month }}</span>&nbsp;月
+        <h3 class="title" :data-year="item.year" :data-month="item.month">
+          <span>{{ item.year }}</span
+          >&nbsp;年&nbsp;<span>{{ item.month }}</span
+          >&nbsp;月
         </h3>
-        <router-link class="ActCard" v-for="insideItem in item.objList" :to="{name: 'HomePage',params: { code: insideItem.actCode }}" >
+        <router-link
+          class="ActCard"
+          v-for="insideItem in item.objList"
+          :to="{ name: 'HomePage', params: { code: insideItem.actCode } }"
+        >
           <div class="info-area">
             <img :src="insideItem.square" alt="" v-if="insideItem.square" />
             <img src="/body-bg-1.jpg" alt="" v-else />
@@ -45,23 +52,30 @@
               </div>
             </div>
           </div>
-          <div :class="insideItem.Tags ? 'btn-area':'btn-area-noTag'">
-            <div class="leftbox" v-if="insideItem.Tags">
-              <span v-for="tag in insideItem.Tags?.split(',')">{{
-                tag
-              }}</span>
+          <div :class="insideItem.tags ? 'btn-area' : 'btn-area-noTag'">
+            <div class="leftbox" v-if="insideItem.tags">
+              <span v-for="tag in insideItem.tags?.split(',')">{{ tag }}</span>
             </div>
             <div class="rightbox">
-              <router-link :to="`/${insideItem.actCode}#signup`" class="signup-btn" v-if="insideItem.canSignUp">我要報名</router-link>
+              <router-link
+                :to="`/${insideItem.actCode}#signup`"
+                class="signup-btn"
+                v-if="insideItem.canSignUp"
+                >我要報名</router-link
+              >
             </div>
           </div>
         </router-link>
       </swiper-slide>
     </swiper>
+    <div class="moreActArea">
+      <SearchFilter position="ActListBtn" />
+    </div>
   </section>
 </template>
 
 <script>
+  import SearchFilter from "./SearchFilter2.vue";
   import moment from "moment";
   import "moment/dist/locale/zh-tw";
   // Import Swiper Vue.js components
@@ -83,6 +97,7 @@
     components: {
       Swiper,
       SwiperSlide,
+      SearchFilter,
     },
 
     setup() {
@@ -110,7 +125,7 @@
   :root {
     --swiper-theme-color: black;
     --swiper-navigation-size: 40px;
-    @include bkpt(768px){
+    @include bkpt(768px) {
       --swiper-navigation-size: 25px;
     }
   }
@@ -123,14 +138,13 @@
       width: 100%;
       height: auto;
 
-      @include bkpt(768px){
+      @include bkpt(768px) {
         position: relative;
       }
 
       .swiper-button-prev,
       .swiper-button-next {
-
-        @include bkpt(768px){
+        @include bkpt(768px) {
           position: absolute;
           top: 0;
         }
@@ -138,7 +152,7 @@
         &::after {
           transform: scaleY(1.3) scaleX(0.8);
 
-          @include bkpt(768px){
+          @include bkpt(768px) {
             transform: scaleY(1) scaleX(1);
             transform: translateY(35%);
           }
@@ -149,7 +163,7 @@
         margin-left: 15px;
         transform: translateX(-100px);
         transition: 0.5s;
-        @include bkpt(768px){
+        @include bkpt(768px) {
           transform: translateX(0);
         }
         &::after {
@@ -161,7 +175,7 @@
         margin-right: 15px;
         transform: translateX(100px);
         transition: 0.5s;
-        @include bkpt(768px){
+        @include bkpt(768px) {
           transform: translateX(0);
         }
         &::after {
@@ -188,7 +202,7 @@
           border-bottom: 1px solid $darkfontcolor;
           color: $darkfontcolor;
           margin-bottom: 0;
-          @include flex(center,flex-end);
+          @include flex(center, flex-end);
           span {
             font-weight: 700;
             font-size: 20px;
@@ -204,8 +218,6 @@
           &:hover {
             background-color: $lighthoverbg;
           }
-
-          
 
           .info-area {
             width: 100%;
@@ -253,27 +265,30 @@
               }
 
               .inside-box {
+                width: 100%;
                 text-align: start;
                 @include flex(flex-start, flex-start);
-                span{
+                span {
                   white-space: nowrap;
                 }
                 p {
                   margin: 0;
-
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  overflow: hidden;
                 }
               }
             }
           }
 
-
-          &:hover .leftbox{
-            span{
+          &:hover .leftbox {
+            span {
               background-color: $tagbghovercolor !important;
             }
           }
 
-          .btn-area,.btn-area-noTag {
+          .btn-area,
+          .btn-area-noTag {
             margin-top: 5px;
 
             .leftbox {
@@ -319,20 +334,48 @@
             }
           }
 
-          .btn-area{
+          .btn-area {
             @include flex(space-between, center);
           }
 
-          .btn-area-noTag{
+          .btn-area-noTag {
             @include flex(center, center);
-            .rightbox{
+            .rightbox {
               width: 100%;
-              a{
+              a {
                 width: 100%;
               }
             }
           }
         }
+      }
+
+      .swiper-slide-active {
+        .moreActArea {
+          display: flex;
+        }
+      }
+    }
+  }
+
+  .moreActArea {
+    width: 100%;
+    margin: 50px 0;
+    @include flex;
+    button {
+      background: none;
+      padding: 3px 50px;
+      display: inline-block;
+      border: 1px solid $darkfontcolor;
+      color: $darkfontcolor;
+      text-decoration: none;
+      transition: 0.2s;
+      font-size: 15px;
+
+      &:hover {
+        border: 1px solid $mainhovercolor;
+        background-color: $mainhovercolor;
+        color: white;
       }
     }
   }

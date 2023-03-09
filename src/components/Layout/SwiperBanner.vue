@@ -1,6 +1,6 @@
 <template>
   <swiper
-    :spaceBetween="30"
+    :spaceBetween="0"
     :autoplay="{
       delay: 6000,
       disableOnInteraction: false,
@@ -9,6 +9,7 @@
       clickable: true,
       dynamicBullets: true,
     }"
+    :centeredSlides="true"
     :navigation="true"
     :modules="modules"
     :loop="true"
@@ -88,6 +89,7 @@
     width: 100%;
     height: auto;
     .swiperCard {
+      
       width: 100%;
       height: auto;
 
