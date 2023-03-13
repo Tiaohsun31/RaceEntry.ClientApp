@@ -7,7 +7,9 @@
         <SearchFilter position="Acts" />
       </section>
 
-      <section class="actContainer">
+      <Loading v-if="!acts" />
+
+      <section class="actContainer" v-else>
         <!-- 僅顯示可報名活動及選擇排序方式 -->
         <article class="filterBox">
           <div class="custom-control custom-switch">
@@ -174,6 +176,8 @@
 </template>
 
 <script>
+  import Loading from "../components/Loading.vue";
+
   import SearchFilter from "../components/Layout/SearchFilter2.vue";
   import SwiperAdBanner from "../components/Layout/SwiperAdBanner.vue";
 
@@ -187,6 +191,7 @@
 
   export default {
     components: {
+      Loading,
       SearchFilter,
       SwiperAdBanner,
     },
@@ -199,14 +204,15 @@
       return {
         isApply: false,
         orderby: "desc",
-        acts: [],
+        acts: null,
         month: [],
         mobileMode: false,
         ww: 0,
-      };
+     };
     },
     created() {
-      axios.get("/api/act").then(({ data }) => (this.acts = data));
+      axios.get("/api/act")
+      .then(({ data }) => (this.acts = data))
     },
     computed: {
       sortdata() {

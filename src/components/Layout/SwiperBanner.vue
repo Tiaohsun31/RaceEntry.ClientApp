@@ -107,6 +107,10 @@
           height: 75px;
           background-color: rgba($color: black, $alpha: 0.25);
           color: white;
+
+          @include pad{
+            height: auto;
+          }
           
 
           .infoCardContainer {
@@ -115,6 +119,13 @@
             height: 100%;
             padding: 0 15px;
             @include flex(space-between, center);
+
+            @include pad{
+              flex-direction: column;
+              justify-content: center;
+              padding: 15px 15px;
+            }
+
 
             .titleBox {
               font-size: 20px;
@@ -128,6 +139,13 @@
                   margin-right: 0;
                 }
               }
+              @include bkpt(535px){
+                span{
+                  margin-right: 0;
+                }
+                @include flex;
+                flex-direction: column;
+              }
             }
           }
         }
@@ -136,12 +154,19 @@
 
     .swiper-pagination {
       bottom: 90px !important;
+      @include pad{
+        display: none;
+      }
+
     }
 
     .swiper-button-prev,
     .swiper-button-next {
       &::after {
         transform: scaleY(1.3) scaleX(0.8);
+      }
+      @include pad{
+        display: none;
       }
     }
 

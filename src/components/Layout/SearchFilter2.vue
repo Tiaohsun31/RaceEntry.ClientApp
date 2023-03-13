@@ -317,6 +317,13 @@
       <article class="typeFilterBox">
         <label class="col-form-label text-dark-l4"> 類別 </label>
         <div class="btn-group-toggle" data-toggle="buttons">
+          <button
+          class="d-style btn btn-sm btn-outline-light btn-a-lighter-info text-110 mr-2 overflow-hidden"
+          @click="allTypeFilter"
+          :class="filter.selectedCategories.length == 0 ? 'btnActive':''"
+          >
+          全部
+          </button>
           <template v-for="item in options.categories">
             <label
               role="button"
@@ -534,6 +541,9 @@
         if(this.filter.selectedMonths.length > 0){
           this.filter.selectedMonths = [];
         }
+      },
+      allTypeFilter(){
+        this.filter.selectedCategories = []
       }
     },
     mounted() {},
@@ -841,5 +851,13 @@
         }
       }
     }
+  }
+
+
+
+  .btnActive{
+    color: #006e8c !important;
+    background-color: #e0f6fc !important;
+    border-color: #69d4f2 !important;
   }
 </style>

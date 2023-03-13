@@ -60,7 +60,7 @@
 
     <!-- Act List -->
     <SubTitle Title="眾點推薦活動" />
-    <SwiperActList :ActList="actList" />
+    <SwiperActList :actList="actList" />
 
     <!-- End Act List -->
   </Layout>
@@ -86,28 +86,22 @@
     data() {
       return {
         marquee: [],
-        recommendActs: [],
         banners: [],
         actList: [],
+        closestMonthIndex: "",
       };
     },
     created() {
       let endpoints = [
         `/api/webSetting/marquee`,
         `/api/webSetting/banners`,
-        `/api/act?number=12`,
       ];
-      Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
-        .then(
-          ([{ data: marquee }, { data: banners }, { data: recommendActs }]) => {
-            this.marquee = marquee;
-            this.banners = banners;
-            this.recommendActs = recommendActs;
-          }
-        )
-        .then(() => {
-          this.createActList();
-        });
+      Promise.all(endpoints.map((endpoint) => axios.get(endpoint))).then(
+        ([{ data: marquee }, { data: banners }]) => {
+          this.marquee = marquee;
+          this.banners = banners;
+        })
+
     },
     methods: {
       actDate: function (value) {
@@ -116,52 +110,8 @@
       shortDate: function (value) {
         return moment(value).format("YYYY-MM-DD");
       },
-      createActList() {
-        // 獲得今天日期資訊
-        const today = new Date();
-
-        // 過濾符合條件的陣列
-        const filteredArray = this.recommendActs.filter((obj) => {
-          const objDate = new Date(obj.year, obj.month - 1);
-          const sixMonthsAgo = new Date(
-            today.getFullYear(),
-            today.getMonth() - 4 //只擷取目前日期前兩個月
-          );
-          const twelveMonthsLater = new Date(
-            today.getFullYear(),
-            today.getMonth() + 11 //以及目前日期往後推算一年的活動
-          );
-
-          return objDate >= sixMonthsAgo && objDate <= twelveMonthsLater;
-        });
-
-        // 根據日期排序已篩選後的陣列
-        const sortedArray = filteredArray.sort(function (a, b) {
-          const dateA = new Date(a.year, a.month - 1, 1).getTime();
-          const dateB = new Date(b.year, b.month - 1, 1).getTime();
-          return dateA - dateB;
-        });
-
-        // 將他們歸納成新陣列
-        this.actList = sortedArray.reduce((acc, obj) => {
-          const index = acc.findIndex(
-            (item) => item.year === obj.year && item.month === obj.month
-          );
-
-          if (index === -1) {
-            acc.push({ year: obj.year, month: obj.month, objList: [obj] });
-          } else {
-            acc[index].objList.push(obj);
-          }
-
-          return acc;
-        }, []);
-
-        //新陣列內的objList只留下前3個物件，其餘刪除
-        this.actList.forEach((item) => {
-          item.objList.splice(3);
-        });
-      },
+    },
+    mounted() {
     },
   };
 </script>

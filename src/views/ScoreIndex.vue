@@ -6,7 +6,9 @@
         <SearchFilter position="Score" />
       </section>
 
-      <section class="actContainer">
+      <Loading v-if="!acts" />
+
+      <section class="actContainer" v-else>
         <!-- 篩選後活動結果 -->
         <article class="resultArea">
           <div class="resultCard" v-for="(item, name) in sortdata">
@@ -48,6 +50,7 @@
 </template>
 
 <script>
+  import Loading from '@/components/Loading.vue';
   import SubTitle from '@/components/Layout/SubTitle.vue';
   import SearchFilter from "../components/Layout/SearchFilter2.vue";
   import SwiperAdBanner from "../components/Layout/SwiperAdBanner.vue";
@@ -64,7 +67,8 @@
     components: {
       SearchFilter,
       SwiperAdBanner,
-      SubTitle
+      SubTitle,
+      Loading
     },
     setup() {
       const store = useFilterStore();
@@ -75,7 +79,7 @@
       return {
         isApply: false,
         orderby: "desc",
-        acts: [],
+        acts: null,
         month: [],
         mobileMode: false,
         ww: 0,
